@@ -172,6 +172,10 @@ export interface Item {
   // v1.4 新增
   urlStatus?: UrlStatus;
   urlCheckedAt?: string;
+  // P2-B T-P2-09: 跨源备用 URL 展示层替换（item.url 失效时由 pickAlternate 派生）
+  // - 不回写 item.url（避免 dedupKey 漂移）
+  // - 该字段是前端渲染层使用，原始溯源信息仍保留在 sources[]
+  alternateUrl?: string | null;
 }
 
 export interface Snapshot {
