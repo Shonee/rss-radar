@@ -1,5 +1,6 @@
-// lib/text.mjs — 文本处理：NFKC / 大小写折叠 / 去 HTML
-import sanitizeHtml from 'sanitize-html';
+// lib/text.mjs — 文本处理：NFKC / 大小写折叠 / 去 HTML（P2-A 简化版）
+// 注：HTML 净化留 P3 接 sanitize-html（本层 P2-A 不需要复杂 HTML 解析；RSS / Atom / JSON Feed
+//     接入器在 normalize.mjs 前已剥离 content snippet 为纯文本）。
 
 /** NFKC 归一化 */
 export function normalizeNFKC(s) {
@@ -13,10 +14,23 @@ export function fold(s) {
   return normalizeNFKC(s).replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
-/** 去 HTML，保留纯文本 */
+/**
+ * 去 HTML，保留纯文本。
+ * P2-A 简化版：正则去除所有 <...> 标签（足够 RSS / Atom / JSON Feed 已知输入）。
+ * P3 升级：替换为 sanitize-html（依赖已 pre-declare 在 package.json）。
+ */
 export function stripHtml(html) {
-  if (!html) return '';
-  return sanitizeHtml(html, { allowedTags: [], allowedAttributes: {} })
+  if (typeof html !== 'string' || !html) return '';
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -28,9 +42,9 @@ export function truncate(s, n = 200) {
   return s.slice(0, n - 1) + '…';
 }
 
-/** 简化版中文分词（按字符 1~2 字符切分；P2 升级 nodejieba） */
+/** 简化版中文分词（按字符 1~2 字符切分；P2 升级 Intl.Segmenter（G3）） */
 export function segmentCJK(s) {
-  if (!s) return [];
+  if (typeof s !== 'string' || !s) return [];
   // MVP：拆为 1~2 字词，过滤单字
   const cleaned = normalizeNFKC(s).toLowerCase();
   const out = [];

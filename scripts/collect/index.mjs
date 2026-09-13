@@ -1,36 +1,39 @@
 #!/usr/bin/env node
 /**
- * 采集器编排入口（P1 简化版）
- * ARCHITECTURE §3.7 / §6.7
+ * 采集器编排入口（P2 完整版：ARCHITECTURE §3.7 / §6.7）
  *
- * 单源快照（不实现事件流 NDJSON + 折叠，留 T-P2-03）：
- *   loadConfig → dueSources → pool(concurrent=6) → connector.run → normalize → classify → exclude → write
+ * 流程（ARCH §6.7 ingestRound）：
+ *   loadConfig → dueSources → pool(concurrent=6)
+ *   → connector.run → normalizeItem → classifyItem → exclude.evaluate
+ *   → ingestRound（append-events + project-snapshot）
  *
  * 用法：
  *   node scripts/collect/index.mjs --once
  *   node scripts/collect/index.mjs --only <source-id>
  *   node scripts/collect/index.mjs --only <source-id> --dry-run
- *   node scripts/collect/index.mjs
+ *   node scripts/collect/index.mjs --help
  *
  * 行为：
  *   --only 过滤 source.id
  *   --dry-run 仅打印归一化后的 Item[]，不写盘
+ *   --out <dir> 自定义输出根目录（默认 tmp/deploy，P1 行为兼容）
  *   全部 enabled 源全跑；任意源失败不阻断整体（allSettled 语义）
  *   退出码：0=全部 ok；1=全部失败；2=部分失败
  */
 import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
 
 import './connectors/index.mjs';
 import { get } from './connectors/registry.mjs';
 import { normalizeItem } from './normalize.mjs';
 import { classifyItem, loadKeywordRules } from './classify.mjs';
 import { loadExcludeRules, evaluateItem, blockedChannels } from './exclude.mjs';
-import { writeJsonCompact, copyToPublicData, refreshLatestLink } from './write.mjs';
-import { todayLocal, nowIso, windowStartUtc } from './lib/time.mjs';
-import { sha256 } from './lib/hash.mjs';
+import { copyToPublicData, refreshLatestLink } from './write.mjs';
+import { todayLocal, nowIso } from './lib/time.mjs';
+import { appendEvents, makeEvent } from './append-events.mjs';
+import { projectSnapshot } from './project-snapshot.mjs';
+import { makeRunId } from './lib/run-id.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..', '..');
@@ -41,14 +44,24 @@ function loadJson(rel) {
 
 function parseArgs() {
   const args = process.argv.slice(2);
-  const out = { once: false, dryRun: false, only: null };
+  const out = { once: false, dryRun: false, only: null, out: null };
   for (let i = 0; i < args.length; i += 1) {
     const a = args[i];
     if (a === '--once') out.once = true;
     else if (a === '--dry-run') out.dryRun = true;
     else if (a === '--only') out.only = args[++i];
+    else if (a === '--out') out.out = args[++i];
     else if (a === '--help' || a === '-h') {
-      console.log('用法：node scripts/collect/index.mjs [--once] [--dry-run] [--only <source-id>]');
+      console.log([
+        '用法：node scripts/collect/index.mjs [options]',
+        '',
+        '选项：',
+        '  --once               跑一次全部 enabled 源（默认也是 --once 行为）',
+        '  --only <source-id>   只跑指定 source.id',
+        '  --dry-run            仅打印 Item[]，不写盘',
+        '  --out <dir>          输出根目录（默认 tmp/deploy）',
+        '  --help, -h           显示帮助',
+      ].join('\n'));
       process.exit(0);
     }
   }
@@ -57,7 +70,7 @@ function parseArgs() {
 
 async function main() {
   const opts = parseArgs();
-  console.log(`[collect] start  dryRun=${opts.dryRun}  only=${opts.only ?? 'ALL'}`);
+  console.log(`[collect] start  dryRun=${opts.dryRun}  only=${opts.only ?? 'ALL'}  out=${opts.out ?? 'tmp/deploy'}`);
 
   const sources = loadJson('config/sources.json');
   const siteConfig = loadJson('config/site-config.json');
@@ -65,6 +78,7 @@ async function main() {
   const channelMap = new Map(sources.channels.map((c) => [c.id, c]));
   const blockedChans = blockedChannels(excludes);
   const ruleMap = loadKeywordRules(resolve(ROOT, 'config/keyword-rules.json'));
+  const channelWeights = collectChannelWeights(sources.channels, siteConfig);
 
   let dueSources = sources.sources.filter((s) => s.enabled && !blockedChans.has(s.channelId));
   if (opts.only) dueSources = dueSources.filter((s) => s.id === opts.only);
@@ -74,6 +88,12 @@ async function main() {
   }
 
   const concurrency = siteConfig.network?.concurrency ?? 6;
+  const startedAt = Date.now();
+
+  const runId = makeRunId('r');
+  const date = todayLocal();
+  const fetchedAt = nowIso();
+
   const results = await runPool(dueSources, concurrency, async (source) => {
     return collectOne(source, channelMap, ruleMap, excludes);
   });
@@ -81,71 +101,52 @@ async function main() {
   // 统计
   let ok = 0;
   let err = 0;
+  const items = [];
   for (const r of results) {
     if (r.error) err += 1;
     else ok += 1;
+    if (r.items) for (const it of r.items) items.push(it);
   }
-  console.log(`[collect] summary  ok=${ok}  err=${err}  total=${results.length}`);
-
-  // 聚合 items + 写盘
-  const items = [];
-  let itemsBefore = 0;
-  for (const r of results) {
-    if (r.error) continue;
-    itemsBefore += r.rawItemCount ?? 0;
-    for (const it of r.items ?? []) items.push(it);
-  }
-  const itemsAfterDedup = items; // P1 不做去重；T-P2-02 升级 L1~L5
-
-  const date = todayLocal();
-  const stats = {
-    sourceTotal: results.length,
-    sourceOk: ok,
-    sourceFailed: err,
-    itemsBeforeDedup: itemsBefore,
-    itemsAfterDedup: itemsAfterDedup.length,
-    mergedCount: 0,
-    durationMs: 0, // 后续接 Date.now()
-    sources: results.map((r) => ({
-      channelId: r.channelId,
-      channelName: r.channelName,
-      ok: !r.error,
-      itemCount: r.items?.length ?? 0,
-      error: r.error?.message?.slice(0, 200),
-    })),
-  };
-
-  const snapshot = {
-    schemaVersion: '1.0',
-    date,
-    timezone: 'Asia/Shanghai',
-    generatedAt: nowIso(),
-    stats,
-    items: itemsAfterDedup,
-  };
+  console.log(`[collect] summary  ok=${ok}  err=${err}  items=${items.length}  runId=${runId}`);
 
   if (opts.dryRun) {
-    console.log(`[collect] dry-run  items=${itemsAfterDedup.length}`);
-    console.log(JSON.stringify(itemsAfterDedup.slice(0, 3), null, 2));
+    console.log(`[collect] dry-run  items=${items.length}`);
+    console.log(JSON.stringify(items.slice(0, 3), null, 2));
     return;
   }
 
-  // 写 tmp/（P1 不进 deploy 分支）
-  const tmpDir = join(ROOT, 'tmp', 'today');
-  const filename = `snapshot-${date}.json`;
-  const outPath = join(tmpDir, filename);
-  writeJsonCompact(outPath, snapshot);
-  console.log(`[collect] wrote ${outPath}`);
+  // ============== ingestRound ==============
+  const outRoot = resolve(opts.out ?? join(ROOT, 'tmp', 'deploy'));
+  const todayDir = join(outRoot, 'today');
+  const eventPath = join(todayDir, `events-${date}.ndjson`);
 
-  // dev bridge: 复制到 public/data/today/
+  // 1) 追加事件流（O(1) appendFile）
+  if (items.length > 0) {
+    const events = items.map((it) => makeEvent({ item: it, runId, fetchedAt }));
+    await appendEvents(eventPath, events);
+  }
+
+  // 2) 折叠 + dedup + 写快照 + 写 latest.json
+  const proj = await projectSnapshot({
+    roundRoot: outRoot,
+    date,
+    channelWeights,
+    commit: 'local',
+  });
+  console.log(`[collect] wrote ${proj.snapshotPath}  items=${proj.itemCount}  merged=${proj.mergedCount}`);
+
+  // 3) dev bridge: 复制到 public/data/today/（P1 行为兼容）
   try {
     const publicDir = join(ROOT, 'public');
-    copyToPublicData(outPath, publicDir);
+    copyToPublicData(proj.snapshotPath, publicDir);
     refreshLatestLink(publicDir, date);
-    console.log(`[collect] dev-bridge refreshed -> public/data/today/${filename}`);
+    console.log(`[collect] dev-bridge refreshed -> public/data/today/snapshot-${date}.json`);
   } catch (e) {
     console.warn(`[collect] dev-bridge skipped: ${e.message}`);
   }
+
+  const elapsed = Date.now() - startedAt;
+  console.log(`[collect] done in ${elapsed}ms`);
 
   // 退出码
   if (err === 0) process.exit(0);
@@ -154,7 +155,27 @@ async function main() {
 }
 
 /**
- * 简单并发池（不引入 p-limit 依赖以保持零依赖；后续 P2 可升级）
+ * 从 channels[] + siteConfig 派生 {channelId: weight}
+ * siteConfig 没声明则取 channel.weight（默认 0.5）
+ */
+function collectChannelWeights(channels, siteConfig) {
+  const out = {};
+  for (const c of channels) {
+    const w = siteConfig?.analysis?.channelWeights?.[c.id] ?? c.weight ?? 0.5;
+    out[c.id] = clamp01(w);
+  }
+  return out;
+}
+
+function clamp01(x) {
+  if (typeof x !== 'number' || Number.isNaN(x)) return 0.5;
+  if (x < 0) return 0;
+  if (x > 1) return 1;
+  return x;
+}
+
+/**
+ * 简单并发池
  */
 async function runPool(items, concurrency, worker) {
   const out = new Array(items.length);
@@ -172,7 +193,8 @@ async function runPool(items, concurrency, worker) {
 }
 
 /**
- * 采集单个 source 的完整流程
+ * 采集单个 source 的完整流程（含归一化 + 分类 + 排除）
+ * 失败隔离：单源失败不阻断整体（allSettled 语义）
  */
 async function collectOne(source, channelMap, ruleMap, excludes) {
   const channel = channelMap.get(source.channelId);
@@ -195,15 +217,14 @@ async function collectOne(source, channelMap, ruleMap, excludes) {
     };
   }
 
-  // normalize → classify → exclude
   const out = [];
+  let hitCount = 0;
   for (const raw of rawItems) {
     const item = normalizeItem(raw, source, channel);
     item.category = classifyItem(item, ruleMap);
     const ev = evaluateItem(item, excludes);
     if (ev.excluded) {
-      // P1 简化：只统计 hitCount，不写排除日志
-      ev.hitReason = `${ev.hitRuleId}@${ev.hitField}:${ev.reason}`;
+      hitCount += 1;
       continue;
     }
     out.push(item);
@@ -215,11 +236,9 @@ async function collectOne(source, channelMap, ruleMap, excludes) {
     items: out,
     rawItemCount: rawItems.length,
     httpStatus,
+    hitCount,
   };
 }
-
-// sha256 / windowStartUtc 占位导出（避免 lint 警告；后续 T-P2 复用）
-export { sha256, windowStartUtc };
 
 main().catch((err) => {
   console.error('[collect] fatal:', err);

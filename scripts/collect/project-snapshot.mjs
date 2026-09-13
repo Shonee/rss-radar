@@ -1,0 +1,135 @@
+// scripts/collect/project-snapshot.mjs — 折叠事件流 → dedup → 投影快照覆盖写
+// ARCHITECTURE §6.7 / §3.7
+import { writeJsonCompact } from './write.mjs';
+import { foldEventsById } from './append-events.mjs';
+import { dedup } from './dedup.mjs';
+import { nowIso, todayLocal } from './lib/time.mjs';
+
+/**
+ * 给定当天事件流文件 → 投影出 snapshot-{date}.json
+ *
+ * @param {Object} opts
+ * @param {string} opts.roundRoot   tmp/deploy 目录（P2 暂不入库 deploy 分支）
+ * @param {string} opts.date        YYYY-MM-DD
+ * @param {Object<string,number>} [opts.channelWeights] 渠道权重（channelId→0..1）
+ * @param {number} [opts.threshold=0.9] Dice 阈值
+ * @param {string} [opts.commit='local']
+ * @returns {Promise<{ snapshotPath: string, latestPath: string, eventPath: string, reportPath: string, itemCount: number, mergedCount: number, lineCount: number }>}
+ */
+export async function projectSnapshot(opts) {
+  const {
+    roundRoot,
+    date,
+    channelWeights = {},
+    threshold = 0.9,
+    commit = 'local',
+  } = opts;
+  if (!roundRoot || !date) {
+    throw new Error('projectSnapshot: roundRoot/date required');
+  }
+
+  const todayDir = `${roundRoot}/today`;
+  const eventPath = `${todayDir}/events-${date}.ndjson`;
+  const snapshotPath = `${todayDir}/snapshot-${date}.json`;
+  // reportPath 留 T-P2-05 写报告；这里先指向未来文件名
+  const reportPath = `${todayDir}/report-${date}.json`;
+  const latestPath = `${roundRoot}/latest.json`;
+
+  // 1) 折叠事件流
+  const { items, lineCount, parseErrors } = await foldEventsById(eventPath);
+  if (parseErrors > 0) {
+    // 故意使用 warn 级别；事件流偶发 JSON 损坏不应阻断主流程
+    console.warn(`[project-snapshot] ${parseErrors} 个事件行解析失败，按 NDJSON 兼容性跳过`);
+  }
+
+  // 2) 去重归并
+  const { groups, stats } = dedup(items, { threshold, channelWeights });
+  const merged = stats.totalMerged;
+
+  // 3) 构造 snapshot
+  const allChannels = uniq(groups.flatMap((it) => it.category || []));
+  const sources = computeSources(groups);
+
+  const snapshot = {
+    schemaVersion: '1.0',
+    date,
+    timezone: 'Asia/Shanghai',
+    generatedAt: nowIso(),
+    stats: {
+      sourceTotal: sources.length,
+      sourceOk: sources.length,
+      sourceFailed: 0,
+      itemsBeforeDedup: items.length,
+      itemsAfterDedup: groups.length,
+      mergedCount: merged,
+      durationMs: 0,
+      sources,
+    },
+    items: groups,
+  };
+  if (allChannels.length > 0) snapshot.channels = allChannels;
+
+  // 4) 覆盖写快照（前端一次 JSON.parse）
+  writeJsonCompact(snapshotPath, snapshot);
+
+  // 5) 写 latest.json 指针
+  const latest = {
+    date,
+    generatedAt: snapshot.generatedAt,
+    snapshotPath: `today/snapshot-${date}.json`,
+    reportPath: `today/report-${date}.json`,
+    eventPath: `today/events-${date}.ndjson`,
+    commit,
+  };
+  writeJsonCompact(latestPath, latest);
+
+  return {
+    snapshotPath,
+    latestPath,
+    eventPath,
+    reportPath,
+    itemCount: groups.length,
+    mergedCount: merged,
+    lineCount,
+  };
+}
+
+/**
+ * 从主条目（sources/或自身）派生出 sources[]，用于 stats.sources[]
+ * 仅含主条目归并后的渠道分布；不展开 duplicateOf（已并入 sources）
+ */
+function computeSources(groups) {
+  const map = new Map();
+  for (const it of groups) {
+    const sources = (it.sources && it.sources.length > 0)
+      ? it.sources
+      : [{ channelId: it.channelId, channelName: it.channelName, url: it.url }];
+    for (const s of sources) {
+      const k = s.channelId;
+      if (!map.has(k)) {
+        map.set(k, {
+          channelId: s.channelId,
+          channelName: s.channelName,
+          itemCount: 0,
+        });
+      }
+      map.get(k).itemCount += 1;
+    }
+  }
+  return Array.from(map.values()).sort((a, b) => b.itemCount - a.itemCount);
+}
+
+function uniq(arr) {
+  return Array.from(new Set(arr));
+}
+
+/**
+ * 便捷：今天快照（P2-B/T-P2-05 之前不创建报告；latest 字段指向空占位即可）
+ */
+export async function projectTodaySnapshot(roundRoot, opts = {}) {
+  return projectSnapshot({
+    roundRoot,
+    date: todayLocal(),
+    ...opts,
+  });
+}
