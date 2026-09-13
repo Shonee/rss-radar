@@ -8,6 +8,8 @@
 //   - urlStatus / urlCheckedAt 写回 Item 字段
 //   - pendingDead 内部计数用于防抖动
 import { writeFile, readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { checkOneUrl, classifyHttpStatus } from './lib/url-checker.mjs';
 import { nowIso } from './lib/time.mjs';
 
@@ -282,3 +284,83 @@ export function nextRecheckStrategy(status) {
 }
 
 export const _internal = { hostOf, transition };
+
+// ==== CLI 入口（仅在直接 node scripts/collect/url-health.mjs 时触发）====
+
+/** 打印用法 */
+export function printHelp() {
+  console.log([
+    '用法：node scripts/collect/url-health.mjs [options]',
+    '',
+    '选项：',
+    '  --dry-run [url...]  用 mock URL 跑状态机分类（不真打网络）',
+    '                      不给 URL 时用内置 5 个样例：',
+    '                        ok       → 200',
+    '                        missing  → 404（首轮 pendingDead，次轮 dead）',
+    '                        blocked  → 403',
+    '                        redirect → 301（moved）',
+    '                        gone     → 410（首轮 pendingDead）',
+    '  --help, -h          显示帮助',
+    '',
+    '说明：本模块主要作为 lib 函数被 scripts/collect/index.mjs 调用；',
+    '       CLI 入口仅用于沙箱验证与排障。',
+  ].join('\n'));
+}
+
+/** --dry-run 内置样例：url → 模拟 HTTP 状态码 */
+const DRY_RUN_MOCK_STATUS = Object.freeze({
+  'https://example.com/ok': 200,
+  'https://example.com/missing': 404,
+  'https://example.com/blocked': 403,
+  'https://example.com/redirect': 301,
+  'https://example.com/gone': 410,
+});
+
+const DRY_RUN_DEFAULT_URLS = Object.freeze(Object.keys(DRY_RUN_MOCK_STATUS));
+
+/** 构造 mock fetch：按状态表返回响应，301 附带 Location 头（便于演示 moved） */
+function makeDryRunFetch(statusMap) {
+  return async function dryRunFetch(url) {
+    const status = statusMap[url] ?? 200;
+    const headers = status === 301 || status === 302
+      ? { Location: `${url.replace('example.com', 'example.org')}-moved` }
+      : {};
+    return new Response('', { status, headers });
+  };
+}
+
+/** CLI 主流程 */
+export async function mainCli(argv = process.argv.slice(2)) {
+  if (argv.includes('--help') || argv.includes('-h')) {
+    printHelp();
+    return 0;
+  }
+  if (argv.includes('--dry-run')) {
+    // 收集 --dry-run 之后的所有位置参数作为自定义 URL；无则用内置样例
+    const idx = argv.indexOf('--dry-run');
+    const custom = argv.slice(idx + 1).filter((a) => !a.startsWith('-'));
+    const urls = custom.length > 0 ? custom : [...DRY_RUN_DEFAULT_URLS];
+    const r = await checkUrls(urls, {
+      _fetch: makeDryRunFetch(DRY_RUN_MOCK_STATUS),
+      concurrency: 4,
+    });
+    console.log(`[url-health] DRY RUN (mock, 无真实网络请求): ${r.records.length} URLs`);
+    for (const rec of r.records) {
+      const loc = rec.location ? `  → ${rec.location}` : '';
+      console.log(`  - ${rec.url}  http=${rec.httpStatus ?? '-'}  → ${rec.status}${loc}`);
+    }
+    console.log(`[url-health] stats: ${JSON.stringify(r.stats)}`);
+    return 0;
+  }
+  printHelp();
+  return 0;
+}
+
+// ESM 顶层 import 已在文件头声明；此处用 fileURLToPath 做「直接执行」守卫，
+// 保证被 scripts/collect/index.mjs import 时不会误触发 CLI。
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
+  mainCli().catch((err) => {
+    console.error('[url-health] fatal:', err);
+    process.exit(1);
+  });
+}
