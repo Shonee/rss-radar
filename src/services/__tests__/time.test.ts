@@ -5,6 +5,7 @@ import {
   formatRelative,
   hoursAgoIso,
   isSameShanghaiDay,
+  passesTimeRange,
   shanghaiDateKey,
   countByShanghaiDay,
 } from '../time';
@@ -128,5 +129,47 @@ describe('time — countByShanghaiDay（页面1 状态条「今日 N 条」口�
         date,
       ),
     ).toBe(2);
+  });
+});
+
+describe('time — passesTimeRange（页面1 时间档过滤谓词）', () => {
+  // now = 2026-09-14 10:00（+08）= 2026-09-14T02:00:00Z
+  const ctx = { now: Date.parse('2026-09-14T10:00:00+08:00'), snapDate: '2026-09-14' };
+
+  it("today：同一上海日命中（含 UTC 输入换算）", () => {
+    expect(passesTimeRange({ updatedAt: '2026-09-14T09:00:00+08:00' }, 'today', ctx)).toBe(true);
+    // 2026-09-13T16:00:00Z → 2026-09-14 00:00（+08），恰在上海日边界内
+    expect(passesTimeRange({ publishedAt: '2026-09-13T16:00:00Z' }, 'today', ctx)).toBe(true);
+  });
+
+  it('today：跨上海日不命中（边界外侧）', () => {
+    // 2026-09-13T15:59:59Z → 2026-09-13 23:59:59（+08），属前一自然日
+    expect(passesTimeRange({ publishedAt: '2026-09-13T15:59:59Z' }, 'today', ctx)).toBe(false);
+    expect(passesTimeRange({ updatedAt: '2026-09-10T09:00:00+08:00' }, 'today', ctx)).toBe(false);
+  });
+
+  it('today：缺失时间不命中', () => {
+    expect(passesTimeRange({}, 'today', ctx)).toBe(false);
+    expect(passesTimeRange({ updatedAt: '', publishedAt: '' }, 'today', ctx)).toBe(false);
+  });
+
+  it('3h：窗口内命中 / 超窗不命中', () => {
+    expect(passesTimeRange({ updatedAt: '2026-09-14T08:30:00+08:00' }, '3h', ctx)).toBe(true); // 1.5h 前
+    expect(passesTimeRange({ updatedAt: '2026-09-14T06:00:00+08:00' }, '3h', ctx)).toBe(false); // 4h 前
+  });
+
+  it('6h：窗口内命中 / 超窗不命中', () => {
+    expect(passesTimeRange({ updatedAt: '2026-09-14T06:00:00+08:00' }, '6h', ctx)).toBe(true); // 4h 前
+    expect(passesTimeRange({ updatedAt: '2026-09-14T03:00:00+08:00' }, '6h', ctx)).toBe(false); // 7h 前
+  });
+
+  it('all：恒为 true（含缺时间 / 陈年条目）', () => {
+    expect(passesTimeRange({}, 'all', ctx)).toBe(true);
+    expect(passesTimeRange({ updatedAt: '2020-01-01T00:00:00Z' }, 'all', ctx)).toBe(true);
+  });
+
+  it('3h/6h：非法时间与缺失时间不命中', () => {
+    expect(passesTimeRange({ updatedAt: 'not-a-date' }, '3h', ctx)).toBe(false);
+    expect(passesTimeRange({}, '6h', ctx)).toBe(false);
   });
 });

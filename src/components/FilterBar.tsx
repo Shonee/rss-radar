@@ -1,7 +1,7 @@
 // T-P3-02 公共组件库 — 筛选栏（受控组件：value / onChange 由页面持有）
 //
-// 渠道多选（按分类分组）、分类多选、时间范围（prototype F 决策：今天 / 近3小时 / 近6小时）、
-// 搜索框（标题 / 摘要）。
+// 渠道多选（按分类分组）、分类多选、时间范围（prototype F 决策：今天 / 近3小时 / 近6小时；
+// P1-1 起追加「全部」档作为逃生出口）、搜索框（标题 / 摘要）。
 
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
@@ -19,9 +19,12 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import type { CategoryKey } from '../types';
 import { categoryLabel } from '../config/categories';
 import { TIME_RANGES } from '../config/site';
+import type { TimeRangeKey } from '../services/time';
 import { tokens } from '../theme/tokens';
 
-export type TimeRangeKey = 'today' | '3h' | '6h';
+// 时间档位类型的唯一来源是 `services/time.ts`（与 `TIME_RANGES` 及 `passesTimeRange` 同源），
+// 此处仅原样再导出以保留既有公开 API（`components/index.ts` 引用）。
+export type { TimeRangeKey };
 
 export interface ChannelOption {
   id: string;
@@ -56,6 +59,7 @@ const TIME_RANGE_LABELS: Record<TimeRangeKey, string> = {
   today: '今天',
   '3h': '近3小时',
   '6h': '近6小时',
+  all: '全部',
 };
 
 export default function FilterBar({

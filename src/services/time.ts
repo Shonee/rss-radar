@@ -10,6 +10,9 @@ const DAY_MS = 86_400_000;
 
 type TimeInput = string | number | Date;
 
+/** 页面1 时间范围档位（与 `config/site.ts` 的 `TIME_RANGES` 同源；`'all'` 为「今天为 0」时的逃生出口） */
+export type TimeRangeKey = 'today' | '3h' | '6h' | 'all';
+
 function toDate(input: TimeInput): Date {
   return input instanceof Date ? input : new Date(input);
 }
@@ -101,6 +104,37 @@ export function countByShanghaiDay(
     if (t && isSameShanghaiDay(t, date)) n += 1;
   }
   return n;
+}
+
+/**
+ * 判断单个条目是否通过页面1 的时间范围筛选（各时间档的统一谓词）。
+ *
+ * 档位语义（与页面1 列表及状态条口径一致）：
+ *   - `'today'`：条目时间落在 `ctx.snapDate` 对应的上海自然日内；
+ *   - `'3h'` / `'6h'`：条目时间距今不超过对应小时数；
+ *   - `'all'`：恒通过（不按时间过滤，作为「今天为 0」时的逃生出口）。
+ *
+ * 谓词与页面原文一致：取 `updatedAt 优先、回落 publishedAt`；时间缺失 / 非法一律不通过
+ * （`'all'` 档除外）。抽成纯函数以便单测，`now` / `snapDate` 由调用方注入。
+ *
+ * @param item      待判条目（只需时间字段）
+ * @param timeRange 时间档位
+ * @param ctx       `now`（当前毫秒）与 `snapDate`（目标上海自然日 `YYYY-MM-DD`）
+ * @returns 是否通过该时间档
+ */
+export function passesTimeRange(
+  item: { updatedAt?: string; publishedAt?: string },
+  timeRange: TimeRangeKey,
+  ctx: { now: number; snapDate: string },
+): boolean {
+  if (timeRange === 'all') return true;
+  const t = item.updatedAt || item.publishedAt;
+  if (timeRange === 'today') return isSameShanghaiDay(t ?? '', ctx.snapDate);
+  const hours = timeRange === '3h' ? 3 : 6;
+  if (!t) return false;
+  const ms = new Date(t).getTime();
+  if (Number.isNaN(ms)) return false;
+  return ctx.now - ms <= hours * HOUR_MS;
 }
 
 /** 相对时间（中文） */

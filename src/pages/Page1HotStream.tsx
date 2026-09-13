@@ -23,7 +23,7 @@ import { toItemCardData } from '../types/api';
 import sourcesConfig from '../../config/sources.json';
 import { DEFAULT_PAGE1_BATCH_SIZE } from '../config/site';
 import { useNotifyStats, useSnapshot } from '../hooks';
-import { isSameShanghaiDay, countByShanghaiDay, formatRelative } from '../services/time';
+import { countByShanghaiDay, formatRelative, passesTimeRange } from '../services/time';
 import { tokens } from '../theme/tokens';
 import {
   AlertBar,
@@ -63,8 +63,6 @@ const SOURCE_LABEL: Record<string, string> = {
   jsdelivr: 'CDN 回退',
   local: '本地缓存',
 };
-
-const HOUR_MS = 3_600_000;
 
 /** 综合倒序比较器：sort 键优先，同值回落另一时间键，再按渠道名稳定，最后按 id。 */
 function makeComparator(sort: SortMode): (a: Item, b: Item) => number {
@@ -118,16 +116,12 @@ export default function Page1HotStream() {
     const q = filter.query.trim().toLowerCase();
     const chSet = new Set(filter.channelIds);
     const catSet = new Set<CategoryKey>(filter.categories);
+    const snapDate = snap?.date ?? '';
     const list = mainItems.filter((it) => {
       if (chSet.size > 0 && !chSet.has(it.channelId)) return false;
       if (catSet.size > 0 && !(it.category ?? []).some((c) => catSet.has(c))) return false;
-      if (filter.timeRange === 'today') {
-        if (!snap || !isSameShanghaiDay(it.updatedAt || it.publishedAt, snap.date)) return false;
-      } else {
-        const hours = filter.timeRange === '3h' ? 3 : 6;
-        const t = new Date(it.updatedAt || it.publishedAt).getTime();
-        if (Number.isNaN(t) || now - t > hours * HOUR_MS) return false;
-      }
+      // 时间档统一走纯函数 `passesTimeRange`（today / 3h / 6h / all 四态，'all' 恒通过）
+      if (!passesTimeRange(it, filter.timeRange, { now, snapDate })) return false;
       if (q) {
         const hay = `${it.title} ${it.summary ?? ''} ${it.author ?? ''}`.toLowerCase();
         if (!hay.includes(q)) return false;
@@ -352,6 +346,15 @@ export default function Page1HotStream() {
             <Button variant="outlined" onClick={clearFilters} data-testid="p1-clear-filters">
               清除全部筛选
             </Button>
+            {filter.timeRange !== 'all' && (
+              <Button
+                variant="outlined"
+                onClick={() => setFilter((prev) => ({ ...prev, timeRange: 'all' }))}
+                data-testid="p1-show-all-time"
+              >
+                查看全部时段
+              </Button>
+            )}
             <Button component={Link} to="/channels" variant="contained">
               前往渠道看板
             </Button>

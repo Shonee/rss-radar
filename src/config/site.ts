@@ -8,6 +8,7 @@
 
 import siteConfigJson from '../../config/site-config.json';
 import type { CategoryKey, HotScoreWeights } from '../types/models';
+import type { TimeRangeKey } from '../services/time';
 
 /** 站点常量（branch 固定 deploy；pointerPath 与 config/site-config.json 对齐） */
 export const SITE = {
@@ -81,14 +82,22 @@ export const DEFAULT_SORT: 'updatedAt' | 'publishedAt' =
 export const ENABLED_CATEGORIES: CategoryKey[] =
   (siteConfigJson.filters?.enabledCategories as CategoryKey[] | undefined) ?? [];
 
-/** 时间范围选项（prototype F 决策：展示「今天 / 近3小时 / 近6小时」） */
-export const TIME_RANGES: Array<'today' | '3h' | '6h'> = (
-  (siteConfigJson.filters?.timeRanges as Array<'today' | '3h' | '6h' | '24h'> | undefined) ?? [
+/** 时间范围选项（prototype F 决策：展示「今天 / 近3小时 / 近6小时」）。
+ *
+ * P1-1 起**固定追加「全部」档**：由于采集端无条目时间窗过滤，快照条目天然跨日期，
+ * 默认「今天」在数据陈旧时可能恒为 0；「全部」作为「今天为 0」时的逃生出口，
+ * 必须始终可选，因此不依赖 `config` 是否声明（详见 docs/PRD.md 页面1 筛选说明）。 */
+export const TIME_RANGES: TimeRangeKey[] = (() => {
+  const configured = (siteConfigJson.filters?.timeRanges as TimeRangeKey[] | undefined) ?? [
     'today',
     '3h',
     '6h',
-  ]
-).filter((r): r is 'today' | '3h' | '6h' => r === 'today' || r === '3h' || r === '6h');
+  ];
+  const valid = configured.filter(
+    (r): r is TimeRangeKey => r === 'today' || r === '3h' || r === '6h' || r === 'all',
+  );
+  return valid.includes('all') ? valid : [...valid, 'all'];
+})();
 
 /**
  * 热点公式权重（前端降级现算时使用，来源 analysis.weights）。
