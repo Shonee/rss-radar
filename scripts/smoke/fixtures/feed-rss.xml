@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>E2E Fixture RSS</title>
+    <item>
+      <title>真真真 - Real RSS title 1</title>
+      <link>https://example.test/rss1</link>
+      <guid>https://example.test/rss1</guid>
+      <pubDate>Mon, 01 Sep 2026 00:00:00 GMT</pubDate>
+      <description>Real test item from fixture for e2e pipeline.</description>
+    </item>
+    <item>
+      <title>E2E Item 2 - simulating long-form content</title>
+      <link>https://example.test/rss2</link>
+      <guid>https://example.test/rss2</guid>
+      <pubDate>Tue, 02 Sep 2026 00:00:00 GMT</pubDate>
+      <description>A second real-looking fixture item.</description>
+    </item>
+  </channel>
+</rss>

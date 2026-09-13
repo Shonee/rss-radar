@@ -1,0 +1,14 @@
+# URL 健康检查 fixture（mock fetch 路由表）
+# 用于 e2e-pipeline.mjs 安装 mock fetch 时按 URL 路径返回 HTTP 状态
+# 见 scripts/smoke/e2e-pipeline.mjs 的 URL_HEALTH_MOCK
+
+200:https://example.test/rss1
+200:https://example.test/rss2
+200:https://example.test/jf1
+200:https://example.test/csv1
+200:https://example.test/csv2
+200:https://example.test/api1
+404:https://example.test/dead
+410:https://example.test/gone
+403:https://example.test/blocked
+301:https://example.test/redirect

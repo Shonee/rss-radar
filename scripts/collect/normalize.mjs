@@ -1,6 +1,6 @@
 // normalize.mjs — 接入器输出 → 内部 Item 归一化
 // ARCHITECTURE §3 映射表 + data-model §4.1 字段字典
-import { buildDedupKey, buildId } from './lib/dedup-key.mjs';
+import { keyOf, buildId } from './lib/dedup-key.mjs';
 import { nowIso } from './lib/time.mjs';
 
 /**
@@ -15,7 +15,7 @@ export function normalizeItem(raw, source, channel) {
   const updatedAt = toIsoUtc(raw.updatedAt || raw.updated || raw.publishedAt) ?? publishedAt;
   const url = raw.url || raw.link || '';
   const title = String(raw.title ?? '(untitled)').slice(0, 512);
-  const dedupKey = buildDedupKey({ url, guid: raw.guid, sourceId: source.id, title });
+  const dedupKey = keyOf({ url, guid: raw.guid, sourceId: source.id, title });
   return {
     id: buildId(dedupKey),
     guid: raw.guid || url,

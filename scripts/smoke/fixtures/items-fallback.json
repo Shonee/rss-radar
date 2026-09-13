@@ -1,0 +1,14 @@
+[
+  {
+    "guid": "rss1",
+    "title": "E2E RSS Item 1 (from local_json fallback)",
+    "link": "https://example.test/rss1",
+    "publishedAt": "2026-09-01T00:00:00Z"
+  },
+  {
+    "guid": "rss2",
+    "title": "E2E RSS Item 2",
+    "link": "https://example.test/rss2",
+    "publishedAt": "2026-09-02T00:00:00Z"
+  }
+]

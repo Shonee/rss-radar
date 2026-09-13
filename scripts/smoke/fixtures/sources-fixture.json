@@ -1,0 +1,61 @@
+{
+  "channels": [
+    { "id": "ch_rss", "name": "E2E RSS", "category": ["tech_blog"], "weight": 0.7, "enabled": true },
+    { "id": "ch_jf", "name": "E2E JSON Feed", "category": ["news"], "weight": 0.6, "enabled": true },
+    { "id": "ch_csv", "name": "E2E Local CSV", "category": ["newsletter"], "weight": 0.5, "enabled": true },
+    { "id": "ch_feishu", "name": "E2E Feishu Bitable", "category": ["news"], "weight": 0.8, "enabled": true },
+    { "id": "ch_notion", "name": "E2E Notion DB", "category": ["dev_community"], "weight": 0.7, "enabled": true },
+    { "id": "ch_api", "name": "E2E Generic API", "category": ["ai"], "weight": 0.6, "enabled": true }
+  ],
+  "sources": [
+    {
+      "id": "src_rss",
+      "channelId": "ch_rss",
+      "type": "local_json",
+      "url": "scripts/smoke/fixtures/items-fallback.json",
+      "enabled": true
+    },
+    {
+      "id": "src_jf",
+      "channelId": "ch_jf",
+      "type": "json_feed",
+      "url": "https://example.test/feed-json",
+      "enabled": true
+    },
+    {
+      "id": "src_csv",
+      "channelId": "ch_csv",
+      "type": "local_csv",
+      "url": "scripts/smoke/fixtures/local.csv",
+      "enabled": true,
+      "fieldMapping": { "map": { "id": "id", "title": "title", "url": "url", "publishedAt": "published_at" } }
+    },
+    {
+      "id": "src_feishu",
+      "channelId": "ch_feishu",
+      "type": "feishu_bitable",
+      "url": "https://example.test/feishu",
+      "enabled": true,
+      "auth": { "appId": "e2e-id", "appSecret": "e2e-secret" }
+    },
+    {
+      "id": "src_notion",
+      "channelId": "ch_notion",
+      "type": "notion_db",
+      "url": "https://example.test/notion",
+      "enabled": true,
+      "auth": { "token": "e2e-token" }
+    },
+    {
+      "id": "src_api",
+      "channelId": "ch_api",
+      "type": "generic_api",
+      "url": "https://example.test/api",
+      "enabled": true,
+      "auth": { "kind": "none" },
+      "pagination": { "kind": "none" },
+      "itemListPath": ["items"],
+      "fieldMapping": { "id": "id", "title": "title", "url": "url", "publishedAt": "published_at" }
+    }
+  ]
+}

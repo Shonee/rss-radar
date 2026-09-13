@@ -1,0 +1,15 @@
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": "E2E Fixture JSON Feed",
+  "language": "zh",
+  "items": [
+    {
+      "id": "jf1",
+      "url": "https://example.test/jf1",
+      "title": "E2E JSON Feed Item 1",
+      "content_text": "JSON Feed fixture for e2e pipeline.",
+      "date_published": "2026-09-03T00:00:00Z",
+      "author": { "name": "FixtureAuthor" }
+    }
+  ]
+}

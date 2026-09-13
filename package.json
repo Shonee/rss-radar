@@ -11,6 +11,8 @@
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:node": "node --test scripts/collect/__tests__/*.test.mjs scripts/collect/__tests__/**/*.test.mjs scripts/smoke/__tests__/*.test.mjs scripts/smoke/__tests__/**/*.test.mjs src/**/__tests__/*.test.mjs",
+    "test:e2e": "node scripts/smoke/e2e-pipeline.mjs",
     "smoke": "bash scripts/smoke/run.sh",
     "validate": "node scripts/validate-schema.mjs",
     "collect": "node scripts/collect/index.mjs",
