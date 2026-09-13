@@ -138,7 +138,7 @@ window.RR = (function () {
     var name = channelName || (ch ? ch.name : channelId);
     var url = ch ? ch.homepage : '#';
     return '<a class="badge-channel" href="' + esc(url) + '" target="_blank" rel="noopener">' +
-      esc((ch && ch.icon) ? ch.icon + ' ' : '') + esc(name) + '</a>';
+      esc(name) + '</a>';   // v1.3 B：去掉首字 icon 前缀
   }
 
   function newBadge() { return '<span class="badge-new" title="今日新增">NEW</span>'; }

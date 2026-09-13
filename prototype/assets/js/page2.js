@@ -184,8 +184,8 @@
         chs.map(function (c) {
           var checked = (cfg.channels === null) ? (c.enabled !== false) : (cfg.channels.indexOf(c.id) >= 0);
           return '<label class="check"><input type="checkbox" data-cfg-ch="' + RR.esc(c.id) + '"' + (checked ? ' checked' : '') + '>' +
-            '<span>' + RR.esc(c.icon + ' ' + c.name) +
-            (c.enabled === false ? ' <span class="muted">（已停用）</span>' : '') + '</span></label>';
+            '<span>' + RR.esc(c.name) +
+            (c.enabled === false ? ' <span class="muted">（已停用）</span>' : '') + '</span></label>';   // v1.3 B：去掉首字 icon 前缀
         }).join('') +
       '</div>';
     }).join('');
