@@ -30,7 +30,23 @@
         "itemsBeforeDedup": { "type": "integer", "minimum": 0, "description": "去重前条目数" },
         "itemsAfterDedup": { "type": "integer", "minimum": 0, "description": "去重后条目数" },
         "mergedCount": { "type": "integer", "minimum": 0, "description": "被归并(重复)的条目数" },
-        "durationMs": { "type": "integer", "minimum": 0, "description": "本次采集耗时(毫秒)" }
+        "durationMs": { "type": "integer", "minimum": 0, "description": "本次采集耗时(毫秒)" },
+        "sourceHealth": {
+          "type": "array",
+          "description": "逐源抓取健康度(T-P3-fix 新增)。语义:参与采集的每个 source 一条记录。与 stats.sources[](条目归并后的渠道分布)是两个维度,勿混用;页面1「本次抓取失败 N 个渠道」黄条据此列出失败渠道名。sourceTotal/sourceOk/sourceFailed 即由本数组汇总得出。",
+          "items": {
+            "type": "object",
+            "required": ["sourceId", "channelId", "channelName", "ok"],
+            "additionalProperties": false,
+            "properties": {
+              "sourceId": { "type": "string", "description": "源 id(外键,对应 sources.json 的 sources[].id)" },
+              "channelId": { "type": "string", "description": "所属渠道 id(外键)" },
+              "channelName": { "type": "string", "description": "渠道名(冗余,便于展示)" },
+              "ok": { "type": "boolean", "description": "本次抓取是否成功" },
+              "error": { "type": "string", "description": "失败原因(成功时缺省)" }
+            }
+          }
+        }
       }
     },
     "item": {

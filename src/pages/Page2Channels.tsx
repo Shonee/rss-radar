@@ -147,7 +147,20 @@ export default function Page2Channels() {
 
   const okByChannel = useMemo<Map<string, boolean>>(() => {
     const m = new Map<string, boolean>();
-    for (const s of snap?.stats?.sources ?? []) m.set(s.channelId, s.ok);
+    // T-P3-fix：优先用逐源健康度 stats.sourceHealth[]（一个渠道可能有多个源，
+    // 任一源失败即视为该渠道失败）；无该字段时回落 stats.sources[].ok（历史预留，
+    // 生产路径并不产出 → 此时不写入，行为与本轮修复前一致）。
+    const health = snap?.stats?.sourceHealth;
+    if (Array.isArray(health) && health.length > 0) {
+      for (const h of health) {
+        const prev = m.get(h.channelId);
+        m.set(h.channelId, (prev ?? true) && h.ok);
+      }
+      return m;
+    }
+    for (const s of snap?.stats?.sources ?? []) {
+      if (typeof s.ok === 'boolean') m.set(s.channelId, s.ok);
+    }
     return m;
   }, [snap]);
 

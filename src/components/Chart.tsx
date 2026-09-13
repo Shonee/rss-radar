@@ -8,6 +8,7 @@
 // 后续引入 Recharts 时，仅需替换本文件实现，页面无需改动。
 
 import { tokens } from '../theme/tokens';
+import { integerPercentages } from '../services/percent';
 import EmptyState from './EmptyState';
 
 /** 图表数据点（{date, value}）。命名为 ChartPoint 以避免与 services 层
@@ -121,10 +122,18 @@ export interface PieChartProps {
   data: PieDatum[];
   ariaLabel?: string;
   testId?: string;
+  /**
+   * 中心值下方的口径文案。默认「条」。
+   *
+   * ⚠ 语义约束（T-P3-fix）：中心值 = `Σ data[].value`，因此文案必须与传入值的
+   * 语义一致。页面3 传入的是 `categoryStats[].itemCount`（**多分类计次**，
+   * `Σ itemCount ≥ totalItems`），故传「条 · 分类计次」，不得再写「去重后」。
+   */
+  centerCaption?: string;
 }
 
-/** 分类分布饼图（环形） */
-export function PieChart({ data, ariaLabel, testId = 'chart-pie' }: PieChartProps) {
+/** 分类分布饼图（环形）。切片占比与图例共用 `integerPercentages`（Σ 恒为 100）。 */
+export function PieChart({ data, ariaLabel, testId = 'chart-pie', centerCaption = '条' }: PieChartProps) {
   const total = data.reduce((a, d) => a + d.value, 0);
   if (!data || data.length === 0 || total <= 0) {
     return <EmptyState title="暂无分类数据" testId="chart-pie-empty" />;
@@ -136,6 +145,9 @@ export function PieChart({ data, ariaLabel, testId = 'chart-pie' }: PieChartProp
   const cy = size / 2;
   const inner = 52;
   let angle = -Math.PI / 2;
+
+  // 与图例（Page3Report）同一取整口径：最大余数法，逐项一致且 Σ 恒为 100
+  const pcts = integerPercentages(data.map((d) => d.value));
 
   const pt = (a: number, rad: number): [number, number] => [
     cx + Math.cos(a) * rad,
@@ -159,7 +171,7 @@ export function PieChart({ data, ariaLabel, testId = 'chart-pie' }: PieChartProp
         `A${inner},${inner} 0 ${large} 0 ${i2[0].toFixed(2)},${i2[1].toFixed(2)} Z`;
       angle = a2;
       const fill = d.color ?? palette[i % palette.length] ?? tokens.gray[400];
-      return `<path d="${d0}" fill="${fill}" stroke="#fff" stroke-width="1.5"><title>${d.label}：${d.value}（${Math.round(frac * 100)}%）</title></path>`;
+      return `<path d="${d0}" fill="${fill}" stroke="#fff" stroke-width="1.5"><title>${d.label}：${d.value}（${pcts[i] ?? 0}%）</title></path>`;
     })
     .join('');
 
@@ -175,7 +187,7 @@ export function PieChart({ data, ariaLabel, testId = 'chart-pie' }: PieChartProp
         __html:
           slices +
           `<text x="${cx}" y="${cy - 4}" text-anchor="middle" font-size="20" font-weight="700" fill="${tokens.surface.text}">${total}</text>` +
-          `<text x="${cx}" y="${cy + 14}" text-anchor="middle" font-size="11" fill="${tokens.surface.text3}">条（去重后）</text>`,
+          `<text x="${cx}" y="${cy + 14}" text-anchor="middle" font-size="11" fill="${tokens.surface.text3}">${centerCaption}</text>`,
       }}
     />
   );

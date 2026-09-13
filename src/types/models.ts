@@ -141,11 +141,37 @@ export interface SourcesConfig {
 // ---------- 2. snapshot.json ----------
 // schema: docs/data-model/schema/snapshot.schema.json
 
+/**
+ * `stats.sources[]` 元素 —— 「**条目归并后的渠道分布**」。
+ *
+ * ⚠ 语义提醒：这是**条目维度**（哪些渠道产出了条目、各多少条），不是「逐源抓取健康度」。
+ * 页面1 状态条的「共 N 个渠道」用它；「抓取失败黄条」**不应**用它（见 `SourceHealth`）。
+ *
+ * `ok` / `error` 是 v1.4 预留的历史字段：生产路径 `project-snapshot.mjs`
+ * 的 `computeSources()` 并**不产出** `ok`（只出 channelId/channelName/itemCount），
+ * 因此这里把 `ok` 标为可选，避免「类型承诺必填、运行时缺失」的契约漂移。
+ * 逐源成功/失败请读 `stats.sourceHealth[]`。
+ */
 export interface SourceStat {
   channelId: string;
   channelName: string;
-  ok: boolean;
   itemCount: number;
+  ok?: boolean;
+  error?: string;
+}
+
+/**
+ * `stats.sourceHealth[]` 元素 —— 「**逐源**抓取健康度」（T-P3-fix 新增）。
+ *
+ * 由采集端 `main.mjs` 的 `runPool` 真实结果（`collectOne` 返回）汇总而来，
+ * 是页面1「本次抓取失败 N 个渠道」黄条的数据来源。
+ * 与 `sources[]` 是两个维度：一个 source 对应一个 channel，但一个 channel 可有多个 source。
+ */
+export interface SourceHealth {
+  sourceId: string;
+  channelId: string;
+  channelName: string;
+  ok: boolean;
   error?: string;
 }
 
@@ -158,6 +184,11 @@ export interface SnapshotStats {
   mergedCount?: number;
   durationMs?: number;
   sources?: SourceStat[];
+  /**
+   * 逐源抓取健康度（T-P3-fix）。采集端传入真实逐源结果时产出；
+   * 老快照 / e2e 回落路径可能缺失 → 消费方需按「可选」处理。
+   */
+  sourceHealth?: SourceHealth[];
 }
 
 export interface ItemSource {

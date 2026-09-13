@@ -186,9 +186,23 @@ export default function Page1HotStream() {
     return max;
   }, [mainItems]);
 
-  const failedChannels = useMemo(() => {
-    const stats = snap?.stats?.sources ?? [];
-    return stats.filter((s) => s.ok === false).map((s) => s.channelName || s.channelId);
+  // 抓取失败渠道（T-P3-fix：读真实的逐源健康度）
+  //   优先用 stats.sourceHealth[]（采集端 runPool 真实结果汇总）；
+  //   老快照无该字段时回落到 stats.sources[].ok（历史预留字段）。
+  //   去重：一个渠道可能有多个 source，渠道名只列一次。
+  const failedChannels = useMemo<string[]>(() => {
+    const names = new Set<string>();
+    const health = snap?.stats?.sourceHealth;
+    if (Array.isArray(health) && health.length > 0) {
+      for (const h of health) {
+        if (!h.ok) names.add(h.channelName || h.channelId || h.sourceId);
+      }
+      return Array.from(names);
+    }
+    for (const s of snap?.stats?.sources ?? []) {
+      if (s.ok === false) names.add(s.channelName || s.channelId);
+    }
+    return Array.from(names);
   }, [snap]);
 
   // ---------- 渲染 ----------

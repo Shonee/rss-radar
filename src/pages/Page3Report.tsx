@@ -26,28 +26,10 @@ import { categoryLabel } from '../config/categories';
 import { DATA_WEIGHTS } from '../config/site';
 import { categoryColor, tokens } from '../theme/tokens';
 import { formatAbsolute } from '../services/time';
+import { integerPercentages } from '../services/percent';
 import siteConfigJson from '../../config/site-config.json';
 
 const SITE_FOOTER = (siteConfigJson.site?.footer as string | undefined) ?? '';
-
-/** 最大余数法：把一组计数换算为「总和恰为 100」的整数百分比（避免各自 round 后不足/超 100）。 */
-export function integerPercentages(values: number[]): number[] {
-  const total = values.reduce((a, v) => a + Math.max(v, 0), 0);
-  if (total <= 0) return values.map(() => 0);
-  const raw = values.map((v) => (Math.max(v, 0) / total) * 100);
-  const floors = raw.map((r) => Math.floor(r));
-  let remainder = 100 - floors.reduce((a, v) => a + v, 0);
-  const order = raw
-    .map((r, i) => ({ i, frac: r - Math.floor(r) }))
-    .sort((a, b) => b.frac - a.frac);
-  const out = [...floors];
-  for (const { i } of order) {
-    if (remainder <= 0) break;
-    out[i] = (out[i] ?? 0) + 1;
-    remainder -= 1;
-  }
-  return out;
-}
 
 interface MetricCard {
   label: string;
@@ -272,6 +254,7 @@ export default function Page3Report() {
                   }))}
                   ariaLabel="分类分布饼图"
                   testId="chart-pie"
+                  centerCaption="条 · 分类计次"
                 />
                 <Box sx={{ flex: 1, minWidth: 180 }}>
                   {categoryStats.map((c, i) => (
@@ -307,7 +290,11 @@ export default function Page3Report() {
                     </Box>
                   ))}
                   <Box data-testid="p3-pie-total" sx={{ mt: 1, color: tokens.surface.text3, fontSize: tokens.fs.xs }}>
-                    合计 {catTotal} 条（分类多标签归入，占比按分类内合计归一化，各分类之和恒为 100%）
+                    中心值 <strong>{catTotal}</strong> 条 = Σ <code>categoryStats[].itemCount</code>
+                    （多分类计次：一条 item 属 N 个分类即计 N 次，故 ≥ 去重后{' '}
+                    <strong>{report.totalItems}</strong> 条；去重后条数以{' '}
+                    <code>report.totalItems</code> 与顶部数字卡为准）。占比按分类计次合计归一化，各分类之和恒为
+                    100%。
                   </Box>
                 </Box>
               </Box>

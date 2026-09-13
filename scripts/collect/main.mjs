@@ -97,11 +97,15 @@ export async function main() {
   }
 
   // 2) 折叠 + dedup + 写快照 + 写 latest.json
+  //    T-P3-fix：把 runPool 的真实逐源结果（results）传下去，使
+  //    stats.sourceTotal/sourceOk/sourceFailed 与 stats.sourceHealth[] 反映真实
+  //    采集健康度，而不是硬编码（此前 sourceFailed 恒为 0 → 页面1 失败黄条不可达）。
   const proj = await projectSnapshot({
     roundRoot: outRoot,
     date,
     channelWeights,
     commit: 'local',
+    fetchResults: results,
   });
   console.log(`[collect] wrote ${proj.snapshotPath}  items=${proj.itemCount}  merged=${proj.mergedCount}`);
 
@@ -245,11 +249,15 @@ async function runPool(items, concurrency, worker) {
 /**
  * 采集单个 source 的完整流程（含归一化 + 分类 + 排除）
  * 失败隔离：单源失败不阻断整体（allSettled 语义）
+ *
+ * 返回结构（T-P3-fix：显式补 `ok`，供 projectSnapshot 汇总逐源健康度）：
+ *   成功 → { sourceId, channelId, channelName, ok:true, items, rawItemCount, httpStatus, hitCount }
+ *   失败 → { sourceId, channelId, channelName, ok:false, error }
  */
 async function collectOne(source, channelMap, ruleMap, excludes) {
   const channel = channelMap.get(source.channelId);
   if (!channel) {
-    return { sourceId: source.id, channelId: source.channelId, channelName: '(missing)', error: new Error(`channel ${source.channelId} not found`) };
+    return { sourceId: source.id, channelId: source.channelId, channelName: '(missing)', ok: false, error: new Error(`channel ${source.channelId} not found`) };
   }
   let rawItems;
   let httpStatus = 0;
@@ -263,6 +271,7 @@ async function collectOne(source, channelMap, ruleMap, excludes) {
       sourceId: source.id,
       channelId: source.channelId,
       channelName: channel.name,
+      ok: false,
       error: err,
     };
   }
@@ -283,6 +292,7 @@ async function collectOne(source, channelMap, ruleMap, excludes) {
     sourceId: source.id,
     channelId: source.channelId,
     channelName: channel.name,
+    ok: true,
     items: out,
     rawItemCount: rawItems.length,
     httpStatus,

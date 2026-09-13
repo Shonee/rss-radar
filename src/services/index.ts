@@ -3,5 +3,6 @@ export * from './dataClient';
 export * from './historyClient';
 export * from './hotScore';
 export * from './notifyStatsClient';
+export * from './percent';
 export * from './resourceRegistry';
 export * from './time';
