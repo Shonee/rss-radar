@@ -3,5 +3,6 @@ export * from './useResource';
 export * from './useSnapshot';
 export * from './useReport';
 export * from './useHistory';
+export * from './useNotifyStats';
 export * from './prefsStorage';
 export * from './useUserPrefs';

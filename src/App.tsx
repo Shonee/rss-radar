@@ -1,17 +1,41 @@
-// T-P3-03/04 — 应用路由（5 个页面 + 未匹配兜底）
+// T-P3-05 / T-P3-08 — 应用路由（五页面 + 未匹配兜底 + 路由级代码分割）
 //
-// ARCHITECTURE §4.1 / PRD §6：主导航 4 项 + 「关于」= 5 个路由。
-// 页面 1 / 页面 2 本批次实现；页面 3（分析报告）/ 页面 4（历史趋势）由后续任务接管，
-// 此处先挂占位；「关于」为静态说明占位。
+// 性能回归修复（第二轮后 index-*.js 涨到 495.97 kB / gzip 156 kB）：
+//   原实现把 4 个页面全部静态导入 → 首次进入任意页都要下载全部页面代码。
+//   现改为「AppShell + 页面1」静态导入（首屏关键路径），其余路由 React.lazy
+//   懒加载，每页各自独立 chunk；MUI / Emotion 由 vite.config.ts 的
+//   manualChunks 拆到 vendor-mui（跨路由共享、长期缓存）。
+//
+// 参考：ARCHITECTURE §4.1（5 项主导航） / §7.2（HashRouter + base './'）。
+//
+// 提交粒度说明：本文件随 T-P3-05 + T-P3-08 + 代码分割 一起提交；页面4
+// （T-P3-06）在下一个提交接入，此处先挂占位以保持本提交可独立构建。
 
+import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
+
+// 首屏关键路径：外壳与落地页保持静态导入（避免额外请求瀑布）
 import AppShell from './components/AppShell';
+import SkeletonList from './components/Skeleton';
 import Page1HotStream from './pages/Page1HotStream';
-import Page2Channels from './pages/Page2Channels';
 import { tokens } from './theme/tokens';
 
-/** 未实现页面的占位（保持导航可点、不白屏） */
+// 路由级懒加载：每页独立 chunk，首屏不加载
+const Page2Channels = lazy(() => import('./pages/Page2Channels'));
+const Page3Report = lazy(() => import('./pages/Page3Report'));
+const PageAbout = lazy(() => import('./pages/PageAbout'));
+
+/** 路由懒加载兜底：轻量骨架（复用组件库 SkeletonList，避免白屏） */
+function RouteFallback() {
+  return (
+    <Box data-testid="route-fallback" sx={{ py: 2 }}>
+      <SkeletonList count={3} testId="route-skeleton" />
+    </Box>
+  );
+}
+
+/** 未接入路由的占位（保持导航可点、不白屏） */
 function Placeholder({ title, hint }: { title: string; hint: string }) {
   return (
     <Box
@@ -36,28 +60,24 @@ function Placeholder({ title, hint }: { title: string; hint: string }) {
 export default function App() {
   return (
     <AppShell>
-      <Routes>
-        <Route path="/" element={<Page1HotStream />} />
-        <Route path="/channels" element={<Page2Channels />} />
-        <Route
-          path="/report"
-          element={<Placeholder title="分析报告（当天）" hint="T-P3-05 待实现：热点榜 / 分类分布 / 关键词。" />}
-        />
-        <Route
-          path="/history"
-          element={<Placeholder title="历史趋势与回看" hint="T-P3-06 待实现：趋势图 / 日期回看 / 归档。" />}
-        />
-        <Route
-          path="/about"
-          element={
-            <Placeholder
-              title="关于 RSS Radar"
-              hint="把散落在各处的 RSS 源，汇聚成一份每天更新的信息雷达与热点报告。"
-            />
-          }
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <Suspense fallback={<RouteFallback />}>
+        <Routes>
+          <Route path="/" element={<Page1HotStream />} />
+          <Route path="/channels" element={<Page2Channels />} />
+          <Route path="/report" element={<Page3Report />} />
+          <Route
+            path="/history"
+            element={
+              <Placeholder
+                title="历史趋势与回看"
+                hint="T-P3-06 下一提交接入：趋势图 / 月度下钻 / 日期回看 / 归档。"
+              />
+            }
+          />
+          <Route path="/about" element={<PageAbout />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </AppShell>
   );
 }

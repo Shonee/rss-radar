@@ -2,5 +2,6 @@
 export * from './dataClient';
 export * from './historyClient';
 export * from './hotScore';
+export * from './notifyStatsClient';
 export * from './resourceRegistry';
 export * from './time';

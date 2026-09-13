@@ -22,7 +22,7 @@ import type { CategoryKey, Item } from '../types';
 import { toItemCardData } from '../types/api';
 import sourcesConfig from '../../config/sources.json';
 import { DEFAULT_PAGE1_BATCH_SIZE } from '../config/site';
-import { useReport, useSnapshot } from '../hooks';
+import { useNotifyStats, useReport, useSnapshot } from '../hooks';
 import { isSameShanghaiDay, formatRelative } from '../services/time';
 import { tokens } from '../theme/tokens';
 import {
@@ -31,6 +31,7 @@ import {
   ErrorBanner,
   FilterBar,
   ItemCard,
+  NotifyStatusPanel,
   SkeletonList,
   EMPTY_FILTER,
   type ChannelOption,
@@ -85,6 +86,8 @@ export default function Page1HotStream() {
 
   const { data: snap, loading, error, stale, source, reload } = useSnapshot();
   const { data: report } = useReport();
+  // T-P3-08：页面1 底部只读通知状态面板（折叠；ARCH §12 硬约束：无发送入口）
+  const { data: notifyStats, loading: notifyLoading } = useNotifyStats();
 
   const isMobile = useMediaQuery('(max-width: 767px)');
   const batch = isMobile ? 10 : DEFAULT_PAGE1_BATCH_SIZE;
@@ -379,6 +382,13 @@ export default function Page1HotStream() {
       {filters}
       {toolbar}
       {body}
+
+      {/* T-P3-08：底部只读通知状态面板（可折叠，默认收起） */}
+      {!notifyLoading && notifyStats && (
+        <Box data-testid="p1-notify-section" sx={{ mt: 3 }}>
+          <NotifyStatusPanel stats={notifyStats} testId="p1-notify-panel" />
+        </Box>
+      )}
     </Box>
   );
 }

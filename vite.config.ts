@@ -31,5 +31,21 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
     target: 'es2022',
+    rollupOptions: {
+      output: {
+        // 路由级代码分割配合：把体积最大、跨路由共享的 MUI / Emotion / React
+        // 拆成独立 vendor chunk（长期缓存，页面 chunk 变更不影响其 hash）。
+        // 目标：主 chunk（index-*.js）只承载应用自身代码 + 首屏页面1。
+        manualChunks(id: string): string | undefined {
+          if (!id.includes('node_modules')) return undefined;
+          if (id.includes('@mui') || id.includes('@emotion')) return 'vendor-mui';
+          if (id.includes('react-router') || id.includes('@remix-run')) return 'vendor-router';
+          if (id.includes('/react-dom/') || id.includes('/react/') || id.includes('/scheduler/')) {
+            return 'vendor-react';
+          }
+          return 'vendor';
+        },
+      },
+    },
   },
 });

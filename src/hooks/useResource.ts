@@ -14,6 +14,8 @@ export const LATEST_KEY = 'latest';
 export const HISTORY_INDEX_KEY = 'history-index';
 /** resourceRegistry 中承载 archive-index 的键 */
 export const ARCHIVE_INDEX_KEY = 'archive-index';
+/** resourceRegistry 中承载通知状态（notify-state.json）的键 */
+export const NOTIFY_STATS_KEY = 'notify-stats';
 
 export interface ResourceLike {
   stale?: boolean;
