@@ -83,6 +83,7 @@ P3 完整化时再做一次清理：要么 schema enum 收紧到 8 类，要么 
 - **P3 才做**：完整 4 页面（页面2/3/4）+ 通知适配器
 - **P4 才做**：6 个 GitHub Actions workflow + 部署到 GH Pages / CF Pages + 7 份 docs（USAGE/SOURCES/NOTIFY/DEPLOYMENT/…）
 - **P5 才做**：端到端集成 + 回归 97 条断言移植
+- **lastStatus=error 持久化缺失**（P1 QA 裁决 C）：当前 `scripts/collect/index.mjs` 把错误写进 `stats.sources[].error`（stdout/stderr），但**未回写到 `config/sources.json` 的 `lastStatus`/`lastError` 字段**；归 T-P2-B（URL 健康检查 / source metadata 持久化）一并接
 
 ## License
 

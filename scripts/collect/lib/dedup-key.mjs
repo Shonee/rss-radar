@@ -1,23 +1,27 @@
-// lib/dedup-key.mjs — dedupKey 计算 + id 生成
-import { shortHash, sha256Hex } from './hash.mjs';
-import { normalizeUrl } from './url-norm.mjs';
+// lib/dedup-key.mjs — 退化链 + id 生成（ARCH §4.2 + §4.6）
+// 严格走 url-norm.mjs 的 buildDedupKey（4 模式退化链）
+import { sha256Hex, shortHash } from './hash.mjs';
+import { buildDedupKey, normalizeUrl } from './url-norm.mjs';
 
-/** 退化链：url → guid(URL) → "guid:" + sourceId + ":" + guid → "title:" + title 指纹 */
-export function buildDedupKey(input) {
-  const url = input?.url;
-  if (url) return `url:${normalizeUrl(url)}`;
-  const guid = input?.guid;
-  if (guid && input?.sourceId) return `guid:${input.sourceId}:${guid}`;
-  if (guid) return `guid:${guid}`;
-  const title = (input?.title ?? '').toLowerCase().trim();
-  if (title) return `title:${title}`;
-  return `blank:${Date.now()}:${Math.random()}`;
+/** 退化链 — ARCH §4.2 伪代码实现 */
+export function keyOf(item, opts) {
+  return buildDedupKey(item, opts);
 }
 
-/** id = "it_" + sha256(dedupKey).slice(0, 12) */
+/** id = "it_" + sha256(dedupKey).slice(0, 12)  —— ARCH §4.6 */
 export function buildId(dedupKey) {
   return `it_${shortHash(dedupKey, 12)}`;
 }
 
-/** sha256 完整 hex */
+/** 高层：一次出 key + id + mode（最常用） */
+export function deriveKeyAndId(item, opts) {
+  const { key, mode } = buildDedupKey(item, opts);
+  const id = buildId(key);
+  return { key, id, mode };
+}
+
+/** sha256 完整 hex（re-export 给 lib/） */
 export const sha256 = sha256Hex;
+
+/** 重新导出 normalizeUrl（别名） */
+export { normalizeUrl };
