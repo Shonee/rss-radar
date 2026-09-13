@@ -1042,6 +1042,9 @@
 |---|---|---|
 | v1.0 | 2026-09-13 | 初版（基于 PRD v1.2 + ARCHITECTURE v1.4 + prototype） |
 
+> **待办（P4 push 前）**：`286c6f3` 的 commit message 格式异常（多行被压成一行，换行符为字面 `\n`）。
+> 需在 push 到远程前 rebase reword 修正；届时其后的 5 个 commit hash 会变，需同步更新 docs/qa/ 下的 QA 报告引用。
+
 ---
 
 *本文档由架构师高见远产出；面向工程师（执行）+ QA（验收）+ 主理人齐活林（里程碑 review）。所有任务**严格基于已确认的 PRD/ARCHITECTURE/data-model**；无设计变更；决策点已给出推荐与备选。*
