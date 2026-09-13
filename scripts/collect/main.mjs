@@ -110,6 +110,8 @@ export async function main() {
   console.log(`[collect] wrote ${proj.snapshotPath}  items=${proj.itemCount}  merged=${proj.mergedCount}`);
 
   // 2.5) 报告生成（T-P2-05）
+  // reportPath 声明在 try 外：报告成功时要把它一起经 dev bridge 复制到 public。
+  let reportPath = null;
   try {
     const snap = JSON.parse(await readFile(proj.snapshotPath, 'utf8'));
     // 透传 siteConfig 的 5 维度权重 + 半衰期，使 `analysis.weights` / `analysis.halfLifeHours`
@@ -120,6 +122,7 @@ export async function main() {
       weights: siteConfig?.analysis?.weights,
       halfLifeHours: siteConfig?.analysis?.halfLifeHours,
     });
+    reportPath = rpt.path;
     console.log(`[collect] wrote ${rpt.path}  hotList=${rpt.report.hotList.length}  keywords=${rpt.report.keywords.length}`);
   } catch (e) {
     console.warn(`[collect] report step skipped: ${e.message}`);
@@ -146,11 +149,26 @@ export async function main() {
   }
 
   // 3) dev bridge: 复制到 public/data/today/（P1 行为兼容）
+  //    报告与快照同一轮产出，必须一起复制；否则本地 today/ 会出现
+  //    「snapshot 已是新一轮、report 还是旧一轮」的口径漂移（report.totalItems ≠ snapshot.items）。
   try {
     const publicDir = join(ROOT, 'public');
     copyToPublicData(proj.snapshotPath, publicDir);
+    // report 缺失 / 复制失败不得影响 snapshot 复制（warn-not-throw，单独 try）
+    let reportCopied = false;
+    if (reportPath) {
+      try {
+        copyToPublicData(reportPath, publicDir);
+        reportCopied = true;
+      } catch (e) {
+        console.warn(`[collect] dev-bridge report skipped: ${e.message}`);
+      }
+    }
     refreshLatestLink(publicDir, date);
-    console.log(`[collect] dev-bridge refreshed -> public/data/today/snapshot-${date}.json`);
+    console.log(
+      `[collect] dev-bridge refreshed -> public/data/today/snapshot-${date}.json`
+        + (reportCopied ? ` + report-${date}.json` : ''),
+    );
   } catch (e) {
     console.warn(`[collect] dev-bridge skipped: ${e.message}`);
   }
