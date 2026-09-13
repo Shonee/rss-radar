@@ -6,6 +6,7 @@ import {
   hoursAgoIso,
   isSameShanghaiDay,
   shanghaiDateKey,
+  countByShanghaiDay,
 } from '../time';
 
 describe('time — formatRelative 边界', () => {
@@ -67,5 +68,65 @@ describe('time — hoursAgoIso', () => {
   it('按注入 now 计算', () => {
     const now = Date.parse('2026-09-14T10:00:00Z');
     expect(hoursAgoIso(6, now)).toBe('2026-09-14T04:00:00.000Z');
+  });
+});
+
+describe('time — countByShanghaiDay（页面1 状态条「今日 N 条」口径）', () => {
+  const date = '2026-09-14';
+
+  it('全命中', () => {
+    expect(
+      countByShanghaiDay(
+        [
+          { updatedAt: '2026-09-14T01:00:00+08:00' },
+          { publishedAt: '2026-09-13T17:00:00Z' }, // = 2026-09-14 01:00（+08）
+          { updatedAt: '2026-09-14T23:59:00+08:00' },
+        ],
+        date,
+      ),
+    ).toBe(3);
+  });
+
+  it('全不命中', () => {
+    expect(
+      countByShanghaiDay(
+        [
+          { updatedAt: '2026-09-10T01:00:00+08:00' },
+          { publishedAt: '2026-08-20T00:00:00Z' },
+        ],
+        date,
+      ),
+    ).toBe(0);
+  });
+
+  it('混合（部分命中）', () => {
+    expect(
+      countByShanghaiDay(
+        [
+          { updatedAt: '2026-09-14T09:00:00+08:00' }, // 命中
+          { updatedAt: '2026-09-13T09:00:00+08:00' }, // 不命中（前一自然日）
+          { publishedAt: '2026-09-13T16:30:00Z' }, // 命中（= 09-14 00:30 +08）
+        ],
+        date,
+      ),
+    ).toBe(2);
+  });
+
+  it('空数组', () => {
+    expect(countByShanghaiDay([], date)).toBe(0);
+  });
+
+  it('updatedAt 优先回落 publishedAt；两者皆缺跳过', () => {
+    expect(
+      countByShanghaiDay(
+        [
+          { updatedAt: '2026-09-14T01:00:00+08:00', publishedAt: '2026-09-01T00:00:00Z' }, // 用 updatedAt → 命中
+          { publishedAt: '2026-09-14T00:30:00+08:00' }, // 无 updatedAt → 用 publishedAt → 命中
+          {}, // 无时间 → 跳过
+          { updatedAt: '', publishedAt: '' }, // 空串 → 跳过
+        ],
+        date,
+      ),
+    ).toBe(2);
   });
 });

@@ -79,6 +79,30 @@ export function isSameShanghaiDay(a: TimeInput, b: TimeInput): boolean {
   return ka !== '' && ka === shanghaiDateKey(b);
 }
 
+/**
+ * 统计条目中落在指定上海自然日（date = `YYYY-MM-DD`）的条数。
+ *
+ * 谓词与页面列表的「今天」分支完全一致：取 `updatedAt 优先、回落 publishedAt`，
+ * 用 `isSameShanghaiDay` 判定。两条时间都缺失的条目不计入。
+ *
+ * 抽成纯函数以便单测（页面1 状态条「今日 N 条」与列表「共 M 条」口径同源）。
+ *
+ * @param items 待统计条目（只需时间字段）
+ * @param date  目标上海自然日 `YYYY-MM-DD`（通常传 `snap.date`）
+ * @returns 命中条数
+ */
+export function countByShanghaiDay(
+  items: ReadonlyArray<{ updatedAt?: string; publishedAt?: string }>,
+  date: string,
+): number {
+  let n = 0;
+  for (const it of items) {
+    const t = it.updatedAt || it.publishedAt;
+    if (t && isSameShanghaiDay(t, date)) n += 1;
+  }
+  return n;
+}
+
 /** 相对时间（中文） */
 export function formatRelative(iso: string, now?: TimeInput): string {
   if (!iso) return '—';

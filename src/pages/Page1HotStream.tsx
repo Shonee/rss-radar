@@ -22,8 +22,8 @@ import type { CategoryKey, Item } from '../types';
 import { toItemCardData } from '../types/api';
 import sourcesConfig from '../../config/sources.json';
 import { DEFAULT_PAGE1_BATCH_SIZE } from '../config/site';
-import { useNotifyStats, useReport, useSnapshot } from '../hooks';
-import { isSameShanghaiDay, formatRelative } from '../services/time';
+import { useNotifyStats, useSnapshot } from '../hooks';
+import { isSameShanghaiDay, countByShanghaiDay, formatRelative } from '../services/time';
 import { tokens } from '../theme/tokens';
 import {
   AlertBar,
@@ -85,7 +85,6 @@ export default function Page1HotStream() {
   const channelParam = searchParams.get('channel');
 
   const { data: snap, loading, error, stale, source, reload } = useSnapshot();
-  const { data: report } = useReport();
   // T-P3-08：页面1 底部只读通知状态面板（折叠；ARCH §12 硬约束：无发送入口）
   const { data: notifyStats, loading: notifyLoading } = useNotifyStats();
 
@@ -171,7 +170,14 @@ export default function Page1HotStream() {
 
   // ---------- 状态条 / 告警 ----------
   const enabledChannelCount = CHANNEL_OPTIONS.length;
-  const todayCount = report?.totalItems ?? mainItems.length;
+  // 「今日 M 条」= 页面级今日条目派生计数，必须与列表「今天」分支同谓词
+  // （updatedAt 优先回落 publishedAt + isSameShanghaiDay）。
+  // ⚠ 不能再用 report.totalItems：那是快照全量条目数、不含时间窗过滤。
+  // 口径与筛选器状态无关（按 mainItems 全量统计，不受渠道/分类/搜索影响）。
+  const todayCount = useMemo(
+    () => (snap ? countByShanghaiDay(mainItems, snap.date) : 0),
+    [mainItems, snap],
+  );
   const categoryCount = useMemo(() => {
     const set = new Set<CategoryKey>();
     for (const it of mainItems) for (const c of it.category ?? []) set.add(c);
