@@ -13,7 +13,7 @@
     sort: 'updatedAt',        // 已废弃（v1.3）：排序固定为 updatedAt 回落 publishedAt 综合倒序；保留字段以兼容 RR_STORE 中可能存在的历史 page1Sort 值
     channels: {},             // channelId -> true
     categories: {},           // categoryKey -> true
-    timeRange: 'today',       // today | 2h
+    timeRange: 'today',       // today | 3h
     q: '',
     limit: 20,                // 已展示条数
     batch: 20,                // 每批条数（默认 20）
@@ -176,7 +176,7 @@
     out += '<div class="filter-group"><h3>时间范围</h3>' +
       '<div class="segmented" role="group" aria-label="时间范围">' +
         '<button type="button" id="range-today" aria-pressed="' + (state.timeRange === 'today') + '">今天</button>' +
-        '<button type="button" id="range-2h" aria-pressed="' + (state.timeRange === '2h') + '">近 2 小时</button>' +
+        '<button type="button" id="range-3h" aria-pressed="' + (state.timeRange === '3h') + '">近 3 小时</button>' +
       '</div></div>';
 
     // 渠道多选（按分类分组）
@@ -215,7 +215,7 @@
     el('side').innerHTML = '<div class="card card-pad">' + out + '</div>';
 
     el('range-today').addEventListener('click', function () { setRange('today'); });
-    el('range-2h').addEventListener('click', function () { setRange('2h'); });
+    el('range-3h').addEventListener('click', function () { setRange('3h'); });
     el('clear-filters').addEventListener('click', function () {
       state.channels = {}; state.categories = {}; state.timeRange = 'today'; state.q = '';
       el('search-input').value = '';
@@ -240,7 +240,7 @@
   function setRange(r) {
     state.timeRange = r;
     el('range-today').setAttribute('aria-pressed', r === 'today');
-    el('range-2h').setAttribute('aria-pressed', r === '2h');
+    el('range-3h').setAttribute('aria-pressed', r === '3h');
     state.limit = state.batch;
     renderList(true);
   }
@@ -267,7 +267,7 @@
 
   function filtered() {
     var now = new Date(MOCK.NOW).getTime();
-    var twoHours = 2 * 3600 * 1000;
+    var threeHours = 3 * 3600 * 1000;
     var chKeys = Object.keys(state.channels);
     var catKeys = Object.keys(state.categories);
     var q = state.q.toLowerCase();
@@ -275,9 +275,9 @@
     var list = allItems().filter(function (it) {
       if (chKeys.length && chKeys.indexOf(it.channelId) < 0) { return false; }
       if (catKeys.length && !(it.category || []).some(function (c) { return catKeys.indexOf(c) >= 0; })) { return false; }
-      if (state.timeRange === '2h') {
+      if (state.timeRange === '3h') {
         var diff = now - new Date(it.updatedAt).getTime();
-        if (diff > twoHours) { return false; }
+        if (diff > threeHours) { return false; }
       } else {
         // today：与 TODAY 同一自然日（GMT+8）
         if (RR.formatDate(it.updatedAt) !== MOCK.TODAY) { return false; }
