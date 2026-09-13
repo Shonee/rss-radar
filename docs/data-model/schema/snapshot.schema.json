@@ -54,7 +54,7 @@
         "updatedAt": { "type": "string", "format": "date-time", "description": "更新时间(ISO 8601 UTC)" },
         "fetchedAt": { "type": "string", "format": "date-time", "description": "抓取时间(ISO 8601 UTC)，用于增量与审计" },
         "sourceUrl": { "type": "string", "description": "来源 Feed/接口地址(溯源)" },
-        "sourceType": { "type": "string", "enum": ["rss", "atom", "json_feed", "local_json", "local_csv", "feishu_bitable", "notion_db", "api"], "description": "来源类型" },
+        "sourceType": { "type": "string", "enum": ["rss", "atom", "json_feed", "local_json", "local_csv", "feishu_bitable", "notion_db", "generic_api"], "description": "来源类型。取值必须与 scripts/collect/connectors/registry.mjs 注册的 type 完全一致（generic_api 不是 api）" },
         "tags": { "type": "array", "items": { "type": "string" }, "description": "标签/关键词" },
         "dedupKey": { "type": "string", "description": "去重键 sha256 hex(见 README 构成算法)" },
         "duplicateOf": { "type": ["string", "null"], "description": "若为重复，指向主条目 id；否则 null" },

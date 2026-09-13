@@ -66,14 +66,21 @@ npm run smoke
 
 ### CategoryKey 启用集 vs 预留集
 
-`src/types/models.ts` 的 `CategoryKey` 是 **11 类 TypeScript 枚举**（news / tech_media / tech_blog / ai / dev_community / product_design / podcast / video / security / opensource / other），覆盖未来扩展位；而 `config/categories.json` 当前只列出 **8 类 MVP 启用集**（tech_blog / ai / news / dev_community / podcast / newsletter / finance / other）。
+`CategoryKey` 共 **13 个合法取值**（schema 与 TS 枚举已对齐，定义在 `sources.schema.json#/definitions/categoryKey`，TS 侧见 `src/types/models.ts`）：
 
-差异说明：
+| 分组 | 取值 | 状态 |
+|---|---|---|
+| **MVP 启用集（8 类）** | `tech_blog` / `ai` / `news` / `dev_community` / `podcast` / `newsletter` / `finance` / `other` | `config/categories.json` + `config/keyword-rules.json` 已启用，前端会真实渲染 |
+| **预留扩展位（5 类）** | `tech_media` / `product_design` / `video` / `security` / `opensource` | schema 合法但当前无渠道使用；新增渠道时需同步扩 `config/categories.json` |
 
-- `config/categories.json` = **当前实际启用的 8 类**（与 data-model README §2 中 P1 阶段固定命名一致）
-- `src/types/models.ts` 的 11 类枚举 = **schema 允许值 + 未来扩展位**（含 tech_media / product_design / video / security / opensource 等未在 MVP 启用集里的类）
-- `tech_media` / `product_design` / `video` / `security` / `opensource` 在 sources.schema.json 的 `channel.category` enum 中合法，但**当前 config 没有渠道用**；加入新渠道时需同步扩 `categories.json`
-- `newsletter` / `finance` 在 config/categories.json 已启用但**不在 schema enum 中**（见 docs/ARCHITECTURE.md §2.4 解释：这是 v1.1 增项，未回填 schema，待 T-P2-XX 统一对齐）
+**为什么是 13 而不是 8 或 11**（P2-B.2 决断，此前此处标注「P3 二选一」）：
+
+- `newsletter` / `finance` 原本只在 config 侧启用、**不在 schema enum 中** → `config/sources.json` 的 `ruanyifeng-weekly` 渠道带 `newsletter` 分类时 ajv 直接报错
+- 修法选的是**扩 enum 而非删 config 值**，理由是：`scripts/collect/classify.mjs` 读 `config/keyword-rules.json`，其中 `newsletter` 规则（周报/周刊/weekly/Newsletter 等关键词）**会在运行时把条目打上 `newsletter` 分类**——只删 `sources.json` 里的一个值并不能阻止它再次出现，属于治标
+- 扩 enum 是**向后兼容**方向（放宽约束不会让已有数据失效）；收紧 config 则需要重新打标已有数据
+- 现在 schema enum、TS 枚举、`categories.json`、`keyword-rules.json` 四处已完全一致
+
+新增分类的正确姿势：改 `config/categories.json` → 改 `config/keyword-rules.json` → 改 `sources.schema.json#/definitions/categoryKey` → 改 `src/types/models.ts` 的 `CategoryKey`，四处同步。
 
 ### L5 关键词 Jaccard 推迟到 P3
 
@@ -93,7 +100,7 @@ npm run smoke
 
 实现见 `scripts/collect/analyze.mjs`；schema 描述见 `docs/data-model/schema/report.schema.json`；语义留痕见 `docs/ARCHITECTURE.md §5`。
 
-P3 完整化时再做一次清理：要么 schema enum 收紧到 8 类，要么 config 展到 11 类，二选一。
+> 分类集口径已在 **P2-B.2** 决断完成（扩 enum 到 13 类），不再是待办。详见上文「CategoryKey 启用集 vs 预留集」。
 
 ## 已知限制（P1 范围外）
 

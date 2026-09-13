@@ -4,21 +4,35 @@
 
 // ---------- 通用 ----------
 
-/** 分类枚举（与 schema sources.categories[].key 对齐） */
+/**
+ * 分类枚举（与 sources.schema.json #/definitions/categoryKey 对齐，13 个取值）
+ *
+ * 前 8 个为 **MVP 启用集**，与 config/categories.json + config/keyword-rules.json 一致：
+ *   tech_blog / ai / news / dev_community / podcast / newsletter / finance / other
+ * 后 5 个为 **预留扩展位**，当前无渠道使用：
+ *   tech_media / product_design / video / security / opensource
+ */
 export type CategoryKey =
-  | 'news'
-  | 'tech_media'
   | 'tech_blog'
   | 'ai'
+  | 'news'
   | 'dev_community'
-  | 'product_design'
   | 'podcast'
+  | 'newsletter'
+  | 'finance'
+  | 'other'
+  | 'tech_media'
+  | 'product_design'
   | 'video'
   | 'security'
-  | 'opensource'
-  | 'other';
+  | 'opensource';
 
-/** Source.type 枚举 */
+/**
+ * Source.type 枚举
+ *
+ * 取值必须与 scripts/collect/connectors/registry.mjs 注册的 type 完全一致。
+ * 注意是 `generic_api` 而不是 `api`（T-P2-07 注册名）。
+ */
 export type SourceType =
   | 'rss'
   | 'atom'
@@ -27,7 +41,7 @@ export type SourceType =
   | 'local_csv'
   | 'feishu_bitable'
   | 'notion_db'
-  | 'api';
+  | 'generic_api';
 
 /** URL 健康状态（v1.4 新增） */
 export type UrlStatus = 'ok' | 'dead' | 'moved' | 'blocked';

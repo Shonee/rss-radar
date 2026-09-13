@@ -36,15 +36,20 @@
     }
   },
   "definitions": {
+    "categoryKey": {
+      "type": "string",
+      "description": "分类键。MVP 启用集 8 类（tech_blog / ai / news / dev_community / podcast / newsletter / finance / other）与 config/categories.json 保持一致；其余为预留扩展位（tech_media / product_design / video / security / opensource），当前无渠道使用。",
+      "enum": [
+        "tech_blog", "ai", "news", "dev_community", "podcast", "newsletter", "finance", "other",
+        "tech_media", "product_design", "video", "security", "opensource"
+      ]
+    },
     "category": {
       "type": "object",
       "required": ["key", "label"],
       "additionalProperties": false,
       "properties": {
-        "key": {
-          "type": "string",
-          "enum": ["news", "tech_media", "tech_blog", "ai", "dev_community", "product_design", "podcast", "video", "security", "opensource", "other"]
-        },
+        "key": { "$ref": "#/definitions/categoryKey" },
         "label": { "type": "string", "description": "中文显示名", "examples": ["新闻资讯"] },
         "color": { "type": "string", "description": "MUI/Tailwind 可用的色值或调色板 key", "examples": ["#1976d2"] }
       }
@@ -62,7 +67,7 @@
           "type": "array",
           "minItems": 1,
           "description": "分类(多标签)，权威来源=显式配置",
-          "items": { "type": "string", "enum": ["news", "tech_media", "tech_blog", "ai", "dev_community", "product_design", "podcast", "video", "security", "opensource", "other"] }
+          "items": { "$ref": "#/definitions/categoryKey" }
         },
         "enabled": { "type": "boolean", "description": "渠道总开关，关闭后不展示(其 Source 亦不采集)", "default": true },
         "displayLimit": { "type": "integer", "minimum": 1, "maximum": 100, "default": 10, "description": "页面2 该渠道卡片默认展示条数" },
@@ -84,8 +89,8 @@
         "name": { "type": "string", "description": "源名称(通常=渠道名，多源时用于区分)", "examples": ["阮一峰 Atom"] },
         "type": {
           "type": "string",
-          "enum": ["rss", "atom", "json_feed", "local_json", "local_csv", "feishu_bitable", "notion_db", "api"],
-          "description": "源类型，决定使用哪个接入器"
+          "enum": ["rss", "atom", "json_feed", "local_json", "local_csv", "feishu_bitable", "notion_db", "generic_api"],
+          "description": "源类型，决定使用哪个接入器。取值必须与 scripts/collect/connectors/registry.mjs 注册的 type 完全一致（generic_api 不是 api）"
         },
         "url": { "type": "string", "description": "源地址：HTTP(S) URL 或仓库内相对路径(本地文件)", "examples": ["https://www.ruanyifeng.com/blog/atom.xml", "data/local/feeds.json"] },
         "enabled": { "type": "boolean", "default": true, "description": "源开关，关闭后不采集" },
