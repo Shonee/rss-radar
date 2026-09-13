@@ -84,8 +84,11 @@ export function dedup(items, opts = {}) {
   }
 
   // 算 simhash
-  const hashes = singles.map((it) => computeSimHash64(titleFingerprint(it.title)));
-  const lsh = buildLSH(hashes);
+  const hashes = singles.map((it) => {
+    const h = computeSimHash64(titleFingerprint(it.title));
+    return { ...it, _simhash: h };
+  });
+  const lsh = buildLSH(hashes.map((s) => s._simhash));
   const pairs = candidatePairs(lsh);
 
   let l3Hits = 0;
@@ -116,6 +119,28 @@ export function dedup(items, opts = {}) {
     const sim = diceSafe(itA.title, itB.title);
     if (sim >= threshold) {
       if (union(ai, bi)) l3Hits += 1;
+    }
+  }
+
+  // ===== L3 fallback：LSH miss 的条目按 hamming 距离 ≤ 12 再试 =====
+  // 原因：simhash 用 localHash 派生，4×16 LSH 对 hamming 11-12 仍可能 0 shared。
+  // 兜底：n 较小时（≤200）跑 all-pairs hamming 距离，O(n²) 可控。
+  // n 较大时跳过兜底，让 LSH 主路径负责（5000 条秒级）。
+  const HAMMING_FLOORBACK_THRESHOLD = 12;
+  if (singles.length <= 200) {
+    for (let i = 0; i < singles.length; i += 1) {
+      for (let j = i + 1; j < singles.length; j += 1) {
+        if (find(i) === find(j)) continue;
+        const hi = singles[i]._simhash ^ singles[j]._simhash;
+        let d = 0;
+        let x = hi;
+        while (x > 0n) { d += Number(x & 1n); x >>= 1n; }
+        if (d > HAMMING_FLOORBACK_THRESHOLD) continue;
+        const sim = diceSafe(singles[i].title, singles[j].title);
+        if (sim >= threshold) {
+          if (union(i, j)) l3Hits += 1;
+        }
+      }
     }
   }
 

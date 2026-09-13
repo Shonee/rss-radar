@@ -3,7 +3,8 @@
 // P1 阶段先实现最小规则集：keyword / domain / channel 三种；title_regex 与 category 排除留 T-P1-07
 import { readFileSync } from 'node:fs';
 
-const DOMAIN_RE = /^https?:\/\/(?:www\.)?([^/]+)/i;
+// 注：DOMAIN_RE 不去 www. 前缀——保留完整 host，让规则显式决定（'www.spam.com' 与 'spam.com' 是两个不同 host）
+const DOMAIN_RE = /^https?:\/\/([^/?#:]+)/i;
 
 /**
  * @typedef {Object} ExcludeRule
