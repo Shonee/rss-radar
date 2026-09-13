@@ -149,7 +149,10 @@ node prototype/tools/smoke-test.mjs --chrome-path <BIN>  # 指定 Chrome/Chromiu
 
 > 默认会自动探测 `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`、`/usr/bin/google-chrome` 等常见路径；`--chrome-path <BIN>` 可用于覆盖、CI 注入或测试「无 Chrome」场景。
 
-覆盖：**(A)** 跨页口径恒等关系断言（`totalItems == 当天去重条目数`、`Σ categoryStats == totalItems`、`activeChannels == channelActivity.length` 等）；**(B)** 特殊数据齐备性（跨源 / 失败 / 无数据 / 停用 / 归档 / 回看三态 / 单渠道 >10 条）；**(C)** 关键字段类型（对齐数据模型示例）；**(D)** 各页关键元素存在性（headless Chrome 渲染 DOM 后断言；默认模式下未找到/渲染失败 = 未验证）；**(E)** 响应式静态护栏（日历栅格不溢出）。退出码非 0 表示存在失败。
+覆盖：**(A)** 跨页口径恒等关系断言（`totalItems == 当天去重条目数`、`Σ categoryStats == totalItems`、`activeChannels == channelActivity.length` 等）；**(B)** 特殊数据齐备性（跨源 / 失败 / 无数据 / 停用 / 归档 / 回看三态 / 单渠道 >10 条）；**(C)** 关键字段类型（对齐数据模型示例）；**(D)** 各页关键元素存在性（headless Chrome 渲染 DOM 后断言；默认模式下未找到/渲染失败 = 未验证）；**(E)** 响应式静态护栏（日历栅格不溢出）。
+
+退出码：0 = 通过（含 DOM 验证；或 --no-dom 显式跳过）；1 = 存在 FAIL；
+       2 = 默认模式下 DOM 段未能验证（未找到 Chrome / 启动失败 / 渲染失败）。
 
 ---
 
