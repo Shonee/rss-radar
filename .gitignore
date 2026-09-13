@@ -4,6 +4,9 @@ dist/
 .DS_Store
 *.log
 
+# TypeScript 增量构建缓存（tsc -b 产物，勿入库）
+*.tsbuildinfo
+
 # 构建期与本地数据（dev bridge 产物不入库；demo snapshot 例外）
 public/data/today/*
 !public/data/today/snapshot.json
