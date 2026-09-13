@@ -1,0 +1,103 @@
+{
+  "schemaVersion": "1.0",
+  "date": "2026-09-13",
+  "timezone": "Asia/Shanghai",
+  "generatedAt": "2026-09-13T08:30:00Z",
+  "stats": {
+    "sourceTotal": 3,
+    "sourceOk": 3,
+    "sourceFailed": 0,
+    "itemsBeforeDedup": 3,
+    "itemsAfterDedup": 3,
+    "mergedCount": 0,
+    "durationMs": 0,
+    "sources": [
+      { "channelId": "ruanyifeng-blog", "channelName": "阮一峰的网络日志", "ok": true, "itemCount": 1 },
+      { "channelId": "hacker-news", "channelName": "Hacker News", "ok": true, "itemCount": 1 },
+      { "channelId": "huggingface-blog", "channelName": "Hugging Face Blog", "ok": true, "itemCount": 1 }
+    ]
+  },
+  "items": [
+    {
+      "id": "it_demo_ruanyifeng_001",
+      "guid": "https://www.ruanyifeng.com/blog/2026/09/weekly-issue-412.html",
+      "title": "科技爱好者周刊（第 412 期）：禁止 issue，只用 PR",
+      "url": "https://www.ruanyifeng.com/blog/2026/09/weekly-issue-412.html",
+      "summary": "本期讨论了开源项目的 issue 滥用问题，推荐用 PR 替代；以及本周值得读的开源项目与技术文章。",
+      "author": "阮一峰",
+      "channelId": "ruanyifeng-blog",
+      "channelName": "阮一峰的网络日志",
+      "category": ["tech_blog"],
+      "publishedAt": "2026-09-12T00:05:00Z",
+      "updatedAt": "2026-09-12T01:20:00Z",
+      "fetchedAt": "2026-09-13T08:30:00Z",
+      "sourceUrl": "https://www.ruanyifeng.com/blog/atom.xml",
+      "sourceType": "atom",
+      "tags": ["开源", "PR"],
+      "dedupKey": "url:demo-ruanyifeng-001",
+      "duplicateOf": null,
+      "sourceCount": 1,
+      "sources": [
+        { "channelId": "ruanyifeng-blog", "channelName": "阮一峰的网络日志", "url": "https://www.ruanyifeng.com/blog/2026/09/weekly-issue-412.html" }
+      ],
+      "isNew": true,
+      "hotScore": 0.87,
+      "language": "zh-CN",
+      "mediaType": "article"
+    },
+    {
+      "id": "it_demo_hn_001",
+      "guid": "https://news.ycombinator.com/item?id=49672510",
+      "title": "We must pace the frontier",
+      "url": "https://darioamodei.com/post/we-must-pace-the-frontier",
+      "summary": "Dario Amodei argues that the AI 'arms race' framing is misleading; what matters is pacing progress safely.",
+      "author": "Dario Amodei",
+      "channelId": "hacker-news",
+      "channelName": "Hacker News",
+      "category": ["ai", "dev_community"],
+      "publishedAt": "2026-09-12T03:30:00Z",
+      "updatedAt": "2026-09-12T05:02:00Z",
+      "fetchedAt": "2026-09-13T08:30:00Z",
+      "sourceUrl": "https://news.ycombinator.com/rss",
+      "sourceType": "rss",
+      "tags": ["AI", "Anthropic"],
+      "dedupKey": "url:demo-hn-001",
+      "duplicateOf": null,
+      "sourceCount": 1,
+      "sources": [
+        { "channelId": "hacker-news", "channelName": "Hacker News", "url": "https://darioamodei.com/post/we-must-pace-the-frontier" }
+      ],
+      "isNew": true,
+      "hotScore": 0.79,
+      "language": "en",
+      "mediaType": "article"
+    },
+    {
+      "id": "it_demo_hf_001",
+      "guid": "https://huggingface.co/blog/sheebz/there-is-no-ai-arms-race",
+      "title": "There Is No AI Arms Race. There's a Browser War.",
+      "url": "https://huggingface.co/blog/sheebz/there-is-no-ai-arms-race",
+      "summary": "Hugging Face blog argues the AI 'arms race' is actually a distribution/wrapper war more like the browser wars.",
+      "author": "sheebz",
+      "channelId": "huggingface-blog",
+      "channelName": "Hugging Face Blog",
+      "category": ["ai"],
+      "publishedAt": "2026-09-12T02:15:00Z",
+      "updatedAt": "2026-09-12T02:15:00Z",
+      "fetchedAt": "2026-09-13T08:30:00Z",
+      "sourceUrl": "https://huggingface.co/blog/feed.xml",
+      "sourceType": "rss",
+      "tags": ["AI", "open-source"],
+      "dedupKey": "url:demo-hf-001",
+      "duplicateOf": null,
+      "sourceCount": 1,
+      "sources": [
+        { "channelId": "huggingface-blog", "channelName": "Hugging Face Blog", "url": "https://huggingface.co/blog/sheebz/there-is-no-ai-arms-race" }
+      ],
+      "isNew": true,
+      "hotScore": 0.72,
+      "language": "en",
+      "mediaType": "article"
+    }
+  ]
+}

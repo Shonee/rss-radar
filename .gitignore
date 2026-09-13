@@ -4,8 +4,9 @@ dist/
 .DS_Store
 *.log
 
-# 构建期与本地数据（不进版本库）
-public/data/today/
+# 构建期与本地数据（dev bridge 产物不入库；demo snapshot 例外）
+public/data/today/*
+!public/data/today/snapshot.json
 public/data/history/
 public/data/latest.json
 tmp/
