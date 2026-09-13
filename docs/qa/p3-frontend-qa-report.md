@@ -5,6 +5,7 @@
 - **验证人**：严过关（QA / software-qa-engineer-2）
 - **验收基准**：team-lead 21 条判据 + `docs/PRD.md` §6.1/§6.2（:535-537 响应式表、:513 摘要、:556-568 卡片字段）+ 上一轮 `docs/qa/prototype-qa-report.md` §2.2 栅格基线
 - **结论（TL;DR）**：**有条件通过** —— 页面2 与页面1 的**代码路径**实测可用，但存在 **2 个 P1**（页面1 真实数据下恒为空态；`file://` 打开白屏）与 **3 个 P2**，建议修复后再交付。`IS_PASS: NO`。
+- **⚠ 定性纠正（2026-09-14，团队裁定，见文末「修复后回归（235af2b）」）**：P1-2 降级为**已决策平台差异（非缺陷）**；「构建期内联兜底缺失」改判为**实现形式偏差（效果已达成）**；P3-1 属**数据量问题（非缺陷）**。据此，本报告的**真实缺陷收敛为 1×P1 + 3×P2**。
 
 > 验证目标：**证明它能用**，而非「确认它存在」。所有结论来自**真实 headless Chrome 渲染 + 在页面上下文真实触发交互**，每条 PASS 均附原始测量值。三态区分：**通过 / 失败 / 未覆盖（附原因）**。
 
@@ -116,13 +117,14 @@ Chrome：`/Applications/Google Chrome.app/.../Google Chrome`（**152.0.7977.84**
 - **证据**：判据 2 / 判据 10；`results_real.json` 中 `A2b@*`（6 档全 FAIL）。
 - **建议**：时间档增加「全部/不限」，或当「今天」为空时自动回退到最近有数据的时间范围；采集侧亦应令 `snapshot.date` 与条目日期口径一致。
 
-### P1-2 `file://` 打开白屏（离线兜底失效，较原型为回归）
+### ~~P1-2~~ `file://` 打开白屏 —— **【定性纠正 2026-09-14：降级为非缺陷（已决策平台差异）】**
+> **团队裁定**：`docs/IMPLEMENTATION_PLAN.md:802` 已明确「**真实环境跑（不上 file://）**：指向 CF Pages URL 或 localhost preview server」。故 `file://` 白屏属**已决策的平台差异**，**不判缺陷**，最多标注「建议 README 说明」。以下事实保留作记录。
 - **页面/文件**：构建产物 `dist/index.html`（`<script type="module" crossorigin src="./assets/index-*.js">`）+ `vite.config.ts`（`base:'./'` 但未提供非模块产物）
 - **现象**：默认 Chrome 下 `file:///…/dist/index.html` **整页白屏**（`#root` 子节点 0）。
 - **根因**：Chrome 拒绝通过 `file://`（origin `null`）加载 **ES module** 脚本（`blocked by CORS policy: Cross origin requests are only supported for protocol schemes: chrome, chrome-extension, …`）。**实测去掉 `crossorigin` 属性无效**（仍被拦），故需非模块产物或改用 http。
 - **复现**：`npx vite build` 后 `file://…/dist/index.html` 打开；或 `--dump-dom` 观察 `#root` 为空。
 - **证据**：判据 20①；截图 `docs/qa/screenshots/p3-file-default-white.png`（4.7 KB 全白）。
-- **建议**：为 file:// 场景产出 IIFE 包（`build.rollupOptions.output.format='iife'` + 关闭 modulePreload），或明确「file:// 需 `--allow-file-access-from-files` / 必须经 http 访问」并写入 README；上一轮原型（classic script）在 file:// 下可用，本版属**能力回归**。
+- **建议（非缺陷，仅文档）**：README/DEPLOYMENT 注明「需经 http(s) 访问（CF Pages 或 localhost preview）」即可；是否补 IIFE 产物由团队按平台决策定。
 
 ### P2-1 页面1 状态条「今日 N 条」与列表计数自相矛盾
 - **页面/文件**：`src/pages/Page1HotStream.tsx:171`（`todayCount = report?.totalItems ?? mainItems.length`）vs `:122-128`（列表按 `today` 过滤）
@@ -146,9 +148,10 @@ Chrome：`/Applications/Google Chrome.app/.../Google Chrome`（**152.0.7977.84**
 - **证据**：判据 17（`B10`：`cards=8 emptyState=false ls.channelIds=null`）。
 - **建议**：允许 `channelIds=[]` 表示「一个都不选」，或在全不选时给出明确文案而非静默回退。
 
-### P3-1 真实数据下页面2 无「查看全部 →」入口
+### ~~P3-1~~ 真实数据下页面2 无「查看全部 →」入口 —— **【定性纠正 2026-09-14：属数据量问题，非缺陷】**
+> **团队裁定**：真实数据单渠道条目均 ≤10 条，故默认 `cardLimit=10` 无入口属**数据量问题**，**不判缺陷**（置 5 后入口正常，代码路径无缺陷）。
 - **现象**：默认 `cardLimit=10`，而没有任何渠道条目数 >10（最多 10）⇒ `channel.items.length > cardLimit` 恒 false，入口在默认态不可见（置 5 后正常）。
-- **证据**：判据 18（`B7`）。**建议**：数据侧补 >10 条渠道，或默认阈值降低。
+- **证据**：判据 18（`B7`）。**建议（数据侧）**：待渠道条目 >10 后入口自然出现，无需改代码。
 
 ### P3-2 桌面端无左侧筛选栏（PRD §535 措辞）
 - **现象**：1280px 下无 `aside/sidebar`，筛选为顶部内联条（`C18 hasSidebar=false`）。PRD §535 写「列表 + 左侧筛选栏」。属布局风格偏差，可与 P2-2 一并决策。
@@ -170,7 +173,7 @@ Chrome：`/Applications/Google Chrome.app/.../Google Chrome`（**152.0.7977.84**
 | 判据 9 异常态黄条 | 真实数据 `stats.sources` 全 `ok:true`（`sourceFailed=0`） | [合成] 注入 1 个失败源 → PASS |
 | 判据 13 中 `failed` / `disabled` 两态 | 真实数据**无失败源、无停用渠道**（8 个渠道 `enabled` 全 true） | 该两态在真实数据下不出现；`ok/empty` 已实测出现 |
 | 判据 6 的 20→40（真实数据） | 真实数据**仅 20 条**且被过滤 | 改用 [合成] 40 条验证 20→40；并验证了 375 下 10→20 |
-| 判据 20③ 构建期内联兜底数据 | 实现里**不存在**该机制（第三层为 `./data/` 而非内联） | 属实现缺失，非测试遗漏 |
+| 判据 20③ 构建期内联兜底数据 | **【定性纠正 2026-09-14】改判为「实现形式偏差」**：`viteBuildDataFallback` 插件名确未落地，但 **`public/` 被 Vite 原样拷贝**，实测 `dist/data/today/*.json` 与 `dist/data/history/*` **均存在**（见 §七 实测），兜底**效果已达成** | 非实现缺失。**风险**：P4 CI 必须在 `build` **前**跑 `collect:once`，否则 `public/data` 为空 → `dist/data` 空 → 兜底失效 |
 | 判据 1「零报错」在完全断网环境 | 三层降级必然产生 2 条 network 404 日志 | 属设计行为，已单列并区分于 JS 报错 |
 | 真机 / 非 Chrome 内核 | 本轮仅 Chrome 152 headless + 设备仿真 | 与上一轮一致 |
 
@@ -205,3 +208,46 @@ Chrome：`/Applications/Google Chrome.app/.../Google Chrome`（**152.0.7977.84**
 **IS_PASS: NO**
 
 > 说明：若以「页面1 必须能在真实数据下展示内容」为硬验收线，则 P1-1 为阻断级；若接受「qa 在凌晨样本下无同日常内容属正常现网现象」这一解释，则 P1-1 可降为 P2，但「无『全部』档位」与 P2-1 的口径矛盾仍需修复。
+
+---
+
+## 七、修复后回归（235af2b）
+
+- **回归对象**：冻结 commit **`235af2b`**（`P3-A11 修复：状态条今日口径对齐列表`）。该提交已含页面1 失败黄条接线（`6eb038e`：快照健康度接真实采集结果）与 A11 口径修复。
+- **范围（team-lead 指定 4 组）**：A1 页面1 失败黄条可达 · A2 页面2 failed 健康态可达 · A11 状态条「今日 N」== 列表「共 M」 · A4 `report.totalItems == snapshot.items.length`。**其余（C9/C9b/C18 折叠/抽屉/侧栏、P1-1 页面1 恒空、P2-3 空态不可达）本轮不复跑，待拍板后另做。**
+- **环境**：`git worktree add /tmp/rr-qa-235af2b 235af2b` → 拷入**主工作区磁盘现状**数据（`snapshot-2026-09-14.json` + `report-2026-09-14.json`，即修复前那次运行产物，**故意保持原样**以暴露漂移）→ `npx vite build`（已路由级分包：`Page2Channels/Page3/Page4/Chart` 独立 chunk）→ 进程内静态服务器 + CDP `Fetch` 拦截 `today/latest.json`、`report-*` 喂**真实文件**。
+
+### 7.1 结果（真浏览器实测）
+
+| 组 | 判据 | 结果 | 原始证据值 |
+|---|---|---|---|
+| A1 | 页面1 失败黄条（`p1-alert-warning`）可达 | **通过** | `warnPresent=true`；文案**逐字一致**：`5 个渠道本次抓取失败：科技爱好者周刊、V2EX、Hacker News、Hugging Face Blog、内核恐慌。该渠道本次无入库条目，其余渠道数据正常，页面仍可正常浏览。` |
+| A2 | 页面2 failed 健康态可达 | **通过** | `tally = {"ok":2,"failed":5,"empty":1}`（共 8 卡）；failed 渠道 = Hacker News / Hugging Face Blog / V2EX / 内核恐慌 / 科技爱好者周刊；`阮一峰的网络日志` = `empty`（`ok:true` 但 0 条）；少数派 & GitHub Blog = `ok`（各 10 条）。**与预测完全一致，0 个 failed 的疑虑不成立** |
+| A11 | 默认「今天」下 状态条今日 N == 列表共 M | **通过** | 状态条 `最近更新：15 小时前 共 8 个渠道 今日 0 条 涉及 5 个分类`；列表 `共 0 条符合当前条件` ⇒ **两边均 0，相等**（与核定数据一致） |
+| A4 | `report.totalItems == snapshot.items.length` | **失败（非代码缺陷）** | `report.totalItems=14 ≠ snapshot.items.length=20`；`report.generatedAt=2026-09-13T18:58:47Z` **早于** `snapshot.generatedAt=2026-09-13T20:53:43Z` ⇒ 两份产物来自**不同次运行**。**dev bridge 修复 `211c2ea` 只改脚本、不追溯刷新已存在文件**，故磁盘现状不一致，**需重跑一次 `collect` 才一致**，非代码缺陷 |
+
+- 两页 console 报错均 **0**（`p1:[] / p2:[]`）。
+- 页面2 截图中可见 5 张卡片右上 `抓取失败` 角标 + 1 张 `无数据` 角标，与 `tally` 视觉一致。
+
+### 7.2 反向（非空真）验证
+
+| 项 | 结果 | 证据 |
+|---|---|---|
+| REV1 真实数据 → 黄条存在 | **通过** | `warnPresent=true` |
+| REV2 `stats.sourceHealth` 全置 `ok:true` 后重放 → 黄条**消失** | **通过** | `warnPresent=false`（证明黄条**由数据驱动**，非恒显示） |
+| REV3 两种数据下状态条/列表均一致 | **通过** | 两次 `statbar` 字符串**完全相同**（`今日 0 条`） |
+
+### 7.3 构建期兜底（配合结论纠正的实测）
+
+`npx vite build` 后实测 `dist/data/today/`（`latest.json` / `report-2026-09-14.json` / `snapshot-2026-09-14.json` / `snapshot.json`）与 `dist/data/history/`（`2026/` + `archive-index.json` + `history-index.json`）**均在** ⇒ 兜底**效果已达成**（经 `public/` 原样拷贝，非 `viteBuildDataFallback` 插件）。
+**风险提示**：P4 CI 必须在 `build` **前**跑 `collect:once`，否则 `public/data` 为空 → `dist/data` 为空 → 兜底失效。
+
+### 7.4 本轮结论
+
+- **A1 / A2 / A11 全部通过**（真浏览器实测 + 反向验证）；**A4 为已知数据漂移**（非代码缺陷，需重跑 collect）。
+- 结合 §一/§三/§四 的三条定性纠正，本项目前端页面1/2 的**真实缺陷收敛为 1×P1（P1-1 页面1 恒空）+ 3×P2**；P1-2、P3-1 撤销为「非缺陷」，构建期兜底撤销为「实现形式偏差」。
+
+### 7.5 截图
+
+- `docs/qa/screenshots/p3fe-fix-p1-alert-1280.png`（页面1：失败黄条 + 非最新 info 条 + 状态条今日 0 + 列表共 0 + 空态）
+- `docs/qa/screenshots/p3fe-fix-p2-health-1280.png`（页面2：8 卡 = 2 正常 + 5 抓取失败 + 1 无数据；3 列）
