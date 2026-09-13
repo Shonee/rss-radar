@@ -43,8 +43,16 @@ export type SourceType =
   | 'notion_db'
   | 'generic_api';
 
-/** URL 健康状态（v1.4 新增） */
-export type UrlStatus = 'ok' | 'dead' | 'moved' | 'blocked';
+/**
+ * URL 健康状态（v1.4 新增，ARCH §15.2 状态机）
+ *
+ * `pendingDead` 是内部防抖态：首轮 404/410 落它，下轮仍失败才转 `dead`。
+ * 必须可持久化到 `source.lastStatus`，否则两轮防抖动跨轮失效。
+ */
+export type UrlStatus = 'ok' | 'dead' | 'moved' | 'blocked' | 'pendingDead' | 'unknown';
+
+/** Source.lastStatus：UrlStatus 全集（与 sources.schema.json 对齐） */
+export type SourceLastStatus = UrlStatus;
 
 /** 来源语言 BCP-47 */
 export type Language = string;
@@ -116,7 +124,7 @@ export interface Source {
   createdAt: string;
   updatedAt: string;
   lastFetchAt?: string;
-  lastStatus?: 'ok' | 'error' | 'empty' | 'unknown';
+  lastStatus?: SourceLastStatus;
   lastError?: string;
   etag?: string;
   lastModified?: string;

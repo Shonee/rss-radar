@@ -13,6 +13,7 @@
  * 行为：
  *   --only 过滤 source.id
  *   --dry-run 仅打印归一化后的 Item[]，不写盘
+ *   --skip-health 跳过 URL 健康检查（不回写 sources.json 的 lastStatus）
  *   --out <dir> 自定义输出根目录（默认 tmp/deploy，P1 行为兼容）
  *   全部 enabled 源全跑；任意源失败不阻断整体（allSettled 语义）
  *   退出码：0=全部 ok；1=全部失败；2=部分失败
@@ -29,6 +30,7 @@ if (process.argv.includes('--help') || process.argv.includes('-h')) {
     '  --once               跑一次全部 enabled 源（默认也是 --once 行为）',
     '  --only <source-id>   只跑指定 source.id',
     '  --dry-run            仅打印 Item[]，不写盘',
+    '  --skip-health        跳过 URL 健康检查（不回写 sources.json 的 lastStatus）',
     '  --out <dir>          输出根目录（默认 tmp/deploy）',
     '  --help, -h           显示帮助',
   ].join('\n'));

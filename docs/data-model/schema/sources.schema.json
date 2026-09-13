@@ -104,7 +104,7 @@
         "createdAt": { "type": "string", "format": "date-time" },
         "updatedAt": { "type": "string", "format": "date-time" },
         "lastFetchAt": { "type": "string", "format": "date-time", "description": "最近一次抓取时间(由采集脚本回写)" },
-        "lastStatus": { "type": "string", "enum": ["ok", "moved", "blocked", "dead", "unknown"], "default": "unknown", "description": "最近一次综合状态：ok=采集+URL 都健康；moved/blocked/dead 由 url-health 写回；unknown=未检查" },
+        "lastStatus": { "type": "string", "enum": ["ok", "moved", "blocked", "dead", "pendingDead", "unknown"], "default": "unknown", "description": "最近一次综合状态：ok=采集+URL 都健康；moved/blocked/dead 由 url-health 写回；pendingDead=首轮 404/410 疑似失效待确认（必须持久化，否则跨轮两轮防抖失效，永远到不了 dead）；unknown=未检查" },
         "lastError": { "type": "string", "description": "最近错误摘要(截断，不含敏感信息)" },
         "etag": { "type": "string", "description": "最近响应的 ETag，用于增量条件请求(If-None-Match)" },
         "lastModified": { "type": "string", "description": "最近响应的 Last-Modified，用于增量条件请求(If-Modified-Since)" }

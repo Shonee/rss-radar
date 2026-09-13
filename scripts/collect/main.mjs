@@ -15,6 +15,7 @@ import { appendEvents, makeEvent } from './append-events.mjs';
 import { projectSnapshot } from './project-snapshot.mjs';
 import { makeRunId } from './lib/run-id.mjs';
 import { writeReport } from './report.mjs';
+import { checkUrls, persistSourceHealth } from './url-health.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..', '..');
@@ -25,11 +26,12 @@ function loadJson(rel) {
 
 export function parseArgs() {
   const args = process.argv.slice(2);
-  const out = { once: false, dryRun: false, only: null, out: null };
+  const out = { once: false, dryRun: false, only: null, out: null, skipHealth: false };
   for (let i = 0; i < args.length; i += 1) {
     const a = args[i];
     if (a === '--once') out.once = true;
     else if (a === '--dry-run') out.dryRun = true;
+    else if (a === '--skip-health') out.skipHealth = true;
     else if (a === '--only') out.only = args[++i];
     else if (a === '--out') out.out = args[++i];
   }
@@ -112,6 +114,26 @@ export async function main() {
     console.warn(`[collect] report step skipped: ${e.message}`);
   }
 
+  // 2.6) URL 健康检查 + lastStatus 持久化（T-P2-08 最后 1 公里）
+  //      ARCH §12：本步失败不阻断主流程（warn-not-throw）
+  if (opts.skipHealth) {
+    console.log('[collect] health skipped (--skip-health)');
+  } else {
+    try {
+      const health = await runSourceHealthCheck({
+        sources,
+        dueSources,
+        sourcesJsonPath: resolve(ROOT, 'config/sources.json'),
+        concurrency,
+      });
+      console.log(
+        `[collect] health  checked=${health.checked}  mutated=${health.persisted.mutated}  ${JSON.stringify(health.stats)}`,
+      );
+    } catch (e) {
+      console.warn(`[collect] health step skipped: ${e.message}`);
+    }
+  }
+
   // 3) dev bridge: 复制到 public/data/today/（P1 行为兼容）
   try {
     const publicDir = join(ROOT, 'public');
@@ -129,6 +151,50 @@ export async function main() {
   if (err === 0) process.exit(0);
   else if (ok === 0) process.exit(1);
   else process.exit(2);
+}
+
+/**
+ * 源级 URL 健康检查 + lastStatus 回写 config/sources.json（ARCH §15）
+ *
+ * 闭环 P1 裁决 C → P2-A 裁决 C → P2-B QA 裁决 B-1（挂了三轮的旧账）：
+ * 此前 persistSourceHealth 只有定义与单测、生产零调用方，跑 collect:once
+ * 时 sources.json 的 lastStatus 一个字都不会写。
+ *
+ * 要点：
+ * - 只检查**本轮实际采集**的源（dueSources），不检查 disabled / 被排除的源
+ * - prevStatuses 取自 sources[].lastStatus，保证两轮防抖动能跨轮生效
+ *   （pendingDead 必须能持久化，否则永远到不了 dead）
+ * - 并发受 ARCH §15.1 约束（≤4，同域串行 1s）
+ *
+ * @param {Object} p
+ * @param {{channels:Array, sources:Array}} p.sources     完整配置对象（用于 prevStatuses + 写回）
+ * @param {Array<{url?:string}>} p.dueSources             本轮采集的源
+ * @param {string} p.sourcesJsonPath                      config/sources.json 绝对路径
+ * @param {number} [p.concurrency=6]                      采集并发（健康检查内部收敛到 ≤4）
+ * @returns {Promise<{checked:number, stats:Object, persisted:{mutated:boolean}}>}
+ */
+export async function runSourceHealthCheck({ sources, dueSources, sourcesJsonPath, concurrency = 6 }) {
+  const urls = [...new Set((dueSources ?? []).map((s) => s.url).filter(Boolean))];
+  if (urls.length === 0) {
+    return { checked: 0, stats: null, persisted: { mutated: false } };
+  }
+
+  // 上一轮状态：供状态机做两轮防抖动
+  // 注意缺省值必须是 'unknown' 而不是省掉——transition() 内部 prev ?? 'ok'，
+  // 若缺省则网络故障（cur=unknown）会被错误地写回 'ok'（假绿）。
+  const prevStatuses = {};
+  for (const s of sources?.sources ?? []) {
+    if (s?.url) prevStatuses[s.url] = s.lastStatus ?? 'unknown';
+  }
+
+  const res = await checkUrls(urls, {
+    concurrency: Math.min(concurrency, 4), // ARCH §15.1 硬约束：健康检查并发 ≤ 4
+    perHostIntervalMs: 1000, // 同域串行 1s 间隔
+    prevStatuses,
+  });
+
+  const persisted = await persistSourceHealth(sourcesJsonPath, sources.sources, res.records);
+  return { checked: res.records.length, stats: res.stats, persisted };
 }
 
 /**
