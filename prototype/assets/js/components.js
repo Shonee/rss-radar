@@ -175,7 +175,8 @@ window.RR = (function () {
     { key: 'page1', href: 'page1-hot-stream.html', label: '聚合热榜流', icon: 'stream' },
     { key: 'page2', href: 'page2-channels.html',   label: '渠道看板',   icon: 'board' },
     { key: 'page3', href: 'page3-report.html',     label: '分析报告',   icon: 'report' },
-    { key: 'page4', href: 'page4-history.html',    label: '历史趋势',   icon: 'history' }
+    { key: 'page4', href: 'page4-history.html',    label: '历史趋势',   icon: 'history' },
+    { key: 'about', href: 'about.html',           label: '关于网站',   icon: 'info' }   // v1.3 E3
   ];
 
   function siteHeader(activeKey) {
