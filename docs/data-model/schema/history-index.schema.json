@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rss-radar.dev/schema/history-index.schema.json",
+  "title": "RSS Radar 历史趋势索引 (history/history-index.json) 及归档索引定义",
+  "description": "天级滚动聚合文件，支撑页面4 趋势图：一次 fetch 出全部趋势。含归档索引 archive-index 的 definitions。",
+  "type": "object",
+  "required": ["schemaVersion", "updatedAt", "days"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+$", "examples": ["1.0"] },
+    "updatedAt": { "type": "string", "format": "date-time", "description": "索引更新时间(ISO 8601 UTC)", "examples": ["2026-09-12T09:30:12Z"] },
+    "days": {
+      "type": "array",
+      "description": "天级聚合数组，按日期升序；一年约 365 项(~91KB)",
+      "items": { "$ref": "#/definitions/dayAgg" }
+    },
+    "archives": {
+      "type": "array",
+      "description": "可选内联归档索引(通常单独存放于 history/archive-index.json)",
+      "items": { "$ref": "#/definitions/archive" }
+    }
+  },
+  "definitions": {
+    "dayAgg": {
+      "type": "object",
+      "required": ["date", "totalItems", "activeChannels"],
+      "additionalProperties": false,
+      "properties": {
+        "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "某天(Asia/Shanghai 归属)", "examples": ["2026-09-12"] },
+        "totalItems": { "type": "integer", "minimum": 0, "description": "当天去重后条目数" },
+        "activeChannels": { "type": "integer", "minimum": 0, "description": "当天有更新的渠道数" },
+        "categoryStats": {
+          "type": "object",
+          "description": "各分类条数 {category: count}",
+          "additionalProperties": { "type": "integer", "minimum": 0 },
+          "examples": [{ "ai": 42, "news": 30, "tech_blog": 51 }]
+        },
+        "topKeywords": { "type": "array", "items": { "type": "string" }, "description": "当天高频关键词(前若干)" },
+        "topIds": { "type": "array", "items": { "type": "string" }, "description": "当天热点条目 id" },
+        "sourceOk": { "type": "integer", "minimum": 0, "description": "当天抓取成功的源数" },
+        "sourceFailed": { "type": "integer", "minimum": 0, "description": "当天抓取失败的源数" }
+      }
+    },
+    "archive": {
+      "type": "object",
+      "required": ["year", "releaseTag", "releaseUrl", "months"],
+      "additionalProperties": false,
+      "properties": {
+        "year": { "type": "integer", "minimum": 2000, "examples": [2025] },
+        "releaseTag": { "type": "string", "examples": ["archive-2025"] },
+        "releaseUrl": { "type": "string", "format": "uri", "description": "GitHub Release 链接(跳转下载)", "examples": ["https://github.com/<owner>/rss-radar/releases/tag/archive-2025"] },
+        "months": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["month", "itemCount"],
+            "additionalProperties": false,
+            "properties": {
+              "month": { "type": "string", "pattern": "^\\d{4}-\\d{2}$", "examples": ["2025-09"] },
+              "itemCount": { "type": "integer", "minimum": 0 },
+              "bytes": { "type": "integer", "minimum": 0 },
+              "sha256": { "type": "string" }
+            }
+          }
+        },
+        "generatedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0",
+  "defaults": {
+    "timezone": "Asia/Shanghai",
+    "dailyReportTime": "08:00",
+    "retry": { "max": 2, "backoffMs": [1000, 3000] }
+  },
+  "channels": [
+    {
+      "id": "email-main",
+      "channelType": "email",
+      "enabled": true,
+      "events": ["dailyReport"],
+      "smtpHost": "smtp.example.com",
+      "smtpPort": 465,
+      "secure": true,
+      "from": "radar@example.com",
+      "to": ["me@example.com", "team@example.com"],
+      "refs": { "password": "SMTP_PASSWORD" }
+    },
+    {
+      "id": "feishu-ops",
+      "channelType": "feishu",
+      "enabled": true,
+      "events": ["dailyReport", "realtime"],
+      "webhookRef": "FEISHU_WEBHOOK",
+      "signSecretRef": "FEISHU_SIGN_SECRET",
+      "refs": { "webhook": "FEISHU_WEBHOOK", "signSecret": "FEISHU_SIGN_SECRET" }
+    },
+    {
+      "id": "dingtalk-ops",
+      "channelType": "dingtalk",
+      "enabled": false,
+      "events": ["realtime"],
+      "webhookRef": "DINGTALK_WEBHOOK",
+      "signSecretRef": "DINGTALK_SIGN_SECRET",
+      "refs": { "webhook": "DINGTALK_WEBHOOK", "signSecret": "DINGTALK_SIGN_SECRET" }
+    },
+    {
+      "id": "wecom-ops",
+      "channelType": "wecom",
+      "enabled": true,
+      "events": ["dailyReport"],
+      "webhookRef": "WECOM_WEBHOOK",
+      "refs": { "webhook": "WECOM_WEBHOOK" }
+    }
+  ],
+  "realtime": {
+    "enabled": true,
+    "hotScoreThreshold": 0.8,
+    "sourceCountThreshold": 3,
+    "maxPerDay": 10
+  },
+  "quietHours": "23:00-07:00"
+}

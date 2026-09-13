@@ -1,0 +1,57 @@
+%% RSS Radar — 采集 / 去重 / 当天数据读写 / 次日转历史 / 通知 关键时序
+%% v1.1：当天数据改为「追加事件流 + 折叠 + 投影快照」（方案 C 双写）；落盘到 deploy 部署分支。
+
+sequenceDiagram
+    participant Cron as GitHub Actions(collect.yml, cron 7,37)
+    participant Coll as Collector(scripts/collect)
+    participant Store as DataStore(deploy 分支)
+    participant Conn as Connector(某一源)
+    participant Norm as Normalizer
+    participant Cls as Classifier
+    participant Exc as ExclusionEngine
+    participant Dedup as DedupEngine
+    participant Ana as Analytics
+    participant Notify as Notifier(notify/)
+
+    Cron->>Coll: 触发采集(date = 当天 Asia/Shanghai)
+
+    Note over Coll,Store: 跨天时先封口前一天（§6.8）
+    Coll->>Store: rolloverIfNewDay(today)
+    Store->>Store: 折叠昨天事件流 → 追加进月度 NDJSON + 移动当天快照 + 更新 history-index
+
+    par 并发抓取(全局≤6, 单请求超时15s)
+        Coll->>Conn: get(source.type).run(source) with ETag/If-Modified-Since
+        Conn-->>Coll: 200 rawItems / 304 复用 / 4xx·5xx 记错
+    end
+
+    Coll->>Norm: 归一化(时间→UTC, 去HTML, 截断, 生成 dedupKey/id)
+    Norm-->>Coll: items
+    Coll->>Cls: classify(items)
+    Cls-->>Coll: items(含 category)
+    Coll->>Exc: exclude(items, config/exclusions.json)
+    Exc->>Exc: 整源停用(最前) / 条目级 / 分类级；写入 stats/exclusions-*.json
+    Exc-->>Coll: items(过滤后) + hits
+
+    Coll->>Store: appendNdjson(today/events-<date>.ndjson, items)   # ★真·追加 O(1)
+    Store->>Store: foldByLastWrite(events) → Map<id,item>           # last-write-wins 逻辑去重
+    Coll->>Dedup: dedupAndMerge(state)
+    Dedup->>Dedup: L1/L2 精确分组 → SimHash64+LSH 预筛 → Dice 精算 → L4 跨源归并
+    Dedup-->>Coll: groups(主条目 sources[] sourceCount)
+
+    Coll->>Store: writeJsonCompact(today/snapshot-<date>.json)      # 投影快照(覆盖写)
+    Coll->>Store: writeCsv(snapshot) + writePointer(today/latest.json)
+    Coll->>Ana: buildReport(snapshot)
+    Ana-->>Coll: report → 写 today/report-<date>.json
+    Coll->>Store: commit deploy 分支(当天 amend / 跨天新建, "[skip ci]")
+
+    Note over Coll,Notify: 采集结束后：实时阈值判定（§12.3）
+    Coll->>Notify: maybeRealtimeAlert(report, thresholds)
+    Notify->>Notify: 去重(幂等键) + 限频 + 每日上限 + 静默时段
+    Notify-->>Conn: 命中则投递(邮箱/飞书/钉钉/企业微信)
+    Notify->>Store: 写 stats/notify-<ts>.json
+
+    Note over Store: 前端运行时 fetch raw.githubusercontent.com/<owner>/rss-radar/deploy/today/latest.json
+    Note over Store: → snapshot + report（≤5 分钟 CDN TTL；无需重建）
+    Note over Store: 历史：history-index.json(趋势,1次) + history/YYYY/MM/items.ndjson(明细,按月) + snapshot-<date>.json(回看)
+
+    Note over Cron,Store: 另：notify.yml 定时(默认 08:00 Asia/Shanghai)推前一天日报；archive.yml 每年1/1归档

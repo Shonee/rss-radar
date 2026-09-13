@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rss-radar.dev/schema/site-config.schema.json",
+  "title": "RSS Radar 站点配置 (config/site-config.json)",
+  "description": "站点级默认配置(进仓库)。用户本地偏好存 localStorage，二者按 README 合并规则合并：站点默认 < 用户本地偏好。",
+  "type": "object",
+  "required": ["schemaVersion", "site"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+$", "examples": ["1.0"] },
+    "site": {
+      "type": "object",
+      "required": ["title", "slogan"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "examples": ["RSS Radar"] },
+        "slogan": { "type": "string", "examples": ["把散落在各处的 RSS 源，汇聚成一份每天更新的信息雷达与热点报告"] },
+        "baseUrl": { "type": "string", "description": "数据外链基址，如 raw.githubusercontent.com 或 CDN；前端运行时 fetch 用" },
+        "dataBranch": { "type": "string", "default": "deploy", "description": "数据分支名(v1.1 由 data 改名为 deploy)" },
+        "timezone": { "type": "string", "const": "Asia/Shanghai" },
+        "footer": { "type": "string", "description": "页脚版权与来源声明" }
+      }
+    },
+    "display": {
+      "type": "object",
+      "description": "展示相关默认值",
+      "additionalProperties": false,
+      "properties": {
+        "defaultChannels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "默认展示的渠道 id 列表；空数组=全部启用渠道"
+        },
+        "cardLimit": { "type": "integer", "minimum": 1, "maximum": 100, "default": 10, "description": "页面2 每卡片条数(PRD 默认 10)" },
+        "page1BatchSize": { "type": "integer", "minimum": 5, "maximum": 100, "default": 20, "description": "页面1 每批加载条数" },
+        "defaultSort": { "type": "string", "enum": ["updatedAt", "publishedAt"], "default": "updatedAt", "description": "页面1 默认排序字段" },
+        "hotListSize": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10, "description": "页面3 热点榜条数" },
+        "showWordCloud": { "type": "boolean", "default": false, "description": "是否显示词云(P1)" },
+        "showSummary": { "type": "boolean", "default": true },
+        "density": { "type": "string", "enum": ["comfortable", "compact"], "default": "comfortable" }
+      }
+    },
+    "filters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabledCategories": { "type": "array", "items": { "type": "string" }, "description": "允许筛选的分类；空=全部" },
+        "timeRanges": { "type": "array", "items": { "type": "string", "enum": ["today", "2h", "6h", "24h"] }, "default": ["today", "2h", "6h"] }
+      }
+    },
+    "analysis": {
+      "type": "object",
+      "description": "分析/报告生成参数(供构建期与 Actions 脚本读取)",
+      "additionalProperties": false,
+      "properties": {
+        "hotListSize": { "type": "integer", "default": 10 },
+        "keywordTopN": { "type": "integer", "default": 50 },
+        "titleSimilarityThreshold": { "type": "number", "minimum": 0.5, "maximum": 1, "default": 0.9, "description": "L3 标题相似度阈值" },
+        "summaryMaxChars": { "type": "integer", "default": 200, "description": "摘要截断长度(合规)" },
+        "halfLifeHours": { "type": "number", "default": 6, "description": "时间衰减半衰期(小时)" },
+        "weights": { "$ref": "#/definitions/weights" },
+        "useLLM": { "type": "boolean", "default": false, "description": "是否启用 LLM 摘要/打标(P2)" }
+      }
+    },
+    "network": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "timeoutMs": { "type": "integer", "default": 15000 },
+        "retries": { "type": "integer", "default": 2 },
+        "concurrency": { "type": "integer", "default": 6, "description": "并发抓取数" },
+        "userAgent": { "type": "string", "default": "rss-radar-bot/1.0 (+https://github.com/<owner>/rss-radar)" },
+        "respectRobots": { "type": "boolean", "default": true }
+      }
+    },
+    "deploy": {
+      "type": "object",
+      "description": "【v1.1 新增】部署分支数据读取配置",
+      "additionalProperties": false,
+      "properties": {
+        "branch": { "type": "string", "default": "deploy", "description": "数据所在部署分支名" },
+        "dataBaseUrl": { "type": "string", "description": "数据读取基址(raw/CDN)", "examples": ["https://raw.githubusercontent.com/<owner>/rss-radar/deploy"] },
+        "pointerPath": { "type": "string", "default": "today/latest.json", "description": "当天数据指针文件路径" }
+      }
+    },
+    "history": {
+      "type": "object",
+      "description": "【v1.1 新增】页面4 历史趋势配置",
+      "additionalProperties": false,
+      "properties": {
+        "windowDays": { "type": "integer", "default": 90, "description": "趋势默认窗口(天)" },
+        "windowOptions": { "type": "array", "items": { "type": "integer" }, "default": [90, 180, 365], "description": "可选窗口集合" },
+        "visibleDays": { "type": "integer", "default": 365, "description": "前端历史可见范围(天)" },
+        "showArchive": { "type": "boolean", "default": true, "description": "是否显示归档年份区" },
+        "indexPath": { "type": "string", "default": "history/history-index.json" },
+        "archiveIndexPath": { "type": "string", "default": "history/archive-index.json" }
+      }
+    },
+    "notify": {
+      "type": "object",
+      "description": "【v1.1 新增】通知默认参数(仅展示/默认值；渠道与密钥见 config/notify.json)",
+      "additionalProperties": false,
+      "properties": {
+        "dailyReportTime": { "type": "string", "pattern": "^\\d{2}:\\d{2}$", "default": "08:00" },
+        "quietHours": { "type": "string", "default": "23:00-07:00" },
+        "realtime": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "hotScoreThreshold": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.8 },
+            "sourceCountThreshold": { "type": "integer", "minimum": 1, "default": 3 },
+            "maxPerDay": { "type": "integer", "minimum": 0, "default": 10 }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "weights": {
+      "type": "object",
+      "description": "热点权重(与 report.schema.json#/definitions/weights 保持一致)",
+      "additionalProperties": false,
+      "properties": {
+        "sourceOverlap": { "type": "number" },
+        "frequency": { "type": "number" },
+        "recency": { "type": "number" },
+        "channelWeight": { "type": "number" },
+        "keywordHeat": { "type": "number" },
+        "halfLifeHours": { "type": "number" }
+      }
+    }
+  }
+}

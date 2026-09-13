@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rss-radar.dev/schema/exclude-rules.schema.json",
+  "title": "RSS Radar 排除规则 (config/exclusions.json)",
+  "description": "三级排除粒度：整源/渠道停用(channel)、条目级(item：keyword/domain/url/title_regex)、分类级(category)。匹配时机：归一化+分类之后、去重之前。正则一律过 re2 + safe-regex 防 ReDoS。",
+  "type": "object",
+  "required": ["schemaVersion", "rules"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+$", "examples": ["1.0"] },
+    "updatedAt": { "type": "string", "format": "date-time", "examples": ["2026-09-12T09:30:00Z"] },
+    "rules": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/rule" }
+    }
+  },
+  "definitions": {
+    "rule": {
+      "type": "object",
+      "required": ["id", "level", "scope", "enabled"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$", "description": "规则唯一标识(kebab-case)", "examples": ["ex-block-jobs"] },
+        "level": { "type": "string", "enum": ["channel", "item", "category"], "description": "排除粒度" },
+        "scope": {
+          "type": "string",
+          "description": "生效范围：global / source:<id> / channel:<id> / category:<key>",
+          "pattern": "^(global|source:[a-z0-9-]+|channel:[a-z0-9-]+|category:[a-z0-9_]+)$",
+          "examples": ["global", "channel:v2ex"]
+        },
+        "type": { "type": "string", "enum": ["keyword", "domain", "url", "title_regex"], "description": "条目级匹配方式(level=item 时必填)" },
+        "value": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "minItems": 1, "items": { "type": "string" } }
+          ],
+          "description": "规则值(关键词/域名/URL/分类键/正则)"
+        },
+        "matchMode": { "type": "string", "enum": ["contains", "equals", "regex"], "default": "contains", "description": "匹配语义" },
+        "caseSensitive": { "type": "boolean", "default": false, "description": "是否区分大小写" },
+        "enabled": { "type": "boolean", "description": "开关" },
+        "note": { "type": "string", "description": "备注(为何排除)" },
+        "hitCount": { "type": "integer", "minimum": 0, "default": 0, "description": "命中条数(脚本回填)" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "level": { "const": "item" } }, "required": ["level"] },
+          "then": { "required": ["type", "value"] }
+        },
+        {
+          "if": { "properties": { "level": { "const": "category" } }, "required": ["level"] },
+          "then": { "required": ["value"] }
+        }
+      ]
+    }
+  }
+}

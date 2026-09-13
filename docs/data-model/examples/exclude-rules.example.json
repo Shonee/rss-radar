@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0",
+  "updatedAt": "2026-09-12T09:30:00Z",
+  "rules": [
+    {
+      "id": "ex-block-jobs",
+      "level": "item",
+      "scope": "global",
+      "type": "keyword",
+      "value": ["招聘", "求职", "内推", "招人"],
+      "matchMode": "contains",
+      "caseSensitive": false,
+      "enabled": true,
+      "note": "屏蔽招聘/求职类条目",
+      "hitCount": 21
+    },
+    {
+      "id": "ex-block-spam-domain",
+      "level": "item",
+      "scope": "global",
+      "type": "domain",
+      "value": ["spam.example.com", "*.ads.com"],
+      "matchMode": "contains",
+      "caseSensitive": false,
+      "enabled": true,
+      "note": "垃圾域名黑名单（支持 *.通配）",
+      "hitCount": 4
+    },
+    {
+      "id": "ex-title-regex-ad",
+      "level": "item",
+      "scope": "channel:v2ex",
+      "type": "title_regex",
+      "value": "^\\[?(广告|AD|推广)\\]?",
+      "matchMode": "regex",
+      "caseSensitive": false,
+      "enabled": true,
+      "note": "V2EX 广告标题（正则过 re2 + safe-regex）",
+      "hitCount": 12
+    },
+    {
+      "id": "ex-cat-podcast",
+      "level": "category",
+      "scope": "global",
+      "value": ["podcast"],
+      "enabled": true,
+      "note": "隐藏「播客」分类，不出现在页面1/2/3 与统计中",
+      "hitCount": 0
+    },
+    {
+      "id": "ex-channel-off",
+      "level": "channel",
+      "scope": "channel:weibo-mirror",
+      "enabled": true,
+      "note": "整渠道停用（不采集、不展示）",
+      "hitCount": 0
+    }
+  ]
+}

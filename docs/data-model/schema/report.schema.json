@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rss-radar.dev/schema/report.schema.json",
+  "title": "RSS Radar 当日报告 (report-YYYY-MM-DD.json)",
+  "description": "基于当天 Snapshot 生成的派生分析结果(热点榜、分类分布、关键词、跨源重合、渠道活跃度、摘要)。只做当天，跨自然日重置。",
+  "type": "object",
+  "required": ["schemaVersion", "date", "timezone", "generatedAt", "totalItems", "activeChannels", "categoryStats", "hotList"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+$", "examples": ["1.0"] },
+    "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "examples": ["2026-09-12"] },
+    "timezone": { "type": "string", "const": "Asia/Shanghai" },
+    "generatedAt": { "type": "string", "format": "date-time", "examples": ["2026-09-12T09:30:15Z"] },
+    "totalItems": { "type": "integer", "minimum": 0, "description": "当天去重后条目总数" },
+    "activeChannels": { "type": "integer", "minimum": 0, "description": "当天有更新的渠道数" },
+    "windowStart": { "type": "string", "format": "date-time", "description": "数据时间窗起点(当天 00:00 Asia/Shanghai 的 UTC 表示)" },
+    "windowEnd": { "type": "string", "format": "date-time", "description": "数据时间窗终点(=generatedAt)" },
+    "weights": { "$ref": "#/definitions/weights" },
+    "categoryStats": {
+      "type": "array",
+      "description": "各分类条数/占比",
+      "items": { "$ref": "#/definitions/categoryStat" }
+    },
+    "hotList": {
+      "type": "array",
+      "description": "热点榜 TOP N(按 hotScore 倒序)",
+      "items": { "$ref": "#/definitions/hotItem" }
+    },
+    "keywords": {
+      "type": "array",
+      "description": "当天高频关键词及频次(词云数据)",
+      "items": {
+        "type": "object",
+        "required": ["word", "count"],
+        "additionalProperties": false,
+        "properties": {
+          "word": { "type": "string" },
+          "count": { "type": "integer", "minimum": 1 },
+          "weight": { "type": "number", "minimum": 0, "maximum": 1, "description": "归一化权重(词云字号)" }
+        }
+      }
+    },
+    "crossSource": {
+      "type": "array",
+      "description": "跨源重合主题/条目(被多源报道)",
+      "items": {
+        "type": "object",
+        "required": ["topic", "sourceCount", "itemIds"],
+        "additionalProperties": false,
+        "properties": {
+          "topic": { "type": "string", "description": "代表性标题或主题词" },
+          "sourceCount": { "type": "integer", "minimum": 2 },
+          "itemIds": { "type": "array", "items": { "type": "string" } },
+          "channelNames": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "channelActivity": {
+      "type": "array",
+      "description": "各渠道当天活跃度排行",
+      "items": {
+        "type": "object",
+        "required": ["channelId", "channelName", "itemCount"],
+        "additionalProperties": false,
+        "properties": {
+          "channelId": { "type": "string" },
+          "channelName": { "type": "string" },
+          "category": { "type": "array", "items": { "type": "string" } },
+          "itemCount": { "type": "integer", "minimum": 0, "description": "当天条数" },
+          "lastUpdatedAt": { "type": "string", "format": "date-time" },
+          "activityScore": { "type": "number", "minimum": 0, "description": "活跃度分(条数+更新频率)" }
+        }
+      }
+    },
+    "summary": { "type": "string", "description": "当天一句话摘要(模板或 LLM 生成)" }
+  },
+  "definitions": {
+    "weights": {
+      "type": "object",
+      "description": "本次生成所用的热点权重(便于复现)",
+      "additionalProperties": false,
+      "properties": {
+        "sourceOverlap": { "type": "number" },
+        "frequency": { "type": "number" },
+        "recency": { "type": "number" },
+        "channelWeight": { "type": "number" },
+        "keywordHeat": { "type": "number" },
+        "halfLifeHours": { "type": "number" }
+      }
+    },
+    "categoryStat": {
+      "type": "object",
+      "required": ["category", "itemCount", "channelCount", "ratio"],
+      "additionalProperties": false,
+      "properties": {
+        "category": { "type": "string" },
+        "label": { "type": "string" },
+        "itemCount": { "type": "integer", "minimum": 0 },
+        "channelCount": { "type": "integer", "minimum": 0 },
+        "ratio": { "type": "number", "minimum": 0, "maximum": 1, "description": "占当天总条数比例" }
+      }
+    },
+    "hotItem": {
+      "type": "object",
+      "required": ["rank", "id", "title", "url", "channelId", "channelName", "hotScore", "sourceCount"],
+      "additionalProperties": false,
+      "properties": {
+        "rank": { "type": "integer", "minimum": 1 },
+        "id": { "type": "string", "description": "条目 id(引用 snapshot)" },
+        "title": { "type": "string" },
+        "url": { "type": "string" },
+        "channelId": { "type": "string" },
+        "channelName": { "type": "string" },
+        "category": { "type": "array", "items": { "type": "string" } },
+        "hotScore": { "type": "number", "minimum": 0, "maximum": 1 },
+        "sourceCount": { "type": "integer", "minimum": 1 },
+        "channelNames": { "type": "array", "items": { "type": "string" }, "description": "跨源时的所有来源渠道" },
+        "publishedAt": { "type": "string", "format": "date-time" },
+        "components": {
+          "type": "object",
+          "description": "热度分各分量(可解释性)",
+          "additionalProperties": { "type": "number" }
+        }
+      }
+    }
+  }
+}

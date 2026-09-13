@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "1.0",
+  "date": "2026-09-12",
+  "timezone": "Asia/Shanghai",
+  "generatedAt": "2026-09-12T09:30:15Z",
+  "windowStart": "2026-09-11T16:00:00Z",
+  "windowEnd": "2026-09-12T09:30:15Z",
+  "totalItems": 251,
+  "activeChannels": 12,
+  "weights": {
+    "sourceOverlap": 0.4,
+    "frequency": 0.2,
+    "recency": 0.25,
+    "channelWeight": 0.1,
+    "keywordHeat": 0.05,
+    "halfLifeHours": 6
+  },
+  "summary": "今日共采集 251 条（去重后），AI 与开发者社区最活跃；阮一峰周刊「AI 编程助手的一年」被 2 个渠道同时报道，位列热点榜首位。",
+  "categoryStats": [
+    { "category": "tech_blog", "label": "技术博客", "itemCount": 68, "channelCount": 4, "ratio": 0.271 },
+    { "category": "dev_community", "label": "开发者社区", "itemCount": 74, "channelCount": 3, "ratio": 0.295 },
+    { "category": "ai", "label": "AI", "itemCount": 45, "channelCount": 2, "ratio": 0.179 },
+    { "category": "tech_media", "label": "科技媒体", "itemCount": 38, "channelCount": 2, "ratio": 0.151 },
+    { "category": "product_design", "label": "产品与设计", "itemCount": 16, "channelCount": 1, "ratio": 0.064 },
+    { "category": "news", "label": "新闻资讯", "itemCount": 10, "channelCount": 1, "ratio": 0.04 }
+  ],
+  "hotList": [
+    {
+      "rank": 1,
+      "id": "it_9f2c1a7b3e5d",
+      "title": "科技爱好者周刊（第 324 期）：AI 编程助手的一年",
+      "url": "https://www.ruanyifeng.com/blog/2026/09/weekly-324.html?utm_source=rss&utm_medium=rss",
+      "channelId": "ruanyifeng-blog",
+      "channelName": "阮一峰的网络日志",
+      "category": ["tech_blog"],
+      "hotScore": 0.87,
+      "sourceCount": 2,
+      "channelNames": ["阮一峰的网络日志", "V2EX"],
+      "publishedAt": "2026-09-12T00:05:00Z",
+      "components": { "sourceOverlap": 0.63, "frequency": 0.41, "recency": 0.35, "channelWeight": 0.8, "keywordHeat": 0.3 }
+    },
+    {
+      "rank": 2,
+      "id": "it_4a2b8c0d6e1f",
+      "title": "Smol Course: training small language models from scratch",
+      "url": "https://huggingface.co/blog/smol-course",
+      "channelId": "huggingface-blog",
+      "channelName": "Hugging Face Blog",
+      "category": ["ai", "opensource"],
+      "hotScore": 0.79,
+      "sourceCount": 1,
+      "channelNames": ["Hugging Face Blog"],
+      "publishedAt": "2026-09-11T15:40:00Z",
+      "components": { "sourceOverlap": 0.0, "frequency": 0.52, "recency": 0.62, "channelWeight": 0.8, "keywordHeat": 0.66 }
+    },
+    {
+      "rank": 3,
+      "id": "it_1c3d5e7f9a0b",
+      "title": "Show HN: A static RSS aggregator with zero backend",
+      "url": "https://news.ycombinator.com/item?id=42000001",
+      "channelId": "hacker-news",
+      "channelName": "Hacker News",
+      "category": ["dev_community"],
+      "hotScore": 0.72,
+      "sourceCount": 1,
+      "channelNames": ["Hacker News"],
+      "publishedAt": "2026-09-12T03:15:00Z",
+      "components": { "sourceOverlap": 0.0, "frequency": 0.38, "recency": 0.58, "channelWeight": 0.9, "keywordHeat": 0.44 }
+    },
+    {
+      "rank": 4,
+      "id": "it_3e2d1c0b9a8f",
+      "title": "OpenAI unveils cheaper inference tier for developers",
+      "url": "https://techcrunch.com/2026/09/12/openai-cheaper-inference-tier/",
+      "channelId": "techcrunch",
+      "channelName": "TechCrunch",
+      "category": ["tech_media", "news"],
+      "hotScore": 0.68,
+      "sourceCount": 1,
+      "channelNames": ["TechCrunch"],
+      "publishedAt": "2026-09-12T06:45:00Z",
+      "components": { "sourceOverlap": 0.0, "frequency": 0.47, "recency": 0.51, "channelWeight": 0.7, "keywordHeat": 0.55 }
+    }
+  ],
+  "keywords": [
+    { "word": "AI", "count": 42, "weight": 1.0 },
+    { "word": "编程助手", "count": 18, "weight": 0.43 },
+    { "word": "开源", "count": 16, "weight": 0.38 },
+    { "word": "大模型", "count": 14, "weight": 0.33 },
+    { "word": "推理", "count": 11, "weight": 0.26 }
+  ],
+  "crossSource": [
+    {
+      "topic": "科技爱好者周刊（第 324 期）：AI 编程助手的一年",
+      "sourceCount": 2,
+      "itemIds": ["it_9f2c1a7b3e5d", "it_0d9e8f7a6b5c"],
+      "channelNames": ["阮一峰的网络日志", "V2EX"]
+    }
+  ],
+  "channelActivity": [
+    { "channelId": "hacker-news", "channelName": "Hacker News", "category": ["dev_community"], "itemCount": 30, "lastUpdatedAt": "2026-09-12T09:12:00Z", "activityScore": 0.92 },
+    { "channelId": "ruanyifeng-blog", "channelName": "阮一峰的网络日志", "category": ["tech_blog"], "itemCount": 12, "lastUpdatedAt": "2026-09-12T01:20:00Z", "activityScore": 0.55 },
+    { "channelId": "huggingface-blog", "channelName": "Hugging Face Blog", "category": ["ai", "opensource"], "itemCount": 8, "lastUpdatedAt": "2026-09-12T02:00:00Z", "activityScore": 0.48 },
+    { "channelId": "techcrunch", "channelName": "TechCrunch", "category": ["tech_media", "news"], "itemCount": 26, "lastUpdatedAt": "2026-09-12T07:10:00Z", "activityScore": 0.81 }
+  ]
+}

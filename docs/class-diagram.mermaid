@@ -1,0 +1,203 @@
+%% RSS Radar — 领域模型 / ER 类图
+%% v1.1：新增连接器注册表、排除引擎、通知模块、历史索引、归档索引、数据布局。
+%% 术语沿用 PRD 第 2 章：Source / Channel / Item / Feed / Snapshot / Report / 去重键 / 源清单 / 分类(Category)
+%% 及 v1.1 新增：主分支(master) / 部署分支(deploy) / 当天数据文件 / 历史数据 / 归档 / 通知渠道 / 排除规则
+classDiagram
+    class SourceList {
+      +string schemaVersion
+      +datetime generatedAt
+      +Category[] categories
+      +Channel[] channels
+      +Source[] sources
+      +load(path)
+      +validate()
+    }
+    class Channel {
+      +string id
+      +string name
+      +string homepage
+      +string[] category
+      +boolean enabled
+      +int displayLimit
+      +string icon
+      +string language
+      +float weight
+      +datetime createdAt
+      +datetime updatedAt
+    }
+    class Source {
+      +string id
+      +string channelId
+      +string name
+      +enum type
+      +string url
+      +boolean enabled
+      +Auth auth
+      +FieldMapping fieldMapping
+      +int interval
+      +datetime lastFetchAt
+      +enum lastStatus
+      +string lastError
+      +string etag
+      +string lastModified
+      +fetch()
+    }
+    class Auth {
+      +enum type
+      +string ref
+      +string headerName
+      +string scheme
+    }
+    class FieldMapping {
+      +enum mode
+      +string itemsPath
+      +map map
+      +map typeCoercion
+      +map defaults
+    }
+    class ConnectorRegistry {
+      <<singleton>>
+      +Map~string,Connector~ registry
+      +register(type, connector)
+      +get(type) Connector
+      +run(source, ctx) Item[]
+      +listTypes() string[]
+    }
+    class Connector {
+      <<interface>>
+      +string type
+      +validate(source) Result
+      +run(source, ctx) Item[]
+    }
+    class Item {
+      +string id
+      +string guid
+      +string title
+      +string url
+      +string summary
+      +string author
+      +string channelId
+      +string channelName
+      +string[] category
+      +datetime publishedAt
+      +datetime updatedAt
+      +datetime fetchedAt
+      +string dedupKey
+      +string duplicateOf
+      +int sourceCount
+      +SourceRef[] sources
+      +boolean isNew
+      +float hotScore
+      +string language
+    }
+    class DedupEngine {
+      +normalizeUrl(url) string
+      +keyOf(item) string
+      +titleSimilarity(a, b) float
+      +dedup(items) Group[]
+    }
+    class ExclusionRule {
+      +string id
+      +enum level
+      +string scope
+      +enum type
+      +string value
+      +enum matchMode
+      +boolean caseSensitive
+      +boolean enabled
+      +int hitCount
+    }
+    class ExclusionEngine {
+      +Rule[] rules
+      +applyChannel(sources) Source[]
+      +applyItems(items) Item[]
+      +applyCategory(cats) string[]
+      +explain(item) RuleId[]
+    }
+    class Snapshot {
+      +string date
+      +datetime generatedAt
+      +Stats stats
+      +Item[] items
+      +read()
+      +ingestRound()
+    }
+    class EventLog {
+      +string date
+      +appendNdjson(rows)
+      +foldByLastWrite() Map
+    }
+    class Analytics {
+      +hotScore(item) float
+      +extractKeywords(items) Keyword[]
+      +categoryStats(items) CategoryStat[]
+      +buildReport(snapshot) Report
+    }
+    class Report {
+      +string date
+      +int totalItems
+      +int activeChannels
+      +CategoryStat[] categoryStats
+      +HotItem[] hotList
+      +Keyword[] keywords
+      +CrossSource[] crossSource
+      +ChannelActivity[] channelActivity
+      +string summary
+    }
+    class HistoryIndex {
+      +string schemaVersion
+      +datetime updatedAt
+      +DayAgg[] days
+      +appendDay(day)
+    }
+    class ArchiveIndex {
+      +int year
+      +string releaseTag
+      +string releaseUrl
+      +MonthEntry[] months
+      +generatedAt
+    }
+    class DataLayout {
+      +string branch
+      +string todayDir
+      +string historyDir
+      +monthlyNdjsonPath(y, m) string
+      +daySnapshotPath(date) string
+    }
+    class NotifyChannel {
+      +string id
+      +enum channelType
+      +boolean enabled
+      +string[] events
+      +Refs refs
+      +send(message) Result
+      +test() Result
+    }
+    class Notifier {
+      +buildDailyDigest(report) Message
+      +buildRealtime(hotItems) Message
+      +dispatch(message, channels) Result[]
+      +throttle(itemId) bool
+    }
+
+    SourceList "1" --> "*" Channel : 聚合
+    SourceList "1" --> "*" Source : 聚合
+    Channel "1" --> "*" Source : 一对多(多渠道备份)
+    Source "1" --> "1" Auth : 引用
+    Source "1" --> "0..1" FieldMapping : 声明式
+    ConnectorRegistry "1" o-- "*" Connector : 注册
+    ConnectorRegistry ..> Source : 按 type 分发
+    Connector ..> Item : 产出(原始)
+    ExclusionEngine "1" o-- "*" ExclusionRule : 装载
+    ExclusionEngine ..> Item : 过滤(归一化后·去重前)
+    DedupEngine ..> Item : 去重/合并
+    Snapshot "1" --> "*" Item : 包含
+    Snapshot "1" --> "1" EventLog : 追加/折叠
+    Analytics ..> Snapshot : 输入
+    Analytics ..> Report : 产出
+    Report "1" --> "*" Item : 引用(id)
+    Snapshot ..> HistoryIndex : 次日汇总(appendDay)
+    Snapshot ..> DataLayout : 落盘(monthly NDJSON / 年-月目录)
+    ArchiveIndex ..> HistoryIndex : 归档年份标记
+    Notifier "1" o-- "*" NotifyChannel : 分发
+    Notifier ..> Report : 消费

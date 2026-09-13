@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0",
+  "updatedAt": "2026-09-12T09:30:12Z",
+  "days": [
+    {
+      "date": "2026-09-10",
+      "totalItems": 238,
+      "activeChannels": 11,
+      "categoryStats": { "ai": 42, "news": 30, "tech_blog": 51, "dev_community": 40, "product_design": 22, "opensource": 31, "other": 22 },
+      "topKeywords": ["AI", "开源", "Agent", "Rust", "大模型"],
+      "topIds": ["it_9f2c1a7b3e5d", "it_4a2b8c0d6e1f"],
+      "sourceOk": 12,
+      "sourceFailed": 2
+    },
+    {
+      "date": "2026-09-11",
+      "totalItems": 262,
+      "activeChannels": 12,
+      "categoryStats": { "ai": 55, "news": 33, "tech_blog": 48, "dev_community": 44, "product_design": 19, "opensource": 35, "other": 28 },
+      "topKeywords": ["AI", "MCP", "开源", "TypeScript"],
+      "topIds": ["it_1a2b3c4d5e6f", "it_0f1e2d3c4b5a"],
+      "sourceOk": 13,
+      "sourceFailed": 1
+    },
+    {
+      "date": "2026-09-12",
+      "totalItems": 251,
+      "activeChannels": 12,
+      "categoryStats": { "ai": 58, "news": 30, "tech_blog": 51, "dev_community": 41, "product_design": 21, "opensource": 29, "other": 21 },
+      "topKeywords": ["AI", "Agent", "开源", "Rust"],
+      "topIds": ["it_9f2c1a7b3e5d", "it_2b3c4d5e6f70"],
+      "sourceOk": 13,
+      "sourceFailed": 1
+    }
+  ],
+  "archives": [
+    {
+      "year": 2025,
+      "releaseTag": "archive-2025",
+      "releaseUrl": "https://github.com/example-owner/rss-radar/releases/tag/archive-2025",
+      "months": [
+        { "month": "2025-08", "itemCount": 7180, "bytes": 1802344, "sha256": "3f0c1d2e9a4b6c3f8e7d6c5b4a39281706f5e4d3c2b1a09876543210fedcba98" },
+        { "month": "2025-09", "itemCount": 7421, "bytes": 1832444, "sha256": "8f0c1d2e9a4b6c3f8e7d6c5b4a39281706f5e4d3c2b1a09876543210fedcba98" }
+      ],
+      "generatedAt": "2026-01-01T00:05:00Z"
+    }
+  ]
+}

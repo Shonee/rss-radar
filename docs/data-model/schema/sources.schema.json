@@ -1,0 +1,158 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rss-radar.dev/schema/sources.schema.json",
+  "title": "RSS Radar 源清单 (sources.json)",
+  "description": "全站可用的 Source / Channel 配置集合。Channel 与 Source 为一对多：一个 Channel 可挂载多个 Source（多渠道备份）。此文件是用户可编辑的数据文件，提交进主分支。",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "channels", "sources"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "数据格式版本号，语义化主次版本，破坏性变更时 +1",
+      "examples": ["1.0"]
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "本文件最后生成/校准时间(ISO 8601 UTC)",
+      "examples": ["2026-09-12T09:30:00Z"]
+    },
+    "categories": {
+      "type": "array",
+      "description": "分类字典，供前端渲染中文名与配色；可省略则由内置枚举兜底",
+      "items": { "$ref": "#/definitions/category" }
+    },
+    "channels": {
+      "type": "array",
+      "description": "逻辑内容发布方(Channel)列表，页面2 卡片与页面3 分类的基本单位",
+      "items": { "$ref": "#/definitions/channel" }
+    },
+    "sources": {
+      "type": "array",
+      "description": "采集配置(Source)列表，每条 = 一次「去哪里拿数据」",
+      "items": { "$ref": "#/definitions/source" }
+    }
+  },
+  "definitions": {
+    "category": {
+      "type": "object",
+      "required": ["key", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string",
+          "enum": ["news", "tech_media", "tech_blog", "ai", "dev_community", "product_design", "podcast", "video", "security", "opensource", "other"]
+        },
+        "label": { "type": "string", "description": "中文显示名", "examples": ["新闻资讯"] },
+        "color": { "type": "string", "description": "MUI/Tailwind 可用的色值或调色板 key", "examples": ["#1976d2"] }
+      }
+    },
+    "channel": {
+      "type": "object",
+      "description": "逻辑发布方。一个 Channel ↔ 多个 Source。",
+      "required": ["id", "name", "homepage", "category", "enabled", "createdAt", "updatedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,63}$", "description": "渠道唯一标识(主键，kebab-case)", "examples": ["ruanyifeng-blog"] },
+        "name": { "type": "string", "description": "渠道名称", "examples": ["阮一峰的网络日志"] },
+        "homepage": { "type": "string", "format": "uri", "description": "渠道首页地址", "examples": ["https://www.ruanyifeng.com/blog/"] },
+        "category": {
+          "type": "array",
+          "minItems": 1,
+          "description": "分类(多标签)，权威来源=显式配置",
+          "items": { "type": "string", "enum": ["news", "tech_media", "tech_blog", "ai", "dev_community", "product_design", "podcast", "video", "security", "opensource", "other"] }
+        },
+        "enabled": { "type": "boolean", "description": "渠道总开关，关闭后不展示(其 Source 亦不采集)", "default": true },
+        "displayLimit": { "type": "integer", "minimum": 1, "maximum": 100, "default": 10, "description": "页面2 该渠道卡片默认展示条数" },
+        "icon": { "type": "string", "description": "图标 URL 或首字母占位", "examples": ["阮"] },
+        "language": { "type": "string", "description": "BCP-47 语言标签", "examples": ["zh-CN", "en"] },
+        "weight": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.5, "description": "渠道权重(热点公式 channelWeight 分量)，0~1" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "源创建时间" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "源更新时间" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "description": "采集配置。一个 Channel 可有多个 Source。",
+      "required": ["id", "channelId", "name", "type", "url", "enabled", "createdAt", "updatedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,63}$", "description": "源唯一标识(主键)", "examples": ["ruanyifeng-blog-atom"] },
+        "channelId": { "type": "string", "description": "所属渠道 id(外键 → channels[].id)", "examples": ["ruanyifeng-blog"] },
+        "name": { "type": "string", "description": "源名称(通常=渠道名，多源时用于区分)", "examples": ["阮一峰 Atom"] },
+        "type": {
+          "type": "string",
+          "enum": ["rss", "atom", "json_feed", "local_json", "local_csv", "feishu_bitable", "notion_db", "api"],
+          "description": "源类型，决定使用哪个接入器"
+        },
+        "url": { "type": "string", "description": "源地址：HTTP(S) URL 或仓库内相对路径(本地文件)", "examples": ["https://www.ruanyifeng.com/blog/atom.xml", "data/local/feeds.json"] },
+        "enabled": { "type": "boolean", "default": true, "description": "源开关，关闭后不采集" },
+        "auth": { "$ref": "#/definitions/auth" },
+        "fieldMapping": { "$ref": "#/definitions/fieldMapping" },
+        "interval": { "type": "integer", "minimum": 5, "default": 30, "description": "该源抓取间隔(分钟)，覆盖全局 cron；调度器据此跳过未到期的源" },
+        "language": { "type": "string", "description": "源默认语言", "examples": ["zh-CN"] },
+        "pagination": { "$ref": "#/definitions/pagination" },
+        "headers": { "type": "object", "description": "附加请求头(不得放密钥值，仅静态头如 Accept)", "additionalProperties": { "type": "string" } },
+        "notes": { "type": "string", "description": "备注(如「待核实连通性」)" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "lastFetchAt": { "type": "string", "format": "date-time", "description": "最近一次抓取时间(由采集脚本回写)" },
+        "lastStatus": { "type": "string", "enum": ["ok", "error", "empty", "unknown"], "default": "unknown", "description": "最近抓取状态" },
+        "lastError": { "type": "string", "description": "最近错误摘要(截断，不含敏感信息)" },
+        "etag": { "type": "string", "description": "最近响应的 ETag，用于增量条件请求(If-None-Match)" },
+        "lastModified": { "type": "string", "description": "最近响应的 Last-Modified，用于增量条件请求(If-Modified-Since)" }
+      }
+    },
+    "auth": {
+      "type": "object",
+      "description": "鉴权引用。绝不允许存放明文密钥，仅存放引用名/环境变量名。",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "enum": ["none", "env", "actions_secret", "bearer_env", "header_env", "query_env"] },
+        "ref": { "type": "string", "description": "引用名：本地取 .env 变量名，CI 取 Actions Secrets 名(${{ secrets.X }})", "examples": ["FEISHU_APP_TOKEN"] },
+        "headerName": { "type": "string", "description": "当 type=header_env 时，注入的请求头名", "examples": ["Authorization"] },
+        "scheme": { "type": "string", "description": "鉴权前缀", "examples": ["Bearer"] },
+        "note": { "type": "string", "description": "注入方式说明" }
+      }
+    },
+    "fieldMapping": {
+      "type": "object",
+      "description": "异构源 → 内部 Item 字段的映射规则。补充逻辑见 docs/data-model/README.md 归一化映射表。",
+      "required": ["mode", "map"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "type": "string", "enum": ["jsonpath", "table", "header"], "description": "jsonpath=通用 API/JSON；table=飞书/Notion 列名→字段；header=CSV 表头→字段" },
+        "itemsPath": { "type": "string", "description": "jsonpath 模式下条目数组的路径", "examples": ["$.data.list[*]", "$.items[*]"] },
+        "map": {
+          "type": "object",
+          "description": "内部字段名 → 来源字段路径/列名/表头",
+          "additionalProperties": { "type": "string" }
+        },
+        "typeCoercion": {
+          "type": "object",
+          "description": "需要类型转换的字段：字段 → 目标类型",
+          "additionalProperties": { "type": "string", "enum": ["string", "number", "boolean", "date", "array"] }
+        },
+        "defaults": { "type": "object", "description": "缺失字段的兜底值", "additionalProperties": true }
+      }
+    },
+    "pagination": {
+      "type": "object",
+      "description": "分页/翻页策略",
+      "additionalProperties": false,
+      "properties": {
+        "strategy": { "type": "string", "enum": ["none", "page", "offset", "cursor", "link_header"], "default": "none" },
+        "pageParam": { "type": "string", "description": "页码参数名", "examples": ["page"] },
+        "pageSizeParam": { "type": "string", "examples": ["page_size"] },
+        "pageSize": { "type": "integer", "default": 100 },
+        "offsetParam": { "type": "string", "examples": ["offset"] },
+        "cursorParam": { "type": "string", "examples": ["page_token"] },
+        "cursorPath": { "type": "string", "description": "响应中下一页游标的 jsonpath", "examples": ["$.data.next_page_token"] },
+        "maxPages": { "type": "integer", "default": 20, "description": "翻页上限，防失控" }
+      }
+    }
+  }
+}
