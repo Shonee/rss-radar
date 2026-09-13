@@ -28,7 +28,13 @@ export const DEFAULT_WEIGHTS: HotScoreWeights = {
   halfLifeHours: DEFAULT_HALF_LIFE_HOURS,
 };
 
-/** 前端降级默认权重：来源 config/site-config.json → analysis.weights */
+/**
+ * 前端降级默认权重：来源 config/site-config.json → analysis.weights。
+ *
+ * 该配置与 scripts/collect/lib/hot-score.mjs 的 DEFAULT_WEIGHTS 的一致性，
+ * 由 scripts/collect/__tests__/weights-drift.test.mjs 守卫（容差 1e-9）；
+ * 与 DEFAULT_WEIGHTS 的数值一致性由 src/services/__tests__/hot-score-parity.test.ts 守卫。
+ */
 export const CONFIG_WEIGHTS: HotScoreWeights = { ...DATA_WEIGHTS };
 
 export interface HotScoreContext {

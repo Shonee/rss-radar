@@ -29,11 +29,10 @@
     "halfLifeHours": 6,
     "weights": {
       "sourceOverlap": 0.4,
-      "frequency": 0.25,
-      "recency": 0.2,
+      "recency": 0.25,
+      "frequency": 0.2,
       "channelWeight": 0.1,
-      "keywordHeat": 0.05,
-      "halfLifeHours": 6
+      "keywordHeat": 0.05
     },
     "useLLM": false
   },

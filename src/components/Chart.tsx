@@ -10,13 +10,15 @@
 import { tokens } from '../theme/tokens';
 import EmptyState from './EmptyState';
 
-export interface TrendPoint {
+/** 图表数据点（{date, value}）。命名为 ChartPoint 以避免与 services 层
+ *  historyClient.ts 的 TrendPoint（{date,totalItems,activeChannels}）冲突。 */
+export interface ChartPoint {
   date: string;
   value: number;
 }
 
 export interface TrendChartProps {
-  data: TrendPoint[];
+  data: ChartPoint[];
   /** 系列名（原样用于 aria-label，Recharts 兼容位） */
   series?: string;
   height?: number;

@@ -7,7 +7,7 @@ export { default as StatusBadge, STATUS_META, urlStatusToKind, healthToKind } fr
 export type { StatusKind, StatusMeta } from './StatusBadge';
 export { TrendChart, PieChart, BarChart } from './Chart';
 export type {
-  TrendPoint,
+  ChartPoint,
   TrendChartProps,
   PieDatum,
   PieChartProps,

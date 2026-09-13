@@ -108,7 +108,14 @@ export async function main() {
   // 2.5) 报告生成（T-P2-05）
   try {
     const snap = JSON.parse(await readFile(proj.snapshotPath, 'utf8'));
-    const rpt = writeReport(outRoot, snap, { channelWeights });
+    // 透传 siteConfig 的 5 维度权重 + 半衰期，使 `analysis.weights` / `analysis.halfLifeHours`
+    // 真正生效（此前只传 channelWeights，导致 config 权重成为 dead config）。
+    // 链路：main → writeReport → buildReport → analyzeSnapshot（缺省回落 DEFAULT_WEIGHTS）。
+    const rpt = writeReport(outRoot, snap, {
+      channelWeights,
+      weights: siteConfig?.analysis?.weights,
+      halfLifeHours: siteConfig?.analysis?.halfLifeHours,
+    });
     console.log(`[collect] wrote ${rpt.path}  hotList=${rpt.report.hotList.length}  keywords=${rpt.report.keywords.length}`);
   } catch (e) {
     console.warn(`[collect] report step skipped: ${e.message}`);

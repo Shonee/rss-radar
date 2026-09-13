@@ -90,15 +90,20 @@ export const TIME_RANGES: Array<'today' | '3h' | '6h'> = (
   ]
 ).filter((r): r is 'today' | '3h' | '6h' => r === 'today' || r === '3h' || r === '6h');
 
-/** 热点公式权重（前端降级现算时使用，来源 analysis.weights） */
+/**
+ * 热点公式权重（前端降级现算时使用，来源 analysis.weights）。
+ *
+ * 口径权威：scripts/collect/lib/hot-score.mjs 的 DEFAULT_WEIGHTS。
+ * 配置与代码的一致性由 scripts/collect/__tests__/weights-drift.test.mjs 守卫（容差 1e-9）；
+ * 下列 `??` 兜底值与 DEFAULT_WEIGHTS 保持一致，避免配置缺键时反向漂移。
+ */
 export const DATA_WEIGHTS: HotScoreWeights = {
   sourceOverlap: siteConfigJson.analysis?.weights?.sourceOverlap ?? 0.4,
-  frequency: siteConfigJson.analysis?.weights?.frequency ?? 0.25,
-  recency: siteConfigJson.analysis?.weights?.recency ?? 0.2,
+  recency: siteConfigJson.analysis?.weights?.recency ?? 0.25,
+  frequency: siteConfigJson.analysis?.weights?.frequency ?? 0.2,
   channelWeight: siteConfigJson.analysis?.weights?.channelWeight ?? 0.1,
   keywordHeat: siteConfigJson.analysis?.weights?.keywordHeat ?? 0.05,
-  halfLifeHours:
-    siteConfigJson.analysis?.weights?.halfLifeHours ?? siteConfigJson.analysis?.halfLifeHours ?? 6,
+  halfLifeHours: siteConfigJson.analysis?.halfLifeHours ?? 6,
 };
 
 /** display.hotListSize 默认值 */

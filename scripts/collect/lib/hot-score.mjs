@@ -9,7 +9,15 @@
 //     Z_channel= channelWeights[channelId] or default
 //     Z_kw     = min(topicHits / 5, 1)     关键词命中度（0~1，归一化）
 
-const DEFAULT_WEIGHTS = Object.freeze({
+/**
+ * 代码侧权威默认权重（ARCHITECTURE §5.2）。
+ *
+ * 具名导出（`DEFAULT_WEIGHTS` / `DEFAULT_HALF_LIFE_HOURS`）供 `weights-drift.test.mjs`
+ * 断言 `config/site-config.json → analysis.weights` 与之一致（容差 1e-9），
+ * 防止「配置文件与代码口径漂移」（历史 bug：frequency/recency 曾写反）。
+ * 前端 `src/services/hotScore.ts` 的 CONFIG_WEIGHTS 亦以此为对齐基准。
+ */
+export const DEFAULT_WEIGHTS = Object.freeze({
   sourceOverlap: 0.40,
   recency: 0.25,
   frequency: 0.20,
@@ -17,7 +25,7 @@ const DEFAULT_WEIGHTS = Object.freeze({
   keywordHeat: 0.05,
 });
 
-const DEFAULT_HALF_LIFE_HOURS = 6;
+export const DEFAULT_HALF_LIFE_HOURS = 6;
 const LOG_E_2 = Math.LN2;
 
 /**
