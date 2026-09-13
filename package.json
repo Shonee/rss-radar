@@ -17,7 +17,8 @@
     "smoke": "bash scripts/smoke/run.sh",
     "validate": "node scripts/validate-schema.mjs",
     "collect": "node scripts/collect/index.mjs",
-    "collect:once": "node scripts/collect/index.mjs --once"
+    "collect:once": "node scripts/collect/index.mjs --once",
+    "seed:history": "node scripts/dev/seed-history.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.13.0",
