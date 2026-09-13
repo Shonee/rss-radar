@@ -2,9 +2,11 @@
 // P1 占位：最小协议小写/host 小写/去 fragment/去尾斜杠
 // P2 完整：R1~R12 全规则；R11/R12 默认关（按源开关化）
 //
-// lastStatus 待 P2-B：P1 QA 裁决 C 指出 lastStatus 持久化字段缺失。
-//   待 P2-B URL 健康检查任务接入时，sources.json schema 增 lastFetchAt /
-//   lastStatus / lastError 字段，并接上 lib/http-health.mjs 的状态机。
+// lastStatus 持久化已落地（闭环 P1 QA 裁决 C + P2-A.1 裁决 C）：
+//   - sources.schema.json 增 lastFetchAt / lastStatus / lastError 字段
+//   - lastStatus enum 扩展为 urlStatus 五态（ok / moved / blocked / dead / unknown）
+//   - 由 scripts/collect/url-health.mjs 的 persistSourceHealth() 写回
+//   - 本模块只做 URL 标准化，状态机 + 同 host 串行见 url-health.mjs
 import { fold } from './text.mjs';
 
 // R2 黑名单（严格按 ARCHITECTURE §4.1）
