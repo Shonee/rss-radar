@@ -289,6 +289,10 @@ window.RR = (function () {
     var feedHtml = feedUrl
       ? '<button type="button" class="btn btn-ghost btn-icon" title="Feed 源地址：' + esc(feedUrl) + '" aria-label="查看 Feed 源地址" data-feed="' + esc(feedUrl) + '">' + ICONS.source + '</button>'
       : '';
+    // v1.3 C：看板卡片增加官网跳转图标（ch.homepage 有则展示，无则不展示）
+    var homepageHtml = ch.homepage
+      ? '<a class="btn btn-ghost btn-icon" href="' + esc(ch.homepage) + '" target="_blank" rel="noopener" title="打开渠道首页：' + esc(ch.homepage) + '" aria-label="打开渠道首页">' + ICONS.external + '</a>'
+      : '';
 
     return '' +
       '<article class="card chan-card' + (st.key === 'error' ? ' is-failed' : '') + '">' +
@@ -298,7 +302,7 @@ window.RR = (function () {
             '<a class="chan-name" href="' + esc(ch.homepage) + '" target="_blank" rel="noopener" title="打开渠道首页">' + esc(ch.name) + '</a>' +
             '<div class="chan-sub">' + cats + statusEl(ch.id) + '</div>' +
           '</div>' +
-          feedHtml +
+          feedHtml + homepageHtml +
         '</div>' +
         '<div class="chan-stats">' +
           '<span>最后更新：<strong>' + esc(lastUpdated ? formatRelative(lastUpdated) : '—') + '</strong></span>' +
