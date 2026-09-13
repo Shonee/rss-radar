@@ -452,3 +452,64 @@ node /tmp/rrqa/probe_r2.mjs      # 黄条重叠 + 跨页口径
 > - E 聚合流迁到 index.html，about.html 接管旧引导，slogan 375 隐藏 + title 兜底
 > - F 侧栏从"近 2 小时"改为"近 3 小时"
 > - smoke-test 三态：EXIT 0（PASS）/ 2（DOM 未验证），P3-7 行为保留
+
+---
+
+## v1.4 验收（2026-09-13）
+
+**范围**：master HEAD `541218d`，两个 commit——`7f68787` A：mock-data URL 修正为真实可访问（+334/-334，仅 `prototype/assets/js/mock-data.js`）；`541218d` B：docs 首次入库 + URL 健康检查增补（仅 `docs/`，21 个文件 +4694 行）。验收基准：PRD §5.12（F-108~F-110）、ARCHITECTURE §15、data-model schema/README。
+
+### A. mock URL 修正验证 —— 通过（11/11 可访问 + 5/5 标题语义匹配）
+
+WebFetch 逐条实测（判据：HTTP 200/301/302/反爬=PASS，404/timeout=FAIL）：
+
+| # | URL | 结果 | mock 标题 vs 实际标题 |
+|---|-----|------|----------------------|
+| 1 | ruanyifeng.com/.../weekly-issue-412.html | PASS 200 | 一致（第 412 期：禁止 issue，只用 PR） |
+| 2 | sspai.com/post/114461 | PASS 200 | 一致（与 AI 搏斗失败后重新开始找工作…） |
+| 3 | tech.meituan.com/.../Agent-Evaluation-White-Paper-01.html | PASS 200 | 一致（《Agent 评测白皮书》系列01） |
+| 4 | news.ycombinator.com/item?id=49672510 | PASS 200 | 一致（We must pace the frontier，574 points/807 评论） |
+| 5 | techcrunch.com/.../automattic-confirms-mullenweg… | PASS 200 | 一致（Automattic confirms Mullenweg has returned as CEO…） |
+| 6 | arxiv.org/abs/2609.11916 | PASS 200 | 一致（Can Edge-Deployable VLMs Identify Species?） |
+| 7 | ithome.com/1/001/698.htm | PASS 200 | 一致（绿联 Nexode Air Slim 100W） |
+| 8 | 36kr.com/p/3981147673345033 | PASS 200 | 一致（物理AI企业自研WMM世界机理模型） |
+| 9 | github.blog/.../marketing-ops-as-code… | PASS 200 | 一致（Marketing ops as code…） |
+| 10 | v2ex.com/t/1241336 | PASS 200 | 跨源条目 it_9f2c1a7b3e5d 的 sources[] 命中（见"观察"） |
+| 11 | huggingface.co/blog/sheebz/there-is-no-ai-arms-race | PASS 200 | 一致（There Is No AI Arms Race…） |
+
+node 侧全量扫描（67 条 items）：item 级 URL 0 重复、item+sources URL 100% `https://`、0 条 placeholder/example.com 残留。
+
+**观察（P3，不阻塞）**：跨源条目 `it_9f2c1a7b3e5d`（阮一峰周刊 412 期）的第二个源 `v2ex.com/t/1241336` 实际帖子标题为《有人买了中转站 6TB 的数据…》，与周刊主题无关——URL 本身真实可访问（验收判据满足），但"跨源重合"的语义配对不真实。mock 演示数据可接受，真实实现时跨源聚合需按内容相似度判定。
+
+### B. docs 增补审查 —— 2 处缺口（已上报 team-lead，不回退工程师）
+
+**通过项**：
+- `snapshot.schema.json`：Item 新增 `urlStatus`（enum ok/dead/moved/blocked）+ `urlCheckedAt`（date-time），**不在 required**，向后兼容 ✓
+- `data-model/README.md` §4.1 字段字典：urlStatus/urlCheckedAt 两行 🆕 在 ✓
+- `ARCHITECTURE.md` §15 URL 健康检查与失效降级（15.1 HEAD 校验/15.2 状态机/15.3 跨源优先级/15.4 前端降级/15.5 重试）+ §14.A v1.4 变更点表 ✓
+- `PRD.md` §5.12 F-108/F-109/F-110（P1）✓；行 476 统计行"合计 = 84 条（P0=47/P1=29/P2=8）" ✓
+
+**缺口 B-1（P2）**：`snapshot.example.json` 无 `blocked` 示例。5 条 items 仅 2 条赋 `urlStatus:"ok"`；按 §15.2 状态机设计意图（V2EX 反爬为现实案例），V2EX 条目（`it_9f2c1a7b3e5d` sources 中的 v2ex url、`it_4a2b8c0d6e1f`）应赋 `urlStatus:"blocked"` 作示例，实际未赋。schema 本身向后兼容不受影响，但示例未能演示四态中最有代表性的 blocked 态。
+
+**缺口 B-2（P2）**：PRD 文档内统计口径自相矛盾 + §13 疑似漏补。§13 待确认问题清单仅列到 Q20，无 Q21/Q22；C.3 统计表仍显示"功能条目 81"，与行 476 的 84 不一致（同文档两处矛盾）。
+
+### C. smoke-test 三态 —— 通过
+
+```
+node prototype/tools/smoke-test.mjs --no-dom
+  → 通过 29 / 失败 0 / 跳过 0，"SMOKE TEST PASS（DOM 未验证）"，EXIT=0 ✓
+node prototype/tools/smoke-test.mjs --chrome-path /nonexistent/no-chrome-here
+  → 数据层 29/0，"DOM 未验证：--chrome-path 指定的文件不存在"，EXIT=2 ✓
+```
+三态语义（0=全过 / 1=数据层失败 / 2=DOM 未验证）保留，P3-7 行为无退化。
+
+### D. 回归 —— 代码面 0 回归；DOM 渲染段受环境限制未执行（降级验收）
+
+- `git diff 323363b..HEAD -- prototype/`：仅 `mock-data.js`（+334/-334），**其余 JS/CSS/HTML 0 改动** → 代码回归面只有纯数据文件。
+- mock-data.js 为纯数据 + 派生函数，不含 DOM/渲染逻辑；v1.3 已做过 6 文档全量渲染回归（0 JS 报错），本轮无渲染逻辑变更，渲染回归风险≈0。
+- node 侧数据契约：跨页口径恒等（totalItems=ΣcategoryStats=itemsAfterDedup=57）、67 条 items、URL 全 https 无重复 ✓。
+- **环境限制声明**：CDP 真实渲染段（Chrome headless）本轮被桌面沙箱拦截（Chrome 写 `~/Library/.../RLZ/RlzStore.plist` 触发权限弹窗且被拒绝，按约定未重试）。该段验证待环境授权后可补跑（harness 已备好：`/tmp/rrqa/harness_v14.mjs`）。
+
+### 结论
+
+A/C 全过，D 代码面 0 回归（DOM 渲染段因环境沙箱降级，有等效静态证据 + 可补跑 harness）。**B 项 2 处缺口（example 无 blocked 示例、PRD 统计口径矛盾+§13 漏 Q21/Q22）已即时上报 team-lead 裁决，按指示不回退工程师。** 待 B 缺口处置结论 + D 段渲染补跑（或主理人接受降级）后，v1.4 方可宣告闭环。
