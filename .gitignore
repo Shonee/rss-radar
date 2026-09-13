@@ -1,0 +1,28 @@
+# 依赖
+node_modules/
+dist/
+.DS_Store
+*.log
+
+# 构建期与本地数据（不进版本库）
+public/data/today/
+public/data/history/
+public/data/latest.json
+tmp/
+
+# 环境与本地配置
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+Thumbs.db
+
+# 覆盖率
+coverage/
+.vitest-cache/

@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tailwind preflight 已关闭（tailwind.config.ts corePlugins.preflight: false）。
+   这里只放组件级小工具类；与 MUI CssBaseline 协同。 */
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+.brand {
+  font-weight: 600;
+  color: var(--color-text-1, #e6e8eb);
+}
