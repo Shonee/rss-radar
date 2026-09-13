@@ -2,26 +2,44 @@
 
 > 把散落在各处的 RSS 源，汇聚成一份每天更新的信息雷达与热点报告。
 
-[![P1 状态](https://img.shields.io/badge/P1-scaffold-blue)]() [![Node >=20](https://img.shields.io/badge/node-%3E%3D20-green)]() [![TS strict](https://img.shields.io/badge/TS-strict-blue)]()
+[![阶段](https://img.shields.io/badge/P3-frontend%2Bnotify-blue)]() [![Node >=20](https://img.shields.io/badge/node-%3E%3D20-green)]() [![TS strict](https://img.shields.io/badge/TS-strict-blue)]()
 
 ## 一句话
 
 RSS Radar = **多源 RSS 采集 → 去重聚合 → 当天报告**，纯静态前端 + GitHub Actions 自动化调度。可部署到 GitHub Pages 或 Cloudflare Pages（Direct Upload）。
 
+## 截图
+
+| 页面1 聚合热榜流（1280） | 页面1（375 移动端） |
+|---|---|
+| ![页面1](docs/qa/screenshots/p1-1280.png) | ![页面1 移动端](docs/qa/screenshots/p1-375.png) |
+
+| 页面3 分析报告（1280） | 页面4 历史趋势与回看（1280） |
+|---|---|
+| ![页面3](docs/qa/screenshots/p3-1280.png) | ![页面4](docs/qa/screenshots/p4-1280.png) |
+
+> 截图取自 `docs/qa/screenshots/`。当前仓库内已有页面1/3/4 的实机截图，**页面2（渠道看板）截图尚未补齐**。
+
 ## 5 分钟快速开始
 
 ```bash
-# 1. 克隆与安装
+# 1. 克隆与安装（内网默认镜像不可用，必须指定 registry，见下）
 git clone <your-fork>/rss-radar && cd rss-radar
 npm install --registry=https://registry.npmmirror.com
-```
 
-# 2. 跑一次采集（写入 ./tmp/today/snapshot-YYYY-MM-DD.json）
+# 2. 跑一次采集
+#    产物：tmp/deploy/today/{events-<date>.ndjson,snapshot-<date>.json,report-<date>.json,latest.json}
+#    dev bridge 会同步复制到 public/data/today/，供本地页面读取
 npm run collect:once
 
-# 3. 启动 dev server，浏览器打开 http://localhost:5173/#/
+# 3.（可选）生成本地历史数据，供页面4 联调
+npm run seed:history
+
+# 4. 启动 dev server，浏览器打开 http://localhost:5173/#/
 npm run dev
 ```
+
+> 路由用 `HashRouter`，所以地址带 `#/`：`http://localhost:5173/#/`（页面1）、`#/channels`、`#/report`、`#/history`、`#/about`。
 
 ### ⚠️ 安装依赖必须指定 registry（内网默认镜像已挂）
 
@@ -53,17 +71,85 @@ npm config set registry https://registry.npmmirror.com --location=user
 
 | 路径 | 作用 |
 |---|---|
-| `src/` | 前端 React + MUI + Tailwind 源码 |
-| `src/types/` | 数据模型 TS 类型（9 份 schema 手写） |
-| `scripts/collect/` | 采集器：连接器 + 排除 + 归一化 + 编排 |
-| `scripts/validate-schema.mjs` | ajv 校验 9 份 schema |
-| `scripts/smoke/` | smoke-test v2：产物契约断言 |
-| `config/` | 站点默认配置（sources / exclusions / notify / …） |
-| `docs/` | PRD / ARCHITECTURE / 数据模型 / 实施计划 |
+| `src/` | 前端 React + MUI + Tailwind 源码（5 条路由，见下） |
+| `src/pages/` | 页面1 聚合热榜流 / 页面2 渠道看板 / 页面3 分析报告 / 页面4 历史趋势与回看 / 关于 |
+| `src/components/` | 公共组件库（ItemCard / ChannelCard / Chart / NotifyStatusPanel / …） |
+| `src/hooks/` | `useSnapshot` / `useReport` / `useHistory` / `useNotifyStats` / `useUserPrefs` … |
+| `src/services/` | `dataClient` / `historyClient` / `notifyStatsClient` / `hotScore` / `time` |
+| `src/types/` | 数据模型 TS 类型（据 schema 手写） |
+| `scripts/collect/` | 采集器：连接器（8 种 type）+ 排除 + 去重 + 归一化 + 编排 |
+| `scripts/notify/` | 通知模块：4 渠道适配器 + 模板 + 节流幂等 |
+| `scripts/dev/` | 本地开发辅助（`seed-history.mjs`） |
+| `scripts/validate-schema.mjs` | ajv 校验 config / schema |
+| `scripts/smoke/` | smoke-test：产物契约断言 + e2e 管线 |
+| `config/` | 站点默认配置（sources / exclusions / notify / site-config / …） |
+| `docs/` | PRD / ARCHITECTURE / 数据模型 / 实施计划 / 本套使用文档 |
 
 更详细的目录解释见 [`docs/ARCHITECTURE.md` §8](./docs/ARCHITECTURE.md)。
 
-## 6 个 workflow（P4 阶段出，P1 仅占位）
+## 5 条路由与代码分割
+
+前端 5 条路由（`src/App.tsx`）：
+
+| 路由 | 页面 |
+|---|---|
+| `/` | 页面1 聚合热榜流（底部含只读「通知状态」面板） |
+| `/channels` | 页面2 渠道看板 |
+| `/report` | 页面3 分析报告（只做当天） |
+| `/history` | 页面4 历史趋势与回看 |
+| `/about` | 关于（通知配置说明 + 数据来源） |
+
+- **主题**：**浅色单主题**（架构决策 D10；`src/theme/index.ts`，`palette.mode: 'light'`）。P1 原型曾误用 dark + 紫色主色，已在 `5e8eebc` 纠正。
+- **路由级代码分割**：页面1 与外壳静态导入（首屏关键路径），页面2/3/4/关于用 `React.lazy` 懒加载，各自独立 chunk；MUI / React / Router 由 `vite.config.ts` 的 `manualChunks` 拆到 vendor chunk。当前 `npm run build` 产物主 chunk（`index-*.js`）约 **43 kB**（gzip ≈ 16 kB）。
+
+## 常用脚本（`package.json` 全集）
+
+```bash
+# 开发与构建
+npm run dev          # 启动 vite dev server（0.0.0.0:5173）
+npm run build        # tsc -b && vite build → dist/
+npm run preview      # 预览构建产物（0.0.0.0:4173）
+npm run typecheck    # tsc -b --noEmit
+
+# 测试（npm test = node:test + vitest 两套）
+npm test             # = npm run test:node && npm run test:vitest
+npm run test:node    # node --test（collect / smoke / notify / hooks 的 .test.mjs）
+npm run test:vitest  # vitest run（前端 services / hooks 的单测）
+npm run test:watch   # node --test --watch
+npm run test:e2e     # node scripts/smoke/e2e-pipeline.mjs（mock fixture 全管线）
+
+# 校验与采集
+npm run smoke        # bash scripts/smoke/run.sh（collect → validate → 产物契约断言）
+npm run validate     # ajv 校验 config/*.json
+npm run collect      # node scripts/collect/index.mjs
+npm run collect:once # node scripts/collect/index.mjs --once（跑一次全部 enabled 源）
+npm run seed:history # node scripts/dev/seed-history.mjs（本地历史数据种子，幂等）
+```
+
+### 本地历史数据：`npm run seed:history`
+
+项目上线初期没有真实历史数据，页面4（历史趋势与回看）无法验证。`npm run seed:history` **走与线上完全相同的采集管线**（`appendEvents → projectSnapshot → analyzeSnapshot → writeReport → rolloverIfNewDay`）模拟 N 天（默认 3）数据，产出与 `deploy` 分支一致的历史数据布局：
+
+```
+public/data/history/
+├─ history-index.json          # 滚动 days[]（多天聚合）
+├─ archive-index.json          # 年度归档元数据（演示 >1 年只读态）
+└─ YYYY/MM/
+   ├─ items.ndjson             # 月度精简行
+   ├─ snapshot-<date>.json     # 按天归档快照
+   └─ report-<date>.json       # 按天报告
+```
+
+**幂等**：每次运行先清空 staging 与目标 `history/` 再整体重建，重复运行结果一致，不产生脏数据。
+
+```bash
+npm run seed:history              # 3 天
+node scripts/dev/seed-history.mjs --days 7   # 7 天
+```
+
+## 6 个 workflow（**P4 待做，当前一个都还没创建**）
+
+> ⚠️ `.github/workflows/` 目录**尚不存在**，下列 6 个 workflow 均属 P4 阶段交付物，本文档仅列职责，不代表已实现。
 
 | Workflow | 职责 |
 |---|---|
@@ -74,22 +160,9 @@ npm config set registry https://registry.npmmirror.com --location=user
 | `deploy-cf-pages.yml` | 手动触发，Direct Upload 到 CF Pages |
 | `keepalive.yml` | 每周 trivial commit 防 Actions 休眠 |
 
-## 三个常用脚本
-
-```bash
-# 校验 9 份 config 是否符合 schema
-npm run validate
-
-# 跑 vitest（排除规则、URL 标准化等）
-npm test
-
-# 跑 smoke：collect → validate → 产物契约断言
-npm run smoke
-```
-
 ## 数据契约
 
-数据模型 9 份 JSON Schema 在 [`docs/data-model/schema/`](./docs/data-model/schema/)，对应 examples 在 [`docs/data-model/examples/`](./docs/data-model/examples/)。
+数据模型 JSON Schema 在 [`docs/data-model/schema/`](./docs/data-model/schema/)，对应 examples 在 [`docs/data-model/examples/`](./docs/data-model/examples/)。
 
 ### CategoryKey 启用集 vs 预留集
 
@@ -100,7 +173,7 @@ npm run smoke
 | **MVP 启用集（8 类）** | `tech_blog` / `ai` / `news` / `dev_community` / `podcast` / `newsletter` / `finance` / `other` | `config/categories.json` + `config/keyword-rules.json` 已启用，前端会真实渲染 |
 | **预留扩展位（5 类）** | `tech_media` / `product_design` / `video` / `security` / `opensource` | schema 合法但当前无渠道使用；新增渠道时需同步扩 `config/categories.json` |
 
-**为什么是 13 而不是 8 或 11**（P2-B.2 决断，此前此处标注「P3 二选一」）：
+**为什么是 13 而不是 8 或 11**（P2-B.2 决断）：
 
 - `newsletter` / `finance` 原本只在 config 侧启用、**不在 schema enum 中** → `config/sources.json` 的 `ruanyifeng-weekly` 渠道带 `newsletter` 分类时 ajv 直接报错
 - 修法选的是**扩 enum 而非删 config 值**，理由是：`scripts/collect/classify.mjs` 读 `config/keyword-rules.json`，其中 `newsletter` 规则（周报/周刊/weekly/Newsletter 等关键词）**会在运行时把条目打上 `newsletter` 分类**——只删 `sources.json` 里的一个值并不能阻止它再次出现，属于治标
@@ -109,13 +182,13 @@ npm run smoke
 
 新增分类的正确姿势：改 `config/categories.json` → 改 `config/keyword-rules.json` → 改 `sources.schema.json#/definitions/categoryKey` → 改 `src/types/models.ts` 的 `CategoryKey`，四处同步。
 
-### L5 关键词 Jaccard 推迟到 P3
+### L1~L5 去重分级
 
 按 `docs/ARCHITECTURE.md §4.3`，去重引擎 L1~L5 分级中：
 
 - **L1 精确**（同 dedupKey）、**L2 标题完全一致**、**L3 标题相似**（SimHash + Dice 0.9）已实现（`scripts/collect/dedup.mjs`）
 - **L4 跨源同文章** 通过 `sourceCount ≥ 2` 体现（`buildMain` 派发 `sources[]`）
-- **L5 推迟**：关键词 Jaccard 主题重合当前未实现，推迟到 P3 阶段（页面 4 主题聚合时）再实现
+- **L5 关键词 Jaccard 主题重合**：**当前仍未实现**（`scripts/collect/dedup.mjs` 中仅保留说明注释，未产出 L5 标记）。这与 README 早期「推迟到 P3」的说法一致——P3 已落地前端与通知，L5 仍为未实现项。
 
 ### report.categoryStats 多分类计次语义
 
@@ -127,15 +200,25 @@ npm run smoke
 
 实现见 `scripts/collect/analyze.mjs`；schema 描述见 `docs/data-model/schema/report.schema.json`；语义留痕见 `docs/ARCHITECTURE.md §5`。
 
-> 分类集口径已在 **P2-B.2** 决断完成（扩 enum 到 13 类），不再是待办。详见上文「CategoryKey 启用集 vs 预留集」。
+## 深入文档
 
-## 已知限制（P1 范围外）
+| 主题 | 文档 |
+|---|---|
+| 完整使用流程（第一次配置 → 日常使用 → 排障） | [`docs/USAGE.md`](./docs/USAGE.md) |
+| 如何接入新源 / 新增来源类型 | [`docs/SOURCES.md`](./docs/SOURCES.md) |
+| 如何启用通知（邮箱 / 飞书 / 钉钉 / 企业微信） | [`docs/NOTIFY.md`](./docs/NOTIFY.md) |
+| 如何部署（本地 / GitHub Pages / Cloudflare Pages） | [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md) |
+| 架构设计 | [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) |
+| 实施计划 | [`docs/IMPLEMENTATION_PLAN.md`](./docs/IMPLEMENTATION_PLAN.md) |
+| 数据模型 | [`docs/data-model/README.md`](./docs/data-model/README.md) |
 
-- **P2 才做**：SimHash + Dice L3 去重、事件流 NDJSON 双写、跨天 rollover、月度 NDJSON、报告生成、URL 健康检查
-- **P3 才做**：完整 4 页面（页面2/3/4）+ 通知适配器
-- **P4 才做**：6 个 GitHub Actions workflow + 部署到 GH Pages / CF Pages + 7 份 docs（USAGE/SOURCES/NOTIFY/DEPLOYMENT/…）
-- **P5 才做**：端到端集成 + 回归 97 条断言移植
-- **lastStatus=error 持久化缺失**（P1 QA 裁决 C）：当前 `scripts/collect/index.mjs` 把错误写进 `stats.sources[].error`（stdout/stderr），但**未回写到 `config/sources.json` 的 `lastStatus`/`lastError` 字段**；归 T-P2-B（URL 健康检查 / source metadata 持久化）一并接
+## 已知限制（截至 P3）
+
+- **P2 已完成**：SimHash + Dice L3 去重、事件流 NDJSON 双写、跨天 rollover、月度 NDJSON、报告生成、URL 健康检查
+- **P3 已完成**：前端 5 条路由（4 页面 + 关于）、通知模块（4 渠道适配器 + 模板 + 节流幂等）、`seed:history` 历史种子
+- **P4 待做**：6 个 GitHub Actions workflow + 部署到 GH Pages / CF Pages + 其余 docs（VERIFICATION / CONTRIBUTING 等）
+- **L5 关键词 Jaccard 主题重合**：仍未实现（见上文「L1~L5 去重分级」）
+- **通知真实发送尚未验证**：`.github/workflows/notify.yml` 尚未创建，当前只在本地做过 dry-run 与 mock 单测；4 个渠道在 `config/notify.json` 中**全部 `enabled:false`**
 
 ## License
 
