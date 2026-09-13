@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0",
+  "updatedAt": "2026-09-13T00:00:00Z",
+  "rules": [
+    {
+      "id": "ex-block-jobs",
+      "level": "item",
+      "scope": "global",
+      "type": "keyword",
+      "value": ["招聘", "招人", "招前端", "招后端", "Hiring", "Hiring "],
+      "matchMode": "contains",
+      "caseSensitive": false,
+      "enabled": true,
+      "note": "全局屏蔽招聘类内容",
+      "hitCount": 0
+    },
+    {
+      "id": "ex-block-spam-domain",
+      "level": "item",
+      "scope": "global",
+      "type": "domain",
+      "value": ["spam.example.com", "*.ads.example"],
+      "matchMode": "contains",
+      "caseSensitive": false,
+      "enabled": true,
+      "note": "已知垃圾域名",
+      "hitCount": 0
+    },
+    {
+      "id": "ex-channel-disabled",
+      "level": "channel",
+      "scope": "global",
+      "value": [],
+      "enabled": false,
+      "note": "占位：手动添加要停用的 channel id 数组；enabled=false 不生效"
+    },
+    {
+      "id": "ex-block-category-other",
+      "level": "category",
+      "scope": "global",
+      "value": [],
+      "enabled": false,
+      "note": "占位：按 category 排除；P1 不启用"
+    }
+  ]
+}

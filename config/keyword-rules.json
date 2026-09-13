@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0",
+  "rules": [
+    {
+      "category": "ai",
+      "keywords": [
+        "AI", "AGI", "GPT", "LLM", "大模型", "机器学习", "深度学习", "神经网络",
+        "OpenAI", "Anthropic", "Claude", "Gemini", "DeepSeek", "Qwen", "GLM",
+        "transformer", "RAG", "agent", "Agent", "智能体", "prompt", "微调",
+        "embedding", "多模态", "diffusion", "生成式", "推理", "训练", "RLHF"
+      ]
+    },
+    {
+      "category": "tech_blog",
+      "keywords": [
+        "博客", "周报", "周刊", "weekly", "blog", "Newsletter",
+        "教程", "tutorial", "源码", "源码分析", "架构", "architecture",
+        "性能优化", "重构", "工程实践", "best practice"
+      ]
+    },
+    {
+      "category": "news",
+      "keywords": [
+        "新闻", "日报", "快讯", "breaking", "宣布", "发布",
+        "收购", "并购", "上市", "财报", "裁员", "融资"
+      ]
+    },
+    {
+      "category": "dev_community",
+      "keywords": [
+        "讨论", "问答", "经验分享", "求教", "求助", "吐槽", "求助",
+        "Q&A", "discussion", "thread", "经验贴"
+      ]
+    },
+    {
+      "category": "podcast",
+      "keywords": [
+        "播客", "podcast", "episode", "访谈", "对谈", "主播"
+      ]
+    },
+    {
+      "category": "newsletter",
+      "keywords": [
+        "newsletter", "周报", "周刊", "邮件", "subscribers"
+      ]
+    },
+    {
+      "category": "finance",
+      "keywords": [
+        "股票", "股价", "财报", "市值", "IPO", "投资", "基金",
+        "ETF", "估值", "营收", "净利润", "现金流"
+      ]
+    },
+    {
+      "category": "other",
+      "keywords": []
+    }
+  ]
+}

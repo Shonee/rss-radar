@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0",
+  "defaults": {
+    "timezone": "Asia/Shanghai",
+    "dailyReportTime": "08:00",
+    "retry": {
+      "max": 2,
+      "backoffMs": [1000, 3000]
+    }
+  },
+  "channels": [
+    {
+      "id": "email-main",
+      "channelType": "email",
+      "enabled": false,
+      "events": ["dailyReport", "realtime"],
+      "refs": { "password": "SMTP_PASSWORD" },
+      "smtpHost": "smtp.example.com",
+      "smtpPort": 465,
+      "secure": true,
+      "from": "radar@example.com",
+      "to": ["user@example.com"],
+      "note": "占位：P1 不启用；启用前在 GitHub Secrets 存 SMTP_PASSWORD"
+    },
+    {
+      "id": "feishu-webhook",
+      "channelType": "feishu",
+      "enabled": false,
+      "events": ["realtime"],
+      "refs": {},
+      "webhookRef": "FEISHU_WEBHOOK",
+      "note": "占位：P1 不启用；启用前在 GitHub Secrets 存 FEISHU_WEBHOOK"
+    },
+    {
+      "id": "dingtalk-webhook",
+      "channelType": "dingtalk",
+      "enabled": false,
+      "events": ["dailyReport"],
+      "refs": {},
+      "webhookRef": "DINGTALK_WEBHOOK",
+      "signSecretRef": "DINGTALK_SIGN_SECRET",
+      "note": "占位：P1 不启用；钉钉需要 sign secret"
+    },
+    {
+      "id": "wecom-webhook",
+      "channelType": "wecom",
+      "enabled": false,
+      "events": ["realtime"],
+      "refs": {},
+      "webhookRef": "WECOM_WEBHOOK",
+      "note": "占位：P1 不启用"
+    }
+  ],
+  "realtime": {
+    "enabled": false,
+    "hotScoreThreshold": 0.8,
+    "sourceCountThreshold": 3,
+    "maxPerDay": 10
+  },
+  "quietHours": "23:00-07:00"
+}

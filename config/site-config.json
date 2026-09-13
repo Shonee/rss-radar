@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "1.0",
+  "site": {
+    "title": "RSS Radar",
+    "slogan": "把散落在各处的 RSS 源，汇聚成一份每天更新的信息雷达与热点报告",
+    "dataBranch": "deploy",
+    "timezone": "Asia/Shanghai",
+    "footer": "© RSS Radar · 数据仅做索引，版权归原作者所有"
+  },
+  "display": {
+    "defaultChannels": [],
+    "cardLimit": 10,
+    "page1BatchSize": 20,
+    "defaultSort": "updatedAt",
+    "hotListSize": 10,
+    "showWordCloud": false,
+    "showSummary": true,
+    "density": "comfortable"
+  },
+  "filters": {
+    "enabledCategories": [],
+    "timeRanges": ["today", "2h", "6h"]
+  },
+  "analysis": {
+    "hotListSize": 10,
+    "keywordTopN": 50,
+    "titleSimilarityThreshold": 0.9,
+    "summaryMaxChars": 200,
+    "halfLifeHours": 6,
+    "weights": {
+      "sourceOverlap": 0.4,
+      "frequency": 0.25,
+      "recency": 0.2,
+      "channelWeight": 0.1,
+      "keywordHeat": 0.05,
+      "halfLifeHours": 6
+    },
+    "useLLM": false
+  },
+  "network": {
+    "timeoutMs": 15000,
+    "retries": 2,
+    "concurrency": 6,
+    "userAgent": "rss-radar-bot/1.0 (+https://github.com/<owner>/rss-radar)",
+    "respectRobots": true
+  },
+  "deploy": {
+    "branch": "deploy",
+    "pointerPath": "today/latest.json"
+  },
+  "history": {
+    "windowDays": 90,
+    "windowOptions": [90, 180, 365],
+    "visibleDays": 365,
+    "showArchive": true,
+    "indexPath": "history/history-index.json",
+    "archiveIndexPath": "history/archive-index.json"
+  },
+  "notify": {
+    "dailyReportTime": "08:00",
+    "quietHours": "23:00-07:00",
+    "realtime": {
+      "enabled": false,
+      "hotScoreThreshold": 0.8,
+      "sourceCountThreshold": 3,
+      "maxPerDay": 10
+    }
+  }
+}

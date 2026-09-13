@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0",
+  "categories": [
+    { "key": "tech_blog", "label": "技术博客", "color": "#7b1fa2" },
+    { "key": "ai", "label": "AI", "color": "#00897b" },
+    { "key": "news", "label": "新闻资讯", "color": "#455a64" },
+    { "key": "dev_community", "label": "开发者社区", "color": "#f57c00" },
+    { "key": "podcast", "label": "播客", "color": "#c2185b" },
+    { "key": "newsletter", "label": "Newsletter", "color": "#1976d2" },
+    { "key": "finance", "label": "金融", "color": "#388e3c" },
+    { "key": "other", "label": "其他", "color": "#6b7380" }
+  ]
+}
