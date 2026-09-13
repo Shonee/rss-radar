@@ -21,6 +21,7 @@
  *   退出码：0=全部 ok；1=全部失败；2=部分失败
  */
 import { readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -34,6 +35,7 @@ import { todayLocal, nowIso } from './lib/time.mjs';
 import { appendEvents, makeEvent } from './append-events.mjs';
 import { projectSnapshot } from './project-snapshot.mjs';
 import { makeRunId } from './lib/run-id.mjs';
+import { writeReport } from './report.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..', '..');
