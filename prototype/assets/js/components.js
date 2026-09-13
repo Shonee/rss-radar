@@ -209,7 +209,7 @@ window.RR = (function () {
         '<div class="container">' +
           '<div class="footer-links">' +
             NAV.map(function (n) { return '<a href="' + n.href + '">' + esc(n.label) + '</a>'; }).join('') +
-            '<a href="index.html">原型导航</a>' +
+            '<a href="about.html">关于网站</a>' +   // v1.3 E5：index.html 改为聚合流后，footer 旧"原型导航"链接指向新的 about.html
           '</div>' +
           '<p>' + esc(s.footer || '') + '</p>' +
           '<p class="muted">原型演示 · 数据为 Mock，结构对齐 docs/data-model/examples/ · 本页不发起任何真实网络请求。</p>' +
