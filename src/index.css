@@ -17,5 +17,5 @@ a {
 
 .brand {
   font-weight: 600;
-  color: var(--color-text-1, #e6e8eb);
+  color: var(--color-text, #1f2329);
 }
