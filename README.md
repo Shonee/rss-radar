@@ -64,6 +64,19 @@ npm run smoke
 
 数据模型 9 份 JSON Schema 在 [`docs/data-model/schema/`](./docs/data-model/schema/)，对应 examples 在 [`docs/data-model/examples/`](./docs/data-model/examples/)。
 
+### CategoryKey 启用集 vs 预留集
+
+`src/types/models.ts` 的 `CategoryKey` 是 **11 类 TypeScript 枚举**（news / tech_media / tech_blog / ai / dev_community / product_design / podcast / video / security / opensource / other），覆盖未来扩展位；而 `config/categories.json` 当前只列出 **8 类 MVP 启用集**（tech_blog / ai / news / dev_community / podcast / newsletter / finance / other）。
+
+差异说明：
+
+- `config/categories.json` = **当前实际启用的 8 类**（与 data-model README §2 中 P1 阶段固定命名一致）
+- `src/types/models.ts` 的 11 类枚举 = **schema 允许值 + 未来扩展位**（含 tech_media / product_design / video / security / opensource 等未在 MVP 启用集里的类）
+- `tech_media` / `product_design` / `video` / `security` / `opensource` 在 sources.schema.json 的 `channel.category` enum 中合法，但**当前 config 没有渠道用**；加入新渠道时需同步扩 `categories.json`
+- `newsletter` / `finance` 在 config/categories.json 已启用但**不在 schema enum 中**（见 docs/ARCHITECTURE.md §2.4 解释：这是 v1.1 增项，未回填 schema，待 T-P2-XX 统一对齐）
+
+P3 完整化时再做一次清理：要么 schema enum 收紧到 8 类，要么 config 展到 11 类，二选一。
+
 ## 已知限制（P1 范围外）
 
 - **P2 才做**：SimHash + Dice L3 去重、事件流 NDJSON 双写、跨天 rollover、月度 NDJSON、报告生成、URL 健康检查

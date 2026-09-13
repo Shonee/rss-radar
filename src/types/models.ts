@@ -322,7 +322,7 @@ export interface SiteConfig {
   };
   filters?: {
     enabledCategories?: CategoryKey[];
-    timeRanges?: Array<'today' | '2h' | '6h' | '24h'>;
+    timeRanges?: Array<'today' | '3h' | '6h' | '24h'>;
   };
   analysis?: {
     hotListSize?: number;

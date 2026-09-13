@@ -45,7 +45,7 @@
       "additionalProperties": false,
       "properties": {
         "enabledCategories": { "type": "array", "items": { "type": "string" }, "description": "允许筛选的分类；空=全部" },
-        "timeRanges": { "type": "array", "items": { "type": "string", "enum": ["today", "2h", "6h", "24h"] }, "default": ["today", "2h", "6h"] }
+        "timeRanges": { "type": "array", "items": { "type": "string", "enum": ["today", "3h", "6h", "24h"] }, "default": ["today", "3h", "6h"] }
       }
     },
     "analysis": {
