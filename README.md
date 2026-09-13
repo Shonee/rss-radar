@@ -75,6 +75,24 @@ npm run smoke
 - `tech_media` / `product_design` / `video` / `security` / `opensource` 在 sources.schema.json 的 `channel.category` enum 中合法，但**当前 config 没有渠道用**；加入新渠道时需同步扩 `categories.json`
 - `newsletter` / `finance` 在 config/categories.json 已启用但**不在 schema enum 中**（见 docs/ARCHITECTURE.md §2.4 解释：这是 v1.1 增项，未回填 schema，待 T-P2-XX 统一对齐）
 
+### L5 关键词 Jaccard 推迟到 P3
+
+按 `docs/ARCHITECTURE.md §4.3`，去重引擎 L1~L5 分级中：
+
+- **L1 精确**（同 dedupKey）、**L2 标题完全一致**、**L3 标题相似**（SimHash + Dice 0.9）已实现（`scripts/collect/dedup.mjs`）
+- **L4 跨源同文章** 通过 `sourceCount ≥ 2` 体现（`buildMain` 派发 `sources[]`）
+- **L5 推迟**：关键词 Jaccard 主题重合当前未实现，推迟到 P3 阶段（页面 4 主题聚合时）再实现
+
+### report.categoryStats 多分类计次语义
+
+`report-<date>.json` 的 `categoryStats[].itemCount` 走**多分类计次**——一条 item 同时属 `tech_blog` + `ai` 时，每个分类各计 1 次（与 L4 跨源数 `sourceCount` 维度独立互补）。因此：
+
+- `Σ categoryStats[].itemCount ≥ totalItems`（multi-label 自然放大）
+- 一条 item 属 N 个分类时，贡献 N 次计数
+- 想知道「去重后条目数」请用 `report.totalItems`；想知道「某分类下条数总和」用 `categoryStats[].itemCount`
+
+实现见 `scripts/collect/analyze.mjs`；schema 描述见 `docs/data-model/schema/report.schema.json`；语义留痕见 `docs/ARCHITECTURE.md §5`。
+
 P3 完整化时再做一次清理：要么 schema enum 收紧到 8 类，要么 config 展到 11 类，二选一。
 
 ## 已知限制（P1 范围外）

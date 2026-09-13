@@ -599,6 +599,8 @@ sequenceDiagram
 
 ## 5. 热点分析算法设计（PRD §10）
 
+> **categoryStats 多分类计次语义**：`categoryStats[].itemCount = Σ|item.category|`（多分类计次，**不去重**——一条 item 同时属 tech+ai 计 2 次）。这条规则让 `Σ categoryStats.itemCount ≥ totalItems`，但保持每分类独立统计；与 L4 跨源数 `sourceCount` 不同维度互补。
+
 ### 5.1 公式与归一化
 
 **归一化选型**：对**重尾**分量（`sourceCount`、`freq`、`kwHits`）用 **log 后最大值归一化**到 `[0,1]`；`decay` 与 `channelWeight` 本身已在 `[0,1]`。

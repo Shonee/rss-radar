@@ -1,6 +1,10 @@
 // lib/url-norm.mjs — URL 标准化 R1~R12（ARCHITECTURE §4.1）
 // P1 占位：最小协议小写/host 小写/去 fragment/去尾斜杠
 // P2 完整：R1~R12 全规则；R11/R12 默认关（按源开关化）
+//
+// lastStatus 待 P2-B：P1 QA 裁决 C 指出 lastStatus 持久化字段缺失。
+//   待 P2-B URL 健康检查任务接入时，sources.json schema 增 lastFetchAt /
+//   lastStatus / lastError 字段，并接上 lib/http-health.mjs 的状态机。
 import { fold } from './text.mjs';
 
 // R2 黑名单（严格按 ARCHITECTURE §4.1）

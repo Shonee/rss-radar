@@ -95,7 +95,7 @@
       "properties": {
         "category": { "type": "string" },
         "label": { "type": "string" },
-        "itemCount": { "type": "integer", "minimum": 0 },
+        "itemCount": { "type": "integer", "minimum": 0, "description": "该分类下条目计数（多分类计次；一条 item 属多分类时各计 1）" },
         "channelCount": { "type": "integer", "minimum": 0 },
         "ratio": { "type": "number", "minimum": 0, "maximum": 1, "description": "占当天总条数比例" }
       }
