@@ -462,6 +462,7 @@ window.RR = (function () {
 
   function bindGlobalClicks() {
     document.addEventListener('click', function (e) {
+      // 1) 跨源展开
       var toggle = e.target.closest('[data-toggle-sources]');
       if (toggle) {
         var id = toggle.getAttribute('data-toggle-sources');
@@ -472,9 +473,18 @@ window.RR = (function () {
         }
         return;
       }
+      // 2) Feed 源地址 toast
       var feed = e.target.closest('[data-feed]');
       if (feed) {
         toast('Feed 源地址：' + feed.getAttribute('data-feed'));
+        return;
+      }
+      // 3) v1.3 D：file:// 协议下 target=_blank 被浏览器拦截，显式 window.open
+      // （对所有四页面外链生效：item-title / 原文按钮 / 渠道主页 / 看板 / 配置入口等）
+      var link = e.target.closest('a[target="_blank"]');
+      if (link && link.href) {
+        window.open(link.href, '_blank', 'noopener,noreferrer');
+        e.preventDefault();
       }
     });
   }
