@@ -1,7 +1,8 @@
 /* =============================================================================
  * 页面1 — 聚合热榜流 交互逻辑
- * 对应 PRD §6.1：排序切换 / 渠道·分类·时间筛选 / 搜索 / 每批 20 条懒加载 /
+ * 对应 PRD §6.1：渠道·分类·时间筛选 / 搜索 / 每批 20 条懒加载 /
  *                NEW 徽标 / 「+N 源」跨源徽标 / 空态·异常态·加载态
+ * 注：排序已固定为 updatedAt 回落 publishedAt 综合倒序，不再提供手动切换（v1.3）。
  * ========================================================================== */
 (function () {
   'use strict';
@@ -9,7 +10,7 @@
   var MOCK = window.RR_MOCK;
 
   var state = {
-    sort: 'updatedAt',        // updatedAt | publishedAt
+    sort: 'updatedAt',        // 已废弃（v1.3）：排序固定为 updatedAt 回落 publishedAt 综合倒序；保留字段以兼容 RR_STORE 中可能存在的历史 page1Sort 值
     channels: {},             // channelId -> true
     categories: {},           // categoryKey -> true
     timeRange: 'today',       // today | 2h
@@ -43,7 +44,7 @@
     RR.renderChrome('page1');
     RR.bindGlobalClicks();
 
-    state.sort = window.RR_STORE.get().page1Sort || 'updatedAt';
+    // state.sort 已废弃（v1.3），排序固定为 updatedAt 回落 publishedAt 综合倒序
     state.batch = effectiveBatch();
     state.limit = state.batch;
 
@@ -134,10 +135,6 @@
    * ---------------------------------------------------------------------- */
   function renderToolbar() {
     el('toolbar').innerHTML =
-      '<div class="segmented" role="group" aria-label="排序方式">' +
-        '<button type="button" id="sort-updated" aria-pressed="' + (state.sort === 'updatedAt') + '">按更新时间</button>' +
-        '<button type="button" id="sort-published" aria-pressed="' + (state.sort === 'publishedAt') + '">按创建时间</button>' +
-      '</div>' +
       '<label class="visually-hidden" for="search-input">搜索标题或摘要</label>' +
       '<div class="grow" style="position:relative">' +
         '<input id="search-input" class="input" type="search" placeholder="搜索标题 / 摘要关键词…" value="' + RR.esc(state.q) + '" aria-label="搜索">' +
@@ -155,8 +152,6 @@
       state.limit = state.batch;
       renderList(true);
     });
-    el('sort-updated').addEventListener('click', function () { setSort('updatedAt'); });
-    el('sort-published').addEventListener('click', function () { setSort('publishedAt'); });
     el('batch-select').addEventListener('change', function (e) {
       state.batch = parseInt(e.target.value, 10) || 20;
       // 显式选择：标记为「用户已设置」，此后断点切换不再覆盖（P2-3）
@@ -169,15 +164,6 @@
       var open = layout.classList.toggle('side-open');
       e.target.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
-  }
-
-  function setSort(key) {
-    state.sort = key;
-    window.RR_STORE.set({ page1Sort: key });
-    el('sort-updated').setAttribute('aria-pressed', key === 'updatedAt');
-    el('sort-published').setAttribute('aria-pressed', key === 'publishedAt');
-    state.limit = state.batch;
-    renderList(true);
   }
 
   /* -------------------------------------------------------------------------
@@ -304,9 +290,10 @@
     });
 
     list.sort(function (a, b) {
-      var av = a[state.sort] || '', bv = b[state.sort] || '';
+      // 综合倒序：updatedAt 优先，无值回落 publishedAt；同值按渠道名稳定排序（v1.3）
+      var av = a.updatedAt || a.publishedAt || '';
+      var bv = b.updatedAt || b.publishedAt || '';
       if (av !== bv) { return av < bv ? 1 : -1; }
-      // 同值按渠道名稳定排序
       var an = a.channelName || '', bn = b.channelName || '';
       if (an !== bn) { return an < bn ? -1 : 1; }
       return a.id < b.id ? -1 : 1;
