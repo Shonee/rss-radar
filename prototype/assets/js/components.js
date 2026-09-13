@@ -190,13 +190,13 @@ window.RR = (function () {
       '<a class="skip-link" href="#main">跳到主要内容</a>' +
       '<header class="site-header">' +
         '<div class="container">' +
-          '<div class="brand">' +
+          '<a class="brand" href="index.html">' +     // v1.3 E4：整个 .brand 变成 a 链接到 index.html
             '<span class="brand-mark">' + ICONS.radar + '</span>' +
             '<div>' +
               '<div class="brand-name">' + esc(s.title || 'RSS Radar') + '</div>' +
-              '<div class="brand-slogan">' + esc(s.slogan || '') + '</div>' +
+              '<div class="brand-slogan" title="' + esc(s.slogan || '') + '">' + esc(s.slogan || '') + '</div>' +
             '</div>' +
-          '</div>' +
+          '</a>' +
           '<nav class="main-nav" aria-label="主导航">' + navHtml + '</nav>' +
         '</div>' +
       '</header>';
