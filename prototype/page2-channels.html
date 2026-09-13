@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <title>渠道看板 · RSS Radar（原型）</title>
+  <meta name="description" content="RSS Radar 原型 · 页面2 渠道分栏看板" />
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/pages.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="page">
+    <div class="container">
+      <div id="board-head" style="display:flex;align-items:flex-end;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;margin-bottom:var(--space-5)"></div>
+
+      <div id="board-controls" class="toolbar" role="toolbar" aria-label="看板控制区"></div>
+
+      <div id="board" class="board-grid" aria-live="polite"></div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <!-- 配置抽屉 -->
+  <div id="drawer-scrim" class="drawer-scrim"></div>
+  <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-label="渠道看板配置" aria-hidden="true">
+    <div class="drawer-header">
+      <div>
+        <div class="card-title">配置中心</div>
+        <div class="muted" style="font-size:var(--fs-xs)">展示哪些渠道 · 每卡片条数 · 排序</div>
+      </div>
+      <button type="button" id="drawer-close" class="btn btn-ghost btn-icon" aria-label="关闭配置">&#10005;</button>
+    </div>
+    <div id="drawer-body" class="drawer-body"></div>
+    <div class="drawer-footer">
+      <button type="button" id="drawer-reset" class="btn">恢复默认</button>
+      <button type="button" id="drawer-apply" class="btn btn-primary btn-block">应用并关闭</button>
+    </div>
+  </aside>
+
+  <script src="assets/js/mock-data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/components.js"></script>
+  <script src="assets/js/page2.js"></script>
+</body>
+</html>

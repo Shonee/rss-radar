@@ -1,0 +1,165 @@
+/* =============================================================================
+ * RSS Radar — 设计令牌 (Design Tokens)
+ * -----------------------------------------------------------------------------
+ * 全站唯一的「设计变量」来源。四个页面 + 所有组件均只引用此处的 CSS 自定义属性，
+ * 严禁在各页面内硬编码颜色 / 间距 / 字号。
+ *
+ * 主题：浅色（light）。
+ * 目标浏览器：现代 Chrome / Safari / Edge。
+ * 断点约定（CSS 变量不能用于 media query，故此处仅作记录）：
+ *   - mobile   : < 768px
+ *   - tablet   : 768px ~ 1023px
+ *   - desktop  : >= 1024px
+ *   - wide     : >= 1280px
+ * ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---------- 品牌主色 ---------- */
+  --color-primary:        #2f6bff;
+  --color-primary-hover:  #2557d6;
+  --color-primary-active: #1e46b0;
+  --color-primary-weak:   #eaf0ff;
+  --color-primary-weak-2: #d6e2ff;
+  --color-on-primary:     #ffffff;
+
+  /* ---------- 中性灰阶（9 级，满足 >=5 级要求） ---------- */
+  --gray-0:   #ffffff;
+  --gray-25:  #fafbfc;
+  --gray-50:  #f6f7f9;
+  --gray-100: #eef0f3;
+  --gray-200: #e3e6ea;
+  --gray-300: #cfd4da;
+  --gray-400: #aab1b8;
+  --gray-500: #8a9199;
+  --gray-600: #5a6169;
+  --gray-700: #3d434a;
+  --gray-800: #262b31;
+  --gray-900: #1f2329;
+
+  /* ---------- 语义色 ---------- */
+  --color-success:     #16a34a;
+  --color-success-bg:  #e8f8ee;
+  --color-warning:     #c77700;
+  --color-warning-bg:  #fff6e5;
+  --color-warning-bg-strong: #ffefd1;
+  --color-warning-border: #f0c778;
+  --color-warning-text: #7a4a00;
+  --color-danger:      #d92d20;
+  --color-danger-bg:   #fdecea;
+  --color-danger-border: #f3b4ae;
+  --color-danger-text:  #8a1c14;
+  --color-info:        #0b8ac9;
+  --color-info-bg:     #e5f4fb;
+  --color-info-border: #b3e0f2;
+  --color-info-text:   #075985;
+
+  /* ---------- 排行榜名次色 ---------- */
+  --color-rank-1-bg:   #ffe1e1;
+  --color-rank-1-text: #c62828;
+  --color-rank-2-bg:   #ffeccf;
+  --color-rank-2-text: #b26a00;
+  --color-rank-3-bg:   #e5f3ff;
+  --color-rank-3-text: #0b6ba8;
+
+  /* ---------- 渐变 / 图表端点（JS 侧经 getComputedStyle 读取，保证单一来源） ---------- */
+  --color-hero-from:   #f2f6ff;
+  --color-progress-to: #6f9bff;
+  --color-chart-1:     #2f6bff;
+  --color-chart-2:     #f57c00;
+  --color-chart-3:     #00897b;
+
+  /* ---------- 语义化表面 / 文本 / 描边 ---------- */
+  --color-bg:            var(--gray-50);
+  --color-surface:       var(--gray-0);
+  --color-surface-2:     var(--gray-100);
+  --color-surface-sunken: var(--gray-50);
+  --color-surface-hover: var(--gray-25);
+  --color-border:        var(--gray-200);
+  --color-border-strong: var(--gray-300);
+  --color-text:          var(--gray-900);
+  --color-text-2:        var(--gray-600);
+  --color-text-3:        var(--gray-500);
+  --color-text-inverse:  var(--gray-0);
+
+  /* ---------- 分类色（对齐 docs/data-model/examples/sources.example.json） ---------- */
+  --cat-tech_blog:     #7b1fa2;
+  --cat-tech_media:    #1976d2;
+  --cat-ai:            #00897b;
+  --cat-dev_community: #f57c00;
+  --cat-product_design:#c2185b;
+  --cat-news:          #455a64;
+  --cat-opensource:    #388e3c;
+  --cat-podcast:       #6d4c41;
+  --cat-video:         #e53935;
+  --cat-security:      #5d4037;
+  --cat-other:         #757575;
+
+  /* ---------- 间距刻度 (4 / 8 / 12 / 16 / 24 / 32 ...) ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* ---------- 字号刻度 ---------- */
+  --fs-xs:   12px;
+  --fs-sm:   13px;
+  --fs-base: 14px;
+  --fs-md:   15px;
+  --fs-lg:   16px;
+  --fs-xl:   20px;
+  --fs-2xl:  24px;
+  --fs-3xl:  30px;
+  --fs-metric: 30px;
+
+  /* ---------- 行高 / 字重 ---------- */
+  --lh-tight: 1.3;
+  --lh-snug:  1.45;
+  --lh-base:  1.6;
+  --lh-loose: 1.75;
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semibold:600;
+  --fw-bold:    700;
+
+  /* ---------- 圆角 ---------- */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+
+  /* ---------- 阴影层级 ---------- */
+  --shadow-1: 0 1px 2px rgba(16, 24, 40, .06);
+  --shadow-2: 0 2px 8px rgba(16, 24, 40, .08);
+  --shadow-3: 0 8px 24px rgba(16, 24, 40, .12);
+  --shadow-4: 0 16px 48px rgba(16, 24, 40, .18);
+
+  /* ---------- 层级 z-index ---------- */
+  --z-base:    0;
+  --z-sticky:  100;
+  --z-dropdown:500;
+  --z-drawer-scrim: 900;
+  --z-drawer:  1000;
+  --z-toast:   2000;
+
+  /* ---------- 版式 ---------- */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+               "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial,
+               sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+               "Liberation Mono", monospace;
+  --content-max: 1320px;
+  --header-h: 60px;
+
+  /* ---------- 过渡 ---------- */
+  --transition-fast: 120ms ease;
+  --transition-base: 200ms ease;
+}

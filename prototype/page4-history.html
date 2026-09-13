@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <title>历史趋势与回看 · RSS Radar（原型）</title>
+  <meta name="description" content="RSS Radar 原型 · 页面4 历史趋势与回看" />
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/pages.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="page">
+    <div class="container">
+      <div class="page-hero">
+        <h1>历史趋势与回看</h1>
+        <p class="hero-desc">跨天趋势与历史回看（保留一年）。<strong>一年内</strong>站内可交互查询；<strong>超过一年</strong>站内仅展示只读元数据 + 跳 GitHub Release 下载。</p>
+      </div>
+
+      <!-- 趋势区 -->
+      <section class="section">
+        <div class="trend-grid">
+          <div class="card card-pad">
+            <div id="trend-head"></div>
+            <div id="trend-chart"></div>
+            <div class="muted" style="font-size:var(--fs-xs);margin-top:var(--space-3)">
+              窗口：<strong>近 <span id="win-label">90</span> 天</strong> · 指标可切换（总条数 / 活跃渠道数 / 分类占比走势）。
+              移动端默认只展示本张趋势图。
+            </div>
+          </div>
+
+          <div class="card card-pad">
+            <div class="section-head" style="margin-bottom:var(--space-3)">
+              <h2 style="font-size:var(--fs-lg)">月度明细（下钻）</h2>
+              <span class="section-sub">懒加载</span>
+            </div>
+            <div id="months"></div>
+            <p class="muted" style="font-size:var(--fs-xs);margin-top:var(--space-3)">
+              展开某月时按需读取 <code>history/YYYY/MM/items.ndjson</code>（1 请求/月），带加载态。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 回看区 -->
+      <section class="section">
+        <div class="section-head"><h2>回看某天</h2><span class="section-sub">选中日期 → 该天快照摘要（有数据 / 无数据 / 已归档）</span></div>
+        <div class="trend-grid">
+          <div class="card" id="calendar" aria-label="日期选择"></div>
+          <div id="lookback" class="lookback"></div>
+        </div>
+      </section>
+
+      <!-- 归档区 -->
+      <section class="section">
+        <div class="section-head"><h2>归档年份（&gt; 1 年）</h2><span class="section-sub">只读元数据 · 跳 Release 下载</span></div>
+        <div id="archive"></div>
+      </section>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="assets/js/mock-data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/components.js"></script>
+  <script src="assets/js/page4.js"></script>
+</body>
+</html>

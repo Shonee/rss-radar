@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <title>聚合热榜流 · RSS Radar（原型）</title>
+  <meta name="description" content="RSS Radar 原型 · 页面1 聚合热榜流" />
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/pages.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="page">
+    <div class="container">
+      <div class="page-hero">
+        <h1>聚合热榜流</h1>
+        <p class="hero-desc">全渠道条目按时间倒序，一屏扫完「现在有什么新内容」。支持排序切换、渠道 / 分类 / 时间筛选与搜索。</p>
+      </div>
+
+      <div id="statbar" class="statbar" aria-live="polite"></div>
+
+      <div id="alerts" class="stack-alerts" style="margin-top:var(--space-4)"></div>
+
+      <div id="toolbar" class="toolbar" role="toolbar" aria-label="列表控制区" style="margin-top:var(--space-4)"></div>
+
+      <div id="layout" class="layout-split side-collapsible">
+        <aside id="side" class="side" aria-label="筛选条件">
+          <div class="card card-pad" id="side-inner">
+            <!-- 由 page1.js 渲染筛选组 -->
+          </div>
+        </aside>
+
+        <section aria-label="条目列表">
+          <div id="result-count" class="muted" style="font-size:var(--fs-sm);margin-bottom:var(--space-3)"></div>
+          <div id="list" class="item-list" aria-live="polite"></div>
+          <div id="pager" class="pagination"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="assets/js/mock-data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/components.js"></script>
+  <script src="assets/js/page1.js"></script>
+</body>
+</html>

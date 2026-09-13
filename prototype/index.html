@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <title>RSS Radar 页面原型 · 导航</title>
+  <meta name="description" content="RSS Radar 高保真静态原型导航页" />
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/pages.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="page">
+    <div class="container">
+      <div class="page-hero">
+        <h1>RSS Radar · 页面原型</h1>
+        <p class="hero-desc">
+          纯静态、零后端、无构建步骤的高保真原型。双击任意 HTML 即可离线打开查看；
+          所有数据均为 <strong>Mock</strong>（结构对齐 <code>docs/data-model/examples/</code>），
+          页面<strong>不发起任何真实网络请求</strong>、不依赖任何外部 CDN。
+        </p>
+      </div>
+
+      <div class="alert alert-info" role="status" style="margin-bottom:var(--space-6)">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>
+        <div>本原型用于确认信息架构、字段清单、交互与响应式效果。技术约束为「纯 HTML + CSS + 原生 JS」，与真实实现阶段（Vite + React + MUI + Tailwind）不同，属有意为之。</div>
+      </div>
+
+      <div class="proto-grid">
+        <a class="card proto-card" href="page1-hot-stream.html" style="color:inherit">
+          <span class="proto-num">1</span>
+          <h3>聚合热榜流</h3>
+          <p class="muted" style="font-size:var(--fs-sm)">全渠道条目时间倒序流。</p>
+          <ul>
+            <li>排序切换（更新时间 ⇄ 创建时间）</li>
+            <li>渠道 / 分类 / 时间筛选 + 搜索</li>
+            <li>NEW 徽标、「＋N 源」跨源徽标</li>
+            <li>每批 20 条懒加载、空态·异常态·加载态</li>
+          </ul>
+        </a>
+
+        <a class="card proto-card" href="page2-channels.html" style="color:inherit">
+          <span class="proto-num">2</span>
+          <h3>渠道分栏看板</h3>
+          <p class="muted" style="font-size:var(--fs-sm)">每渠道一张独立卡片。</p>
+          <ul>
+            <li>响应式栅格（桌面 3~4 → 平板 2 → 移动 1）</li>
+            <li>配置抽屉：展示渠道 / 每卡片条数（默认 10）/ 排序</li>
+            <li>配置写 localStorage，跨会话生效</li>
+            <li>渠道健康状态角标（正常 / 失败 / 停用）</li>
+          </ul>
+        </a>
+
+        <a class="card proto-card" href="page3-report.html" style="color:inherit">
+          <span class="proto-num">3</span>
+          <h3>分析报告（只做当天）</h3>
+          <p class="muted" style="font-size:var(--fs-sm)">当天信息全景 + 热点分析。</p>
+          <ul>
+            <li>概要数字卡（总条数 / 活跃渠道 / 热点 / 分类）</li>
+            <li>热点榜 TOP10（热度分进度条）</li>
+            <li>分类分布（原生 SVG 饼图）+ 分类分栏</li>
+            <li>渠道活跃排行、方法论折叠、查看历史趋势入口</li>
+          </ul>
+        </a>
+
+        <a class="card proto-card" href="page4-history.html" style="color:inherit">
+          <span class="proto-num">4</span>
+          <h3>历史趋势与回看</h3>
+          <p class="muted" style="font-size:var(--fs-sm)">跨天趋势 + 回看某天。</p>
+          <ul>
+            <li>原生 SVG 趋势图（1 次请求 data 契约说明）</li>
+            <li>月度明细下钻（懒加载 + loading 态）</li>
+            <li>日历回看（有数据 / 无数据 / 已归档三态）</li>
+            <li>归档区（只读元数据 + 跳 Release 下载）</li>
+          </ul>
+        </a>
+      </div>
+
+      <section class="section" id="contract" style="margin-top:var(--space-8)">
+        <div class="section-head"><h2>数据契约与 Mock 来源</h2></div>
+        <div class="card card-pad">
+          <table class="table">
+            <thead><tr><th>原型页面 / 视图</th><th>对齐的示例文件</th><th>关键字段</th></tr></thead>
+            <tbody>
+              <tr><td>页面1 条目流</td><td><code>snapshot.example.json</code></td><td>title / summary / channelName / category / publishedAt / updatedAt / sourceCount / sources / isNew</td></tr>
+              <tr><td>页面2 渠道卡片</td><td><code>sources.example.json</code></td><td>channels[]（name / homepage / category / icon / displayLimit）、sources[]（url / lastStatus）</td></tr>
+              <tr><td>页面3 报告</td><td><code>report.example.json</code></td><td>totalItems / activeChannels / categoryStats / hotList / hotScore / channelActivity / keywords / weights</td></tr>
+              <tr><td>页面4 趋势</td><td><code>history-index.example.json</code></td><td>days[].date / totalItems / activeChannels / categoryStats / topKeywords</td></tr>
+              <tr><td>页面4 下钻 / 回看 / 归档</td><td><code>history-item.example.ndjson</code> / <code>snapshot.example.json</code> / <code>ARCHITECTURE §13.1</code></td><td>精简行字段、按天快照、archives[]（year / releaseTag / months[]）</td></tr>
+              <tr><td>站点配置</td><td><code>site-config.example.json</code></td><td>display.cardLimit / page1BatchSize / defaultSort；history.windowDays / windowOptions</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><h2>设计系统</h2></div>
+        <div class="card card-pad">
+          <p class="muted" style="font-size:var(--fs-sm)">
+            四个页面共用同一套设计令牌（<code>assets/css/tokens.css</code>）与通用组件（<code>assets/css/components.css</code> + <code>assets/js/components.js</code>），
+            导航互通、风格一致。设计变量含：主色 / 语义色 / 9 级中性灰阶 / 间距刻度 / 字号刻度 / 圆角 / 阴影 / z-index。
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="assets/js/mock-data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      RR.renderChrome('');   // 首页无高亮导航项
+      RR.bindGlobalClicks();
+    });
+  </script>
+</body>
+</html>
