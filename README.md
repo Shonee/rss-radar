@@ -13,7 +13,8 @@ RSS Radar = **多源 RSS 采集 → 去重聚合 → 当天报告**，纯静态�
 ```bash
 # 1. 克隆与安装
 git clone <your-fork>/rss-radar && cd rss-radar
-npm ci
+npm install --registry=https://registry.npmmirror.com
+```
 
 # 2. 跑一次采集（写入 ./tmp/today/snapshot-YYYY-MM-DD.json）
 npm run collect:once
@@ -21,6 +22,32 @@ npm run collect:once
 # 3. 启动 dev server，浏览器打开 http://localhost:5173/#/
 npm run dev
 ```
+
+### ⚠️ 安装依赖必须指定 registry（内网默认镜像已挂）
+
+本机 npm 默认源是内网镜像 `npmmirror.leoao-inc.com`，**该源已 502 不可用**，直接 `npm install` 会失败，看上去像「装不了依赖」。实际官方源和淘宝源都通：
+
+| 源 | 状态 |
+|---|---|
+| `npmmirror.leoao-inc.com`（默认内网镜像） | ❌ 502 Bad Gateway |
+| `registry.npmjs.org`（官方） | ✅ 通（约 859ms） |
+| `registry.npmmirror.com`（淘宝） | ✅ 通（约 0.3s，更快，推荐） |
+
+所以统一用：
+
+```bash
+npm install --registry=https://registry.npmmirror.com
+```
+
+不想每次敲参数，写进**用户级** `~/.npmrc` 即可一劳永逸：
+
+```bash
+npm config set registry https://registry.npmmirror.com --location=user
+```
+
+> **注意**：不要把 registry 写进项目级 `.npmrc` 并入库——CI（GitHub Actions）在境外，走淘宝源反而更慢。仓库内保持不指定 registry，由各执行环境自行决定。
+
+**为什么重要**：P1~P2 阶段一直误以为「沙箱无 npm install」，因此绕路走了 dynamic import + 手写降级实现。装了依赖后 `ajv` / `rss-parser` / `papaparse` / TypeScript 全部可用，立刻暴露出 4 个被掩盖的 latent bug（schema enum 漂移、ajv strictRequired 崩溃、strict 类型错误）。**P3 起一律装依赖后真跑 `npm run dev` / `build` / `typecheck` / `test`，不要再走静态路线。**
 
 ## 目录结构（速览）
 
