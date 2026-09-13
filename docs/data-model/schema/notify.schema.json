@@ -79,11 +79,27 @@
       "allOf": [
         {
           "if": { "properties": { "channelType": { "const": "email" } }, "required": ["channelType"] },
-          "then": { "required": ["smtpHost", "smtpPort", "from", "to"], "properties": { "refs": { "type": "object", "required": ["password"] } } }
+          "then": {
+            "required": ["smtpHost", "smtpPort", "from", "to"],
+            "properties": {
+              "smtpHost": { "type": "string" },
+              "smtpPort": { "type": "integer", "minimum": 1, "maximum": 65535 },
+              "from": { "type": "string" },
+              "to": { "type": "array", "items": { "type": "string" } },
+              "refs": {
+                "type": "object",
+                "required": ["password"],
+                "properties": { "password": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" } }
+              }
+            }
+          }
         },
         {
           "if": { "properties": { "channelType": { "enum": ["feishu", "dingtalk", "wecom"] } }, "required": ["channelType"] },
-          "then": { "required": ["webhookRef"] }
+          "then": {
+            "required": ["webhookRef"],
+            "properties": { "webhookRef": { "type": "string" } }
+          }
         }
       ]
     }

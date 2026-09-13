@@ -34,12 +34,21 @@ export interface ValidationError {
   params?: Record<string, unknown>;
 }
 
-const validators = new Map<SchemaName, ReturnType<typeof ajv.compile>>();
+/** ajv 编译产物类型（ValidateFunction） */
+type ValidateFn = ReturnType<typeof ajv.compile>;
 
-function compile(name: SchemaName) {
-  if (validators.has(name)) return validators.get(name);
-  if (!schemas[name]) throw new Error(`Unknown schema: ${name}`);
-  const v = ajv.compile(schemas[name]);
+const validators = new Map<SchemaName, ValidateFn>();
+
+/**
+ * 取（或编译并缓存）指定 schema 的校验函数
+ * @throws 未知 schema 名
+ */
+function compile(name: SchemaName): ValidateFn {
+  const cached = validators.get(name);
+  if (cached) return cached;
+  const schema = schemas[name];
+  if (!schema) throw new Error(`Unknown schema: ${name}`);
+  const v: ValidateFn = ajv.compile(schema);
   validators.set(name, v);
   return v;
 }

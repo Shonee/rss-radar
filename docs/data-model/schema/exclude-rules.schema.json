@@ -15,6 +15,18 @@
     }
   },
   "definitions": {
+    "ruleType": {
+      "type": "string",
+      "enum": ["keyword", "domain", "url", "title_regex"],
+      "description": "条目级匹配方式(level=item 时必填)"
+    },
+    "ruleValue": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "type": "string" } }
+      ],
+      "description": "规则值(关键词/域名/URL/分类键/正则)。空数组 [] 语义为「不匹配任何」——用于 enabled:false 的占位规则（如 channel/category 级占位）；启用后 hitCount 恒为 0 时说明值配空了。"
+    },
     "rule": {
       "type": "object",
       "required": ["id", "level", "scope", "enabled"],
@@ -28,14 +40,8 @@
           "pattern": "^(global|source:[a-z0-9-]+|channel:[a-z0-9-]+|category:[a-z0-9_]+)$",
           "examples": ["global", "channel:v2ex"]
         },
-        "type": { "type": "string", "enum": ["keyword", "domain", "url", "title_regex"], "description": "条目级匹配方式(level=item 时必填)" },
-        "value": {
-          "oneOf": [
-            { "type": "string" },
-            { "type": "array", "minItems": 1, "items": { "type": "string" } }
-          ],
-          "description": "规则值(关键词/域名/URL/分类键/正则)"
-        },
+        "type": { "$ref": "#/definitions/ruleType" },
+        "value": { "$ref": "#/definitions/ruleValue" },
         "matchMode": { "type": "string", "enum": ["contains", "equals", "regex"], "default": "contains", "description": "匹配语义" },
         "caseSensitive": { "type": "boolean", "default": false, "description": "是否区分大小写" },
         "enabled": { "type": "boolean", "description": "开关" },
@@ -45,11 +51,17 @@
       "allOf": [
         {
           "if": { "properties": { "level": { "const": "item" } }, "required": ["level"] },
-          "then": { "required": ["type", "value"] }
+          "then": {
+            "required": ["type", "value"],
+            "properties": { "type": { "$ref": "#/definitions/ruleType" }, "value": { "$ref": "#/definitions/ruleValue" } }
+          }
         },
         {
           "if": { "properties": { "level": { "const": "category" } }, "required": ["level"] },
-          "then": { "required": ["value"] }
+          "then": {
+            "required": ["value"],
+            "properties": { "value": { "$ref": "#/definitions/ruleValue" } }
+          }
         }
       ]
     }
