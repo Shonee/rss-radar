@@ -479,6 +479,7 @@
   - **「+N 源」展开**：点击展开 `sources[]`（ARCHITECTURE §4.5）
 - **验收**：
   - 桌面 1280 / 平板 768 / 移动 375 三档响应式正确（无横向溢出）
+  - 桌面 ≥1024px 左侧筛选栏（248px 粘性）；≤1023px 折叠进「筛选」按钮（`p1-filter-toggle` / `p1-filter-panel`，对齐原型 `.layout-split`）
   - 搜索 `Rust` 过滤生效（prototype QA 用例复用）
   - 「加载更多」点击从 20 → 40
   - 深链 `?channel=v2ex` 按渠道过滤

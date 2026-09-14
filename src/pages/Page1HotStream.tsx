@@ -6,6 +6,8 @@
 //   - 排序切换：默认「综合倒序」（updatedAt 优先、回落 publishedAt，同值按渠道名稳定）
 //     `p1-sort-updated` / `p1-sort-published`
 //   - 筛选（渠道 / 分类 / 时间范围 / 搜索，复用 FilterBar）
+//   - 响应式筛选布局（PRD §6.1 / 原型 .layout-split）：≥1024px 左侧 248px 粘性筛选栏；
+//     ≤1023px 单列折叠，用 `p1-filter-toggle` 按钮展开（`p1-filter-panel` 面板）
 //   - 懒加载：桌面每批 20、移动每批 10；滚动到底自动加载 + `p1-load-more` 手动加载
 //   - 深链 `?channel=<id>` 直达（配合页面2「查看全部」）
 //   - file:// 外链修复由 AppShell 统一处理
@@ -88,6 +90,12 @@ export default function Page1HotStream() {
 
   const isMobile = useMediaQuery('(max-width: 767px)');
   const batch = isMobile ? 10 : DEFAULT_PAGE1_BATCH_SIZE;
+
+  // 响应式筛选布局（PRD §6.1 / 原型 .layout-split + .side-collapsible）：
+  //   ≥1024px → 左侧 248px 粘性筛选栏；≤1023px → 单列 + 筛选栏默认折叠，用「筛选」按钮展开。
+  // 断点与原型 @media (max-width: 1023px) 对齐；sticky top 用 tokens.headerH（= 原型 --header-h）。
+  const isNarrow = useMediaQuery('(max-width: 1023px)');
+  const [filterOpen, setFilterOpen] = useState(false);
 
   const [sort, setSort] = useState<SortMode>('updatedAt');
   const [filter, setFilter] = useState<FilterValue>(() =>
@@ -298,6 +306,21 @@ export default function Page1HotStream() {
         </ToggleButton>
       </ToggleButtonGroup>
 
+      {/* ≤1023px：筛选折叠开关（原型 .mobile-filter-toggle；桌面隐藏） */}
+      {isNarrow && (
+        <Button
+          data-testid="p1-filter-toggle"
+          data-open={filterOpen ? 'true' : 'false'}
+          aria-expanded={filterOpen}
+          aria-controls="p1-filter-panel"
+          variant="outlined"
+          size="small"
+          onClick={() => setFilterOpen((v) => !v)}
+        >
+          {filterOpen ? '收起筛选' : '筛选'}
+        </Button>
+      )}
+
       <Box
         data-testid="p1-result-count"
         sx={{ ml: 'auto', color: tokens.surface.text2, fontSize: tokens.fs.sm }}
@@ -309,12 +332,6 @@ export default function Page1HotStream() {
           </>
         )}
       </Box>
-    </Box>
-  );
-
-  const filters = (
-    <Box sx={{ mb: 2 }}>
-      <FilterBar value={filter} onChange={setFilter} channels={CHANNEL_OPTIONS} />
     </Box>
   );
 
@@ -402,9 +419,44 @@ export default function Page1HotStream() {
     <Box data-testid="p1-root" data-component="page1-hot-stream">
       {header}
       {alerts}
-      {filters}
-      {toolbar}
-      {body}
+
+      {/* 布局（对齐原型 .layout-split）：≥1024px 两列 [248px | 1fr]，≤1023px 单列 */}
+      <Box
+        data-testid="p1-layout"
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: isNarrow ? '1fr' : '248px minmax(0, 1fr)',
+          columnGap: 3,
+          rowGap: 2,
+          alignItems: 'start',
+        }}
+      >
+        {/* 筛选栏（原型 .side）：桌面粘性常驻；窄屏默认折叠，由「筛选」按钮控制显隐 */}
+        <Box
+          component="aside"
+          id="p1-filter-panel"
+          data-testid="p1-filter-panel"
+          aria-label="筛选条件"
+          data-open={filterOpen ? 'true' : 'false'}
+          sx={
+            isNarrow
+              ? { display: filterOpen ? 'block' : 'none', position: 'static', minWidth: 0 }
+              : {
+                  position: 'sticky',
+                  top: `calc(${tokens.headerH} + ${tokens.space[4]})`,
+                  alignSelf: 'start',
+                  minWidth: 0,
+                }
+          }
+        >
+          <FilterBar value={filter} onChange={setFilter} channels={CHANNEL_OPTIONS} />
+        </Box>
+
+        <Box component="section" aria-label="条目列表" sx={{ minWidth: 0 }}>
+          {toolbar}
+          {body}
+        </Box>
+      </Box>
 
       {/* T-P3-08：底部只读通知状态面板（可折叠，默认收起） */}
       {!notifyLoading && notifyStats && (
