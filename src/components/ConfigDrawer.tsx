@@ -24,7 +24,7 @@ import type { ChannelOption } from './FilterBar';
 export type ChannelSortKey = 'updatedAt' | 'channelName';
 
 export interface ConfigDrawerValue {
-  /** null = 全选 */
+  /** null = 全选（未配置）；[] = 显式取消全部（页面2 渲染全局空态） */
   channelIds: string[] | null;
   cardLimit: number;
   sort: ChannelSortKey;
@@ -69,7 +69,10 @@ export default function ConfigDrawer({
     const next = selected.includes(id)
       ? selected.filter((x) => x !== id)
       : [...selected, id];
-    onChange({ ...value, channelIds: next.length === 0 ? null : next });
+    // 允许取消到 0：[] = 显式取消全部渠道（页面2 转全局空态）。
+    // 此前 `next.length === 0 ? null : next` 会把「取消干净」强制回退成 null
+    // （= 全部启用），导致用户永远取消不干净、p2-empty 成死代码（QA B10）。
+    onChange({ ...value, channelIds: next });
   };
 
   const groups = new Map<CategoryKey, ChannelOption[]>();

@@ -23,6 +23,7 @@ import { toItemCardData, type ChannelCardData, type ChannelHealth } from '../typ
 import sourcesConfig from '../../config/sources.json';
 import { categoryLabel } from '../config/categories';
 import { useSnapshot } from '../hooks';
+import { resolveBoardState } from '../services/boardState';
 import { categoryColor, tokens } from '../theme/tokens';
 import {
   ChannelCard,
@@ -58,7 +59,7 @@ for (const s of SOURCES) if (!FEED_BY_CHANNEL.has(s.channelId)) FEED_BY_CHANNEL.
 const P2_STORAGE_KEY = 'rss-radar:page2-config';
 
 interface Page2Config {
-  /** null = 全部启用渠道 */
+  /** null = 全部启用渠道（未配置）；[] = 显式取消全部（渲染全局空态） */
   channelIds: string[] | null;
   cardLimit: number;
   sort: ChannelSortKey;
@@ -84,11 +85,15 @@ function loadPage2Config(): Page2Config {
       typeof parsed.cardLimit === 'number' && parsed.cardLimit > 0
         ? Math.floor(parsed.cardLimit)
         : DEFAULT_P2_CONFIG.cardLimit;
-    const channelIds = Array.isArray(parsed.channelIds)
+    // 保留空数组：[] = 用户显式取消全部渠道（区别于 null = 未配置 = 全部启用）。
+    // 此前 `channelIds.length > 0 ? channelIds : null` 会把已存下的 [] 又还原成
+    // null，与 ConfigDrawer 的强制回退叠加，使「取消全部渠道」永远无法生效。
+    // 仅当字段缺失 / 非数组时才回落 null。
+    const stored = Array.isArray(parsed.channelIds)
       ? parsed.channelIds.filter((x): x is string => typeof x === 'string')
       : null;
     return {
-      channelIds: channelIds && channelIds.length > 0 ? channelIds : null,
+      channelIds: stored,
       cardLimit,
       sort,
       cardLimitUserSet: parsed.cardLimitUserSet === true,
@@ -213,6 +218,10 @@ export default function Page2Channels() {
     return built;
   }, [config.channelIds, config.sort, catFilter, allItems, okByChannel]);
 
+  // 看板状态：empty-none（无卡片）/ empty-all（全渠道今日无内容）/ board。
+  // 判定逻辑收敛到纯函数，页面不再就地拼 if/else（QA B10 / PRD:587）。
+  const boardState = resolveBoardState(cards);
+
   const effectiveCardLimit = isMobile && !config.cardLimitUserSet ? 5 : config.cardLimit;
 
   const drawerValue: ConfigDrawerValue = {
@@ -325,17 +334,33 @@ export default function Page2Channels() {
     body = <SkeletonList count={4} testId="p2-skeleton" />;
   } else if (error) {
     body = <ErrorBanner message={`数据加载失败：${error}`} onRetry={reload} testId="p2-error" />;
-  } else if (cards.length === 0) {
+  } else if (boardState === 'empty-none') {
+    // 两种成因合流：① 用户取消了全部渠道（channelIds=[]）② 当前分类筛选无命中
     body = (
       <EmptyState
         title="没有可展示的渠道"
-        description="当前分类筛选或配置下没有渠道。点击右上角「配置」选择要展示的渠道，或切换分类。"
+        description="你取消了全部渠道，或当前分类筛选下没有渠道。点击「打开配置」重新勾选要展示的渠道，或切换上方分类。"
         action={
           <Button variant="contained" onClick={() => setDrawerOpen(true)} data-testid="p2-empty-config">
             打开配置
           </Button>
         }
         testId="p2-empty"
+      />
+    );
+  } else if (boardState === 'empty-all') {
+    // PRD:587「全部无数据 → 全局空态」：渠道都在、但今日全部无内容。
+    // 注意只在全 empty 时出现——含 failed/disabled 仍走看板（保留失败/停用线索）。
+    body = (
+      <EmptyState
+        title="所有渠道今日暂无内容"
+        description="当前展示的渠道今天都还没有新条目。可以稍后再来看看，或在「配置」里调整要展示的渠道。"
+        action={
+          <Button variant="contained" onClick={() => setDrawerOpen(true)} data-testid="p2-empty-all-config">
+            打开配置
+          </Button>
+        }
+        testId="p2-empty-all"
       />
     );
   } else {
