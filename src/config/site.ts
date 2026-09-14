@@ -82,21 +82,24 @@ export const DEFAULT_SORT: 'updatedAt' | 'publishedAt' =
 export const ENABLED_CATEGORIES: CategoryKey[] =
   (siteConfigJson.filters?.enabledCategories as CategoryKey[] | undefined) ?? [];
 
-/** 时间范围选项（prototype F 决策：展示「今天 / 近3小时 / 近6小时」）。
+/** 时间范围档位的固定渲染顺序（主理人 2026-09 拍板：近6小时 → 今天 → 全部）。 */
+const TIME_RANGE_ORDER: TimeRangeKey[] = ['6h', 'today', 'all'];
+
+/** 时间范围选项（主理人 2026-09 拍板：近6小时 / 今天 / 全部）。
  *
- * P1-1 起**固定追加「全部」档**：由于采集端无条目时间窗过滤，快照条目天然跨日期，
- * 默认「今天」在数据陈旧时可能恒为 0；「全部」作为「今天为 0」时的逃生出口，
- * 必须始终可选，因此不依赖 `config` 是否声明（详见 docs/PRD.md 页面1 筛选说明）。 */
+ * 顺序**恒按 `TIME_RANGE_ORDER` 输出**，不受 `config/site-config.json` 声明次序影响
+ * （该配置仍可能残留已废弃的 `'3h'` 等档位，一律在此处被过滤掉）。
+ * `'all'` 档恒保在列，作为「今天为 0」时的逃生出口：采集端无条目时间窗过滤，
+ * 快照条目天然跨日期，默认「今天」在数据陈旧时可能恒为 0。
+ * 默认选中档位仍为 `'today'`（见 `FilterBar` 的 `EMPTY_FILTER`，不受本顺序影响）。 */
 export const TIME_RANGES: TimeRangeKey[] = (() => {
-  const configured = (siteConfigJson.filters?.timeRanges as TimeRangeKey[] | undefined) ?? [
-    'today',
-    '3h',
-    '6h',
-  ];
-  const valid = configured.filter(
-    (r): r is TimeRangeKey => r === 'today' || r === '3h' || r === '6h' || r === 'all',
+  const configured =
+    (siteConfigJson.filters?.timeRanges as TimeRangeKey[] | undefined) ?? TIME_RANGE_ORDER;
+  const picked = new Set<TimeRangeKey>(
+    configured.filter((r): r is TimeRangeKey => r === 'today' || r === '6h' || r === 'all'),
   );
-  return valid.includes('all') ? valid : [...valid, 'all'];
+  picked.add('all');
+  return TIME_RANGE_ORDER.filter((r) => picked.has(r));
 })();
 
 /**

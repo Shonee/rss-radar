@@ -1,7 +1,7 @@
 // T-P3-02 公共组件库 — 筛选栏（受控组件：value / onChange 由页面持有）
 //
-// 渠道多选（按分类分组）、分类多选、时间范围（prototype F 决策：今天 / 近3小时 / 近6小时；
-// P1-1 起追加「全部」档作为逃生出口）、搜索框（标题 / 摘要）。
+// 渠道多选（按分类分组）、分类多选、时间范围（主理人 2026-09 拍板：近6小时 / 今天 / 全部；
+// 渲染顺序来自 `config/site.ts` 的 `TIME_RANGES`）、搜索框（标题 / 摘要）。
 
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
@@ -57,7 +57,6 @@ export interface FilterBarProps {
 
 const TIME_RANGE_LABELS: Record<TimeRangeKey, string> = {
   today: '今天',
-  '3h': '近3小时',
   '6h': '近6小时',
   all: '全部',
 };

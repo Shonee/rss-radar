@@ -9,6 +9,7 @@ import {
   shanghaiDateKey,
   countByShanghaiDay,
 } from '../time';
+import { TIME_RANGES } from '../../config/site';
 
 describe('time — formatRelative 边界', () => {
   const now = '2026-09-14T10:00:00+08:00';
@@ -153,9 +154,9 @@ describe('time — passesTimeRange（页面1 时间档过滤谓词）', () => {
     expect(passesTimeRange({ updatedAt: '', publishedAt: '' }, 'today', ctx)).toBe(false);
   });
 
-  it('3h：窗口内命中 / 超窗不命中', () => {
-    expect(passesTimeRange({ updatedAt: '2026-09-14T08:30:00+08:00' }, '3h', ctx)).toBe(true); // 1.5h 前
-    expect(passesTimeRange({ updatedAt: '2026-09-14T06:00:00+08:00' }, '3h', ctx)).toBe(false); // 4h 前
+  it('6h：边界值（恰 6h 命中 / 超 6h 不命中）', () => {
+    expect(passesTimeRange({ updatedAt: '2026-09-14T04:00:00+08:00' }, '6h', ctx)).toBe(true); // 恰 6h 前，≤ 含边界
+    expect(passesTimeRange({ updatedAt: '2026-09-14T03:59:00+08:00' }, '6h', ctx)).toBe(false); // 6h01m 前
   });
 
   it('6h：窗口内命中 / 超窗不命中', () => {
@@ -168,8 +169,19 @@ describe('time — passesTimeRange（页面1 时间档过滤谓词）', () => {
     expect(passesTimeRange({ updatedAt: '2020-01-01T00:00:00Z' }, 'all', ctx)).toBe(true);
   });
 
-  it('3h/6h：非法时间与缺失时间不命中', () => {
-    expect(passesTimeRange({ updatedAt: 'not-a-date' }, '3h', ctx)).toBe(false);
+  it('6h：非法时间与缺失时间不命中', () => {
+    expect(passesTimeRange({ updatedAt: 'not-a-date' }, '6h', ctx)).toBe(false);
     expect(passesTimeRange({}, '6h', ctx)).toBe(false);
+  });
+});
+
+describe('time — TIME_RANGES 防回退（主理人 2026-09 拍板：近6小时 / 今天 / 全部）', () => {
+  it('不含 3h 档', () => {
+    expect(TIME_RANGES).not.toContain('3h');
+  });
+
+  it('顺序恒为 近6小时 → 今天 → 全部', () => {
+    // 'all' 由末尾追加逻辑保证恒在；当前渲染顺序为 6h / today / all
+    expect(TIME_RANGES).toEqual(['6h', 'today', 'all']);
   });
 });
