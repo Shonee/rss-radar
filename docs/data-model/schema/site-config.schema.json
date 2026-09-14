@@ -33,7 +33,6 @@
         },
         "cardLimit": { "type": "integer", "minimum": 1, "maximum": 100, "default": 10, "description": "页面2 每卡片条数(PRD 默认 10)" },
         "page1BatchSize": { "type": "integer", "minimum": 5, "maximum": 100, "default": 20, "description": "页面1 每批加载条数" },
-        "defaultSort": { "type": "string", "enum": ["updatedAt", "publishedAt"], "default": "updatedAt", "description": "页面1 默认排序字段" },
         "hotListSize": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10, "description": "页面3 热点榜条数" },
         "showWordCloud": { "type": "boolean", "default": false, "description": "是否显示词云(P1)" },
         "showSummary": { "type": "boolean", "default": true },

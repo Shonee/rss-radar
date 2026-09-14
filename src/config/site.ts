@@ -74,10 +74,6 @@ export const DEFAULT_CARD_LIMIT: number = siteConfigJson.display?.cardLimit ?? 1
 /** display.page1BatchSize 默认值 */
 export const DEFAULT_PAGE1_BATCH_SIZE: number = siteConfigJson.display?.page1BatchSize ?? 20;
 
-/** display.defaultSort 默认值 */
-export const DEFAULT_SORT: 'updatedAt' | 'publishedAt' =
-  (siteConfigJson.display?.defaultSort as 'updatedAt' | 'publishedAt' | undefined) ?? 'updatedAt';
-
 /** 已启用分类（空数组表示全部） */
 export const ENABLED_CATEGORIES: CategoryKey[] =
   (siteConfigJson.filters?.enabledCategories as CategoryKey[] | undefined) ?? [];

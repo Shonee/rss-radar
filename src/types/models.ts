@@ -371,7 +371,6 @@ export interface SiteConfig {
     defaultChannels?: string[];
     cardLimit?: number;
     page1BatchSize?: number;
-    defaultSort?: 'updatedAt' | 'publishedAt';
     hotListSize?: number;
     showWordCloud?: boolean;
     showSummary?: boolean;

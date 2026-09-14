@@ -11,7 +11,6 @@
     "defaultChannels": [],
     "cardLimit": 10,
     "page1BatchSize": 20,
-    "defaultSort": "updatedAt",
     "hotListSize": 10,
     "showWordCloud": false,
     "showSummary": true,

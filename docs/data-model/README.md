@@ -386,7 +386,7 @@ CSV 为**一行一条 Item 的扁平表**，列顺序固定：
 |---|---|---|
 | 存储 | `config/site-config.json`（提交进 main） | 浏览器 `localStorage`（key: `rss-radar:prefs:v1`） |
 | 谁改 | 维护者 | 访客自己 |
-| 字段 | `display`（defaultChannels/cardLimit/page1BatchSize/defaultSort/hotListSize/showWordCloud/…） | 同 `display` 的子集（用户可覆盖项） |
+| 字段 | `display`（defaultChannels/cardLimit/page1BatchSize/hotListSize/showWordCloud/…） | 同 `display` 的子集（用户可覆盖项） |
 | 生效 | 构建期读入为**基线** | 运行时读取，覆盖基线，即时生效、无需重建 |
 
 ### 6.2 合并规则与优先级
@@ -409,7 +409,6 @@ CSV 为**一行一条 Item 的扁平表**，列顺序固定：
 | `display.defaultChannels` | string[] | `[]`（全部启用） | 默认展示渠道 |
 | `display.cardLimit` | integer | 10 | 页面2 每卡片条数 |
 | `display.page1BatchSize` | integer | 20 | 页面1 每批条数 |
-| `display.defaultSort` | string | `updatedAt` | 页面1 默认排序 |
 | `display.hotListSize` | integer | 10 | 热点榜条数 |
 | `display.showWordCloud` | boolean | false | 词云开关 |
 | `analysis.titleSimilarityThreshold` | number | 0.9 | L3 相似度阈值 |
