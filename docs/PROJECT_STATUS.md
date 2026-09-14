@@ -1,6 +1,7 @@
 # RSS Radar 功能现状对照（vs 设计方案）
 
-> 生成日期：2026-09-15 ｜ HEAD：`d661349` ｜ 累计 73 commit
+> 生成日期：2026-09-15 ｜ HEAD：`6e20c61`（真机回归报告）｜ 累计 76 commit
+> 真机回归：`docs/qa/p3-sort-timerange-regression-qa-report.md` —— 11 项判据全通过，`domVerified: true`
 > 对照基准：`docs/PRD.md`（产品需求）、`docs/ARCHITECTURE.md`（架构）、`docs/IMPLEMENTATION_PLAN.md`（任务拆解）
 > 用途：回答「哪些实现了 / 哪些还需优化 / 哪些还没开始」
 
@@ -52,6 +53,7 @@
 | B10 取消全渠道死路 | `fe9ec58` | 去掉双重强制回退 + `resolveBoardState` |
 | 排序双档切换（主理人口径：整合排序） | `f94c4e2` | 删 UI，恒 `updatedAt\|\|publishedAt` 倒序 |
 | 时间档含「近3小时」、顺序不符 | `d661349` | 改为 近6小时 / 今天 / 全部，默认今天 |
+| 排序档位死代码（`DEFAULT_SORT` / `defaultSort` 配置+类型+schema+文档 8 处） | `e092865` | 纯删除，build 产物主 chunk 哈希不变 |
 
 ---
 
