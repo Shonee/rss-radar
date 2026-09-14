@@ -3,8 +3,9 @@
 // 功能：
 //   - 顶部数据状态条（最近更新 / 共 N 渠道 / 今日 M 条 / 涉及 K 分类）`p1-statbar`
 //   - 异常态黄条：warning（抓取失败渠道）+ info（数据可能非最新）
-//   - 排序切换：默认「综合倒序」（updatedAt 优先、回落 publishedAt，同值按渠道名稳定）
-//     `p1-sort-updated` / `p1-sort-published`
+//   - 排序：**固定整合倒序**，无切换入口（主理人 2026-09 拍板口径）
+//     比较键恒为 `updatedAt || publishedAt`（优先更新时间，缺失 / 回落用创建时间），整体倒序；
+//     同值按「渠道名升序 → id 升序」稳定尾序
 //   - 筛选（渠道 / 分类 / 时间范围 / 搜索，复用 FilterBar）
 //   - 响应式筛选布局（PRD §6.1 / 原型 .layout-split）：≥1024px 左侧 248px 粘性筛选栏；
 //     ≤1023px 单列折叠，用 `p1-filter-toggle` 按钮展开（`p1-filter-panel` 面板）
@@ -16,8 +17,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import type { CategoryKey, Item } from '../types';
@@ -39,8 +38,6 @@ import {
   type ChannelOption,
   type FilterValue,
 } from '../components';
-
-type SortMode = 'updatedAt' | 'publishedAt';
 
 interface RawChannel {
   id: string;
@@ -66,18 +63,21 @@ const SOURCE_LABEL: Record<string, string> = {
   local: '本地缓存',
 };
 
-/** 综合倒序比较器：sort 键优先，同值回落另一时间键，再按渠道名稳定，最后按 id。 */
-function makeComparator(sort: SortMode): (a: Item, b: Item) => number {
-  return (a: Item, b: Item): number => {
-    const av = sort === 'updatedAt' ? a.updatedAt || a.publishedAt : a.publishedAt || a.updatedAt;
-    const bv = sort === 'updatedAt' ? b.updatedAt || b.publishedAt : b.publishedAt || b.updatedAt;
-    if (av !== bv) return av < bv ? 1 : -1; // 倒序
-    const an = a.channelName || '';
-    const bn = b.channelName || '';
-    if (an !== bn) return an < bn ? -1 : 1;
-    if (a.id === b.id) return 0;
-    return a.id < b.id ? -1 : 1;
-  };
+/**
+ * 整合倒序比较器（唯一排序口径，无档位切换）。
+ *
+ * 排序键恒为 `updatedAt || publishedAt`：优先取更新时间，更新时间为空 / 缺失时回落创建时间；
+ * 两条时间比较后整体倒序（新的在前）；同值时按渠道名升序、再按 id 升序保持稳定尾序。
+ */
+function compareByRecencyDesc(a: Item, b: Item): number {
+  const av = a.updatedAt || a.publishedAt;
+  const bv = b.updatedAt || b.publishedAt;
+  if (av !== bv) return av < bv ? 1 : -1; // 倒序
+  const an = a.channelName || '';
+  const bn = b.channelName || '';
+  if (an !== bn) return an < bn ? -1 : 1;
+  if (a.id === b.id) return 0;
+  return a.id < b.id ? -1 : 1;
 }
 
 export default function Page1HotStream() {
@@ -97,7 +97,6 @@ export default function Page1HotStream() {
   const isNarrow = useMediaQuery('(max-width: 1023px)');
   const [filterOpen, setFilterOpen] = useState(false);
 
-  const [sort, setSort] = useState<SortMode>('updatedAt');
   const [filter, setFilter] = useState<FilterValue>(() =>
     channelParam ? { ...EMPTY_FILTER, channelIds: [channelParam] } : EMPTY_FILTER,
   );
@@ -128,7 +127,7 @@ export default function Page1HotStream() {
     const list = mainItems.filter((it) => {
       if (chSet.size > 0 && !chSet.has(it.channelId)) return false;
       if (catSet.size > 0 && !(it.category ?? []).some((c) => catSet.has(c))) return false;
-      // 时间档统一走纯函数 `passesTimeRange`（today / 3h / 6h / all 四态，'all' 恒通过）
+      // 时间档统一走纯函数 `passesTimeRange`（today / 6h / all 三态，'all' 恒通过）
       if (!passesTimeRange(it, filter.timeRange, { now, snapDate })) return false;
       if (q) {
         const hay = `${it.title} ${it.summary ?? ''} ${it.author ?? ''}`.toLowerCase();
@@ -136,14 +135,14 @@ export default function Page1HotStream() {
       }
       return true;
     });
-    list.sort(makeComparator(sort));
+    list.sort(compareByRecencyDesc);
     return list;
-  }, [mainItems, filter, sort, snap]);
+  }, [mainItems, filter, snap]);
 
-  // 筛选 / 排序 / 断点变化时重置已展示条数
+  // 筛选 / 断点变化时重置已展示条数（排序口径固定，不再有排序态）
   useEffect(() => {
     setLimit(batch);
-  }, [filter, sort, batch]);
+  }, [filter, batch]);
 
   const visible = useMemo(() => filtered.slice(0, Math.max(limit, 0)), [filtered, limit]);
 
@@ -289,23 +288,6 @@ export default function Page1HotStream() {
         mb: 1.5,
       }}
     >
-      <ToggleButtonGroup
-        data-testid="p1-sort"
-        exclusive
-        size="small"
-        value={sort}
-        onChange={(_e, next: SortMode | null) => {
-          if (next) setSort(next);
-        }}
-      >
-        <ToggleButton value="updatedAt" data-testid="p1-sort-updated">
-          综合倒序（更新时间）
-        </ToggleButton>
-        <ToggleButton value="publishedAt" data-testid="p1-sort-published">
-          按创建时间
-        </ToggleButton>
-      </ToggleButtonGroup>
-
       {/* ≤1023px：筛选折叠开关（原型 .mobile-filter-toggle；桌面隐藏） */}
       {isNarrow && (
         <Button
