@@ -221,7 +221,16 @@ function daysBefore(date, n) {
   return `${yy}-${mm}-${dd}`;
 }
 
-async function readLatestDate(roundRoot) {
+/**
+ * 读 `latest.json` 记录的上一个活跃日期（Asia/Shanghai 的 `YYYY-MM-DD`）。
+ *
+ * 注意调用时机：`projectSnapshot` 会覆盖写 `latest.json`，因此**必须在写今日快照之前**
+ * 读取，否则拿到的永远是今天、跨天 rollover 会恒判 no-op（T-P4-fix 的真实根因）。
+ *
+ * @param {string} roundRoot
+ * @returns {Promise<string|null>} 无 latest.json 时返回 null；内容非法时抛错（由调用方兜住）
+ */
+export async function readLatestDate(roundRoot) {
   const latestPath = `${roundRoot}/latest.json`;
   try {
     const raw = await readFile(latestPath, 'utf8');

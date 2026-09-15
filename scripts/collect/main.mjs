@@ -16,6 +16,7 @@ import { projectSnapshot } from './project-snapshot.mjs';
 import { makeRunId } from './lib/run-id.mjs';
 import { writeReport } from './report.mjs';
 import { checkUrls, persistSourceHealth } from './url-health.mjs';
+import { rolloverIfNewDay, readLatestDate } from './history.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..', '..');
@@ -89,6 +90,12 @@ export async function main() {
   const outRoot = resolve(opts.out ?? join(ROOT, 'tmp', 'deploy'));
   const todayDir = join(outRoot, 'today');
   const eventPath = join(todayDir, `events-${date}.ndjson`);
+
+  // 0) 跨天 rollover：封口「上一个活跃日」到 history（月度 NDJSON + history-index +
+  //    按天归档 + 月末 SEALED）。**必须在 projectSnapshot 覆盖 latest.json 之前**执行，
+  //    否则 readLatestDate 拿到的永远是今天、rollover 恒 no-op。
+  //    失败 warn-not-throw：历史滚动失败不得阻断当日采集。
+  await rolloverPrevDay({ roundRoot: outRoot, currentDate: date });
 
   // 1) 追加事件流（O(1) appendFile）
   if (items.length > 0) {
@@ -180,6 +187,65 @@ export async function main() {
   if (err === 0) process.exit(0);
   else if (ok === 0) process.exit(1);
   else process.exit(2);
+}
+
+/**
+ * 跨天 rollover 接线（T-P4-fix）：把「上一个活跃日」封口进 history。
+ *
+ * 为什么必须单列一个步骤、而不是让 rolloverIfNewDay 自己去读 latest.json：
+ * 它内部默认从 `roundRoot/latest.json` 推断 previousDate，而本函数**必须在
+ * projectSnapshot 写今日 latest.json 之前**调用——一旦顺序反了，prevDate 会被
+ * 写成今天、`prev === currentDate` 恒成立，rollover 永远 no-op（这正是
+ * 「Actions 每 30 分钟采集 + 次日转历史」长期不生效、只能靠 seed:history 补的真实根因）。
+ *
+ * 幂等：同日重复调用时 latest.json 已是今天 → 直接返回 skipped，不产生任何写入。
+ * 容错：readLatestDate 对非法 JSON 会抛错，统一在此兜住（warn-not-throw，ARCH §12 精神），
+ *       避免历史滚动失败阻断当日采集落盘。
+ *
+ * @param {Object} p
+ * @param {string} p.roundRoot    轮次产物根目录（生产为 tmp/deploy，dev 为 public/data 同源目录）
+ * @param {string} p.currentDate  今日 Asia/Shanghai `YYYY-MM-DD`
+ * @param {number} [p.retainedEventDays=7] 事件流保留天数（透传 history.mjs）
+ * @returns {Promise<null|{sealed:boolean, prevDate:string, monthlyAppended:number, daysAppended:number, skipped?:boolean}>}
+ */
+export async function rolloverPrevDay({ roundRoot, currentDate, retainedEventDays }) {
+  try {
+    const prev = await readLatestDate(roundRoot);
+    if (!prev || prev === currentDate) {
+      return { sealed: false, prevDate: prev ?? currentDate, monthlyAppended: 0, daysAppended: 0, skipped: true };
+    }
+    // 崩溃重试保护：rollover 与「写今日 latest.json」之间存在窗口，若进程在该窗口内退出，
+    // 下一轮 readLatestDate 仍会读到昨天。此时若 history-index 已有该日，直接判为已封口，
+    // 避免重复进入 rollover（否则 readSnapshotIfExists 已 ENOENT，只会刷一条 no-snapshot 警告）。
+    if (await isDaySealed(roundRoot, prev)) {
+      return {
+        sealed: false, prevDate: prev, monthlyAppended: 0, daysAppended: 0,
+        skipped: true, reason: 'already-in-history',
+      };
+    }
+    const r = await rolloverIfNewDay({ roundRoot, currentDate, previousDate: prev, retainedEventDays });
+    console.log(
+      `[collect] rollover  prev=${prev}  monthlyAppended=${r.monthlyAppended}`
+        + `  daysAppended=${r.daysAppended}  sealed=${r.sealed}`,
+    );
+    return r;
+  } catch (e) {
+    console.warn(`[collect] rollover step skipped: ${e.message}`);
+    return null;
+  }
+}
+
+/**
+ * 该日是否已出现在 `history/history-index.json` 的 `days[]` 中（即已封口）。
+ * 读取失败（文件不存在 / 内容非法）一律视为「未封口」，交由后续流程处理。
+ */
+async function isDaySealed(roundRoot, date) {
+  try {
+    const idx = JSON.parse(await readFile(resolve(roundRoot, 'history', 'history-index.json'), 'utf8'));
+    return Array.isArray(idx?.days) && idx.days.some((d) => d?.date === date);
+  } catch {
+    return false;
+  }
 }
 
 /**
