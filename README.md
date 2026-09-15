@@ -10,7 +10,7 @@ RSS Radar = **多源 RSS 采集 → 去重聚合 → 当天报告**，纯静态�
 
 ## 截图
 
-| 页面1 聚合热榜流（1280） | 页面1（375 移动端） |
+| 页面1 聚合热榜（1280） | 页面1（375 移动端） |
 |---|---|
 | ![页面1](docs/qa/screenshots/p1-1280.png) | ![页面1 移动端](docs/qa/screenshots/p1-375.png) |
 
@@ -72,7 +72,7 @@ npm config set registry https://registry.npmmirror.com --location=user
 | 路径 | 作用 |
 |---|---|
 | `src/` | 前端 React + MUI + Tailwind 源码（5 条路由，见下） |
-| `src/pages/` | 页面1 聚合热榜流 / 页面2 渠道看板 / 页面3 分析报告 / 页面4 历史趋势与回看 / 关于 |
+| `src/pages/` | 页面1 聚合热榜 / 页面2 渠道看板 / 页面3 分析报告 / 页面4 历史趋势与回看 / 关于 |
 | `src/components/` | 公共组件库（ItemCard / ChannelCard / Chart / NotifyStatusPanel / …） |
 | `src/hooks/` | `useSnapshot` / `useReport` / `useHistory` / `useNotifyStats` / `useUserPrefs` … |
 | `src/services/` | `dataClient` / `historyClient` / `notifyStatsClient` / `hotScore` / `time` |
@@ -93,7 +93,7 @@ npm config set registry https://registry.npmmirror.com --location=user
 
 | 路由 | 页面 |
 |---|---|
-| `/` | 页面1 聚合热榜流（底部含只读「通知状态」面板） |
+| `/` | 页面1 聚合热榜（底部含只读「通知状态」面板） |
 | `/channels` | 页面2 渠道看板 |
 | `/report` | 页面3 分析报告（只做当天） |
 | `/history` | 页面4 历史趋势与回看 |

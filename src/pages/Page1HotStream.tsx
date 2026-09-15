@@ -1,4 +1,4 @@
-// T-P3-03 — 页面1：聚合热榜流（PRD §6.1）
+// T-P3-03 — 页面1：聚合热榜（PRD §6.1）
 //
 // 功能：
 //   - 顶部数据状态条（最近更新 / 共 N 渠道 / 今日 M 条 / 涉及 K 分类）`p1-statbar`
@@ -230,7 +230,7 @@ export default function Page1HotStream() {
           component="h1"
           sx={{ m: 0, fontSize: tokens.fs['2xl'], fontWeight: tokens.fw.semibold }}
         >
-          当天聚合热榜流
+          聚合热榜
         </Box>
         {snap && (
           <Box sx={{ color: tokens.surface.text3, fontSize: tokens.fs.sm }}>{snap.date}</Box>

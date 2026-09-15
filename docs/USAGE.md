@@ -77,7 +77,7 @@ npm run dev
 
 浏览器打开 **http://localhost:5173/#/**（`HashRouter`，地址带 `#/`）。
 
-5 条路由：`#/`（页面1 聚合热榜流）、`#/channels`（页面2 渠道看板）、`#/report`（页面3 分析报告）、`#/history`（页面4 历史趋势与回看）、`#/about`（关于）。
+5 条路由：`#/`（页面1 聚合热榜）、`#/channels`（页面2 渠道看板）、`#/report`（页面3 分析报告）、`#/history`（页面4 历史趋势与回看）、`#/about`（关于）。
 
 ---
 
@@ -87,7 +87,7 @@ npm run dev
 
 | 页面 | 读取位置 | 由谁产出 |
 |---|---|---|
-| 页面1 聚合热榜流 | `public/data/today/{latest.json,snapshot.json,snapshot-<date>.json,report-<date>.json}` | `npm run collect:once`（dev bridge） |
+| 页面1 聚合热榜 | `public/data/today/{latest.json,snapshot.json,snapshot-<date>.json,report-<date>.json}` | `npm run collect:once`（dev bridge） |
 | 页面2 渠道看板 | 同上（按渠道聚合） | 同上 |
 | 页面3 分析报告 | `public/data/today/report-<date>.json` | 同上 |
 | 页面4 历史趋势与回看 | `public/data/history/{history-index.json,archive-index.json,YYYY/MM/*}` | `npm run seed:history` |

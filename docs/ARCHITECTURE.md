@@ -90,7 +90,7 @@ flowchart TD
       AR[archive-index.json 🆕]
     end
     subgraph PRE["展示层 Presentation（纯静态）"]
-      P1[页面1 聚合热榜流]
+      P1[页面1 聚合热榜]
       P2[页面2 渠道看板]
       P3[页面3 分析报告]
       P4[页面4 历史趋势与回看 🆕]

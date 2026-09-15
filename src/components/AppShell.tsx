@@ -2,7 +2,7 @@
 //
 // 职责：
 //   1. 统一页面骨架（sticky header + 内容区 + footer），导航在窄屏可横向滚动、不溢出。
-//   2. 5 项主导航（ARCHITECTURE §4.1 / PRD v1.1）：聚合热榜流 / 渠道看板 / 分析报告 / 历史趋势 / 关于。
+//   2. 5 项主导航（ARCHITECTURE §4.1 / PRD v1.1）：聚合热榜 / 渠道看板 / 分析报告 / 历史趋势 / 关于。
 //   3. file:// 协议下 `target="_blank"` 外链被浏览器拦截的修复（原型 v1.3 D）：
 //      文档级捕获点击并改走 window.open，避免逐组件改造（ItemCard / ChannelCard 等共享 `target="_blank"`）。
 
@@ -19,7 +19,7 @@ export interface NavItem {
 
 /** 主导航（顺序即展示顺序） */
 export const NAV_ITEMS: NavItem[] = [
-  { to: '/', label: '聚合热榜流' },
+  { to: '/', label: '聚合热榜' },
   { to: '/channels', label: '渠道看板' },
   { to: '/report', label: '分析报告' },
   { to: '/history', label: '历史趋势' },

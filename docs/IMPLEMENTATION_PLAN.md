@@ -463,7 +463,7 @@
 
 ---
 
-#### T-P3-03 【M10】页面1 聚合热榜流（Page1HotStream）
+#### T-P3-03 【M10】页面1 聚合热榜（Page1HotStream）
 - **来源**：PRD §6.1 / prototype/page1-hot-stream.html
 - **文件**：
   - `src/pages/Page1HotStream.tsx`
