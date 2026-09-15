@@ -1,12 +1,14 @@
 {
   "schemaVersion": "1.0",
-  "generatedAt": "2026-09-13T00:00:00Z",
+  "generatedAt": "2026-09-15T00:00:00Z",
   "channels": [
     {
       "id": "ruanyifeng-blog",
       "name": "阮一峰的网络日志",
       "homepage": "https://www.ruanyifeng.com/blog/",
-      "category": ["tech_blog"],
+      "category": [
+        "tech_blog"
+      ],
       "enabled": true,
       "displayLimit": 10,
       "icon": "阮",
@@ -19,7 +21,10 @@
       "id": "ruanyifeng-weekly",
       "name": "科技爱好者周刊",
       "homepage": "https://www.ruanyifeng.com/blog/weekly/",
-      "category": ["tech_blog", "newsletter"],
+      "category": [
+        "tech_blog",
+        "newsletter"
+      ],
       "enabled": true,
       "displayLimit": 5,
       "icon": "刊",
@@ -32,7 +37,9 @@
       "id": "v2ex",
       "name": "V2EX",
       "homepage": "https://www.v2ex.com/",
-      "category": ["dev_community"],
+      "category": [
+        "dev_community"
+      ],
       "enabled": true,
       "displayLimit": 15,
       "icon": "V",
@@ -45,7 +52,10 @@
       "id": "sspai",
       "name": "少数派",
       "homepage": "https://sspai.com/",
-      "category": ["tech_blog", "dev_community"],
+      "category": [
+        "tech_blog",
+        "dev_community"
+      ],
       "enabled": true,
       "displayLimit": 10,
       "icon": "少",
@@ -58,7 +68,10 @@
       "id": "hacker-news",
       "name": "Hacker News",
       "homepage": "https://news.ycombinator.com/",
-      "category": ["dev_community", "news"],
+      "category": [
+        "dev_community",
+        "news"
+      ],
       "enabled": true,
       "displayLimit": 20,
       "icon": "Y",
@@ -71,7 +84,9 @@
       "id": "huggingface-blog",
       "name": "Hugging Face Blog",
       "homepage": "https://huggingface.co/blog",
-      "category": ["ai"],
+      "category": [
+        "ai"
+      ],
       "enabled": true,
       "displayLimit": 10,
       "icon": "🤗",
@@ -84,7 +99,10 @@
       "id": "github-blog",
       "name": "GitHub Blog",
       "homepage": "https://github.blog/",
-      "category": ["tech_blog", "ai"],
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
       "enabled": true,
       "displayLimit": 10,
       "icon": "GH",
@@ -97,7 +115,9 @@
       "id": "kernel-panic",
       "name": "内核恐慌",
       "homepage": "https://kernelpanic.fm/",
-      "category": ["podcast"],
+      "category": [
+        "podcast"
+      ],
       "enabled": true,
       "displayLimit": 5,
       "icon": "KP",
@@ -110,7 +130,9 @@
       "id": "solidot",
       "name": "奇客Solidot",
       "homepage": "https://www.solidot.org/",
-      "category": ["news"],
+      "category": [
+        "news"
+      ],
       "enabled": true,
       "displayLimit": 10,
       "icon": "奇",
@@ -123,7 +145,9 @@
       "id": "ifanr",
       "name": "爱范儿",
       "homepage": "https://www.ifanr.com/",
-      "category": ["news"],
+      "category": [
+        "news"
+      ],
       "enabled": true,
       "displayLimit": 10,
       "icon": "范",
@@ -136,7 +160,9 @@
       "id": "gcores",
       "name": "机核",
       "homepage": "https://www.gcores.com/",
-      "category": ["podcast"],
+      "category": [
+        "podcast"
+      ],
       "enabled": true,
       "displayLimit": 10,
       "icon": "核",
@@ -144,6 +170,341 @@
       "weight": 0.7,
       "createdAt": "2026-09-01T00:00:00Z",
       "updatedAt": "2026-09-01T00:00:00Z"
+    },
+    {
+      "id": "hutusi",
+      "name": "胡涂说",
+      "homepage": "https://hutusi.com/",
+      "category": [
+        "tech_blog"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "胡",
+      "language": "zh-CN",
+      "weight": 0.75,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "oschina",
+      "name": "开源中国",
+      "homepage": "https://www.oschina.net/",
+      "category": [
+        "dev_community"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "开",
+      "language": "zh-CN",
+      "weight": 0.7,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "xclient",
+      "name": "精品MAC应用分享",
+      "homepage": "https://xclient.info",
+      "category": [
+        "other"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "精",
+      "language": "zh-CN",
+      "weight": 0.6,
+      "tags": [
+        "Mac",
+        "软件下载"
+      ],
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "iui-su",
+      "name": "不死鸟 - 分享为王官网",
+      "homepage": "https://iui.su/",
+      "category": [
+        "other"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "鸟",
+      "language": "zh-CN",
+      "weight": 0.6,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "52pojie",
+      "name": "吾爱破解 导读 - 最新热门",
+      "homepage": "https://www.52pojie.cn/forum.php?mod=guide&view=hot",
+      "category": [
+        "dev_community"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "吾",
+      "language": "zh-CN",
+      "weight": 0.7,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "appinn",
+      "name": "小众软件",
+      "homepage": "https://www.appinn.com/",
+      "category": [
+        "other"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "小",
+      "language": "zh-CN",
+      "weight": 0.6,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "williamlong",
+      "name": "月光博客",
+      "homepage": "https://www.williamlong.info/",
+      "category": [
+        "tech_blog"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "月",
+      "language": "zh-CN",
+      "weight": 0.75,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "daliansky",
+      "name": "黑果小兵的部落阁",
+      "homepage": "https://blog.daliansky.net/",
+      "category": [
+        "tech_blog"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "黑",
+      "language": "zh-CN",
+      "weight": 0.7,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "techug",
+      "name": "程序员、编程语言、软件开发、编程技术",
+      "homepage": "https://www.techug.com/",
+      "category": [
+        "tech_blog"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "程",
+      "language": "zh-CN",
+      "weight": 0.7,
+      "tags": [
+        "博客"
+      ],
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "bytedance-tech",
+      "name": "字节跳动技术团队官方博客",
+      "homepage": "https://blog.csdn.net/ByteDanceTech",
+      "category": [
+        "tech_blog"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "字",
+      "language": "zh-CN",
+      "weight": 0.7,
+      "tags": [
+        "技术",
+        "博客",
+        "CSDN"
+      ],
+      "description": "已断更，最新文章 2024 年",
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "meituan-tech",
+      "name": "美团技术团队",
+      "homepage": "https://tech.meituan.com/",
+      "category": [
+        "tech_blog"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "团",
+      "language": "zh-CN",
+      "weight": 0.8,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "36kr",
+      "name": "36氪",
+      "homepage": "https://www.36kr.com/",
+      "category": [
+        "news"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "氪",
+      "language": "zh-CN",
+      "weight": 0.7,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "xueqiu",
+      "name": "今日话题 - 雪球",
+      "homepage": "https://xueqiu.com/",
+      "category": [
+        "finance"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "雪",
+      "language": "zh-CN",
+      "weight": 0.7,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "woshipm",
+      "name": "人人都是产品经理",
+      "homepage": "http://www.woshipm.com/category/pmd",
+      "category": [
+        "other"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "产",
+      "language": "zh-CN",
+      "weight": 0.6,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "ithome",
+      "name": "IT之家",
+      "homepage": "https://www.ithome.com/",
+      "category": [
+        "news"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "IT",
+      "language": "zh-CN",
+      "weight": 0.7,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "wpdaxue",
+      "name": "WordPress大学",
+      "homepage": "https://www.wpdaxue.com/",
+      "category": [
+        "tech_blog"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "W",
+      "language": "zh-CN",
+      "weight": 0.5,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "pychina-weekly",
+      "name": "蠎周刊（Python 周刊）",
+      "homepage": "https://weekly.pychina.org/",
+      "category": [
+        "newsletter"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "蠎",
+      "language": "zh-CN",
+      "weight": 0.6,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "douban",
+      "name": "豆瓣",
+      "homepage": "https://www.douban.com/",
+      "category": [
+        "other"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "豆",
+      "language": "zh-CN",
+      "weight": 0.5,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "ctrip-tech",
+      "name": "携程技术",
+      "homepage": "https://blog.csdn.net/ctrip_tech",
+      "category": [
+        "tech_blog"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "携",
+      "language": "zh-CN",
+      "weight": 0.7,
+      "tags": [
+        "技术",
+        "博客",
+        "CSDN"
+      ],
+      "description": "CSDN 通用 RSS 能力",
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "iao-su",
+      "name": "iao.su",
+      "homepage": "https://iao.su/",
+      "category": [
+        "other"
+      ],
+      "enabled": false,
+      "displayLimit": 10,
+      "icon": "i",
+      "language": "zh-CN",
+      "weight": 0.4,
+      "description": "原记录状态标记为「可用」；2026-09-15 复测已失效",
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "stats-gov-cn",
+      "name": "国家统计局 · 数据解读",
+      "homepage": "https://www.stats.gov.cn/sj/sjjd/",
+      "category": [
+        "news"
+      ],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "统",
+      "language": "zh-CN",
+      "weight": 0.6,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
     }
   ],
   "sources": [
@@ -278,6 +639,287 @@
       "interval": 30,
       "createdAt": "2026-09-01T00:00:00Z",
       "updatedAt": "2026-09-01T00:00:00Z"
+    },
+    {
+      "id": "hutusi-rss",
+      "channelId": "hutusi",
+      "name": "胡涂说",
+      "type": "rss",
+      "url": "https://hutusi.com/feed.xml",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "oschina-rss",
+      "channelId": "oschina",
+      "name": "开源中国 · 最新资讯",
+      "type": "rss",
+      "url": "https://www.oschina.net/news/rss",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "xclient-rss",
+      "channelId": "xclient",
+      "name": "精品MAC应用分享",
+      "type": "rss",
+      "url": "https://xclient.info/feed",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "iui-su-rss",
+      "channelId": "iui-su",
+      "name": "不死鸟",
+      "type": "rss",
+      "url": "https://iui.su/feed/",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "52pojie-rss",
+      "channelId": "52pojie",
+      "name": "吾爱破解 导读 - 最新热门",
+      "type": "rss",
+      "url": "https://www.52pojie.cn/forum.php?mod=guide&view=hot&rss=1",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "appinn-appinns",
+      "channelId": "appinn",
+      "name": "小众软件（appinns 源）",
+      "type": "rss",
+      "url": "https://feeds.appinn.com/appinns/",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "appinn-feed",
+      "channelId": "appinn",
+      "name": "小众软件（主站 feed）",
+      "type": "rss",
+      "url": "https://www.appinn.com/feed/",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "williamlong-rss",
+      "channelId": "williamlong",
+      "name": "月光博客",
+      "type": "rss",
+      "url": "https://www.williamlong.info/rss.xml",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "daliansky-atom",
+      "channelId": "daliansky",
+      "name": "黑果小兵的部落阁",
+      "type": "atom",
+      "url": "https://blog.daliansky.net/atom.xml",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "techug-rss",
+      "channelId": "techug",
+      "name": "程序员 · 编程技术",
+      "type": "rss",
+      "url": "https://www.techug.com/feed/",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "bytedance-tech-rss",
+      "channelId": "bytedance-tech",
+      "name": "字节跳动技术团队官方博客",
+      "type": "rss",
+      "url": "https://rss.csdn.net/ByteDanceTech/rss/map",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "notes": "CSDN rss/map 源；原清单描述「已断更，最新文章 2024 年」",
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "meituan-tech-rss",
+      "channelId": "meituan-tech",
+      "name": "美团技术团队",
+      "type": "rss",
+      "url": "https://tech.meituan.com/feed/",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "notes": "2026-09-15 实测该地址 301 → https://tech.meituan.com/rss.xml（已由连接器自动跟随重定向）",
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "36kr-rss",
+      "channelId": "36kr",
+      "name": "36氪",
+      "type": "rss",
+      "url": "https://www.36kr.com/feed",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "xueqiu-rss",
+      "channelId": "xueqiu",
+      "name": "今日话题 - 雪球",
+      "type": "rss",
+      "url": "https://xueqiu.com/hots/topic/rss",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "woshipm-rss",
+      "channelId": "woshipm",
+      "name": "人人都是产品经理 · 产品经理栏目",
+      "type": "rss",
+      "url": "http://www.woshipm.com/category/pmd/feed",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "ithome-rss",
+      "channelId": "ithome",
+      "name": "IT之家",
+      "type": "rss",
+      "url": "https://www.ithome.com/rss",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "wpdaxue-rss",
+      "channelId": "wpdaxue",
+      "name": "WordPress大学",
+      "type": "rss",
+      "url": "https://www.wpdaxue.com/feed",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "pychina-weekly-atom",
+      "channelId": "pychina-weekly",
+      "name": "蠎周刊",
+      "type": "atom",
+      "url": "https://weekly.pychina.org/feeds/all.atom.xml",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "douban-movie-review",
+      "channelId": "douban",
+      "name": "豆瓣最受欢迎的影评",
+      "type": "rss",
+      "url": "https://movie.douban.com/review/movie_best",
+      "enabled": false,
+      "language": "zh-CN",
+      "interval": 30,
+      "notes": "2026-09-15 复测：该 URL 返回 404，feed 变体 https://movie.douban.com/feed/review/movie_best 亦 404",
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "douban-book-review",
+      "channelId": "douban",
+      "name": "豆瓣最受欢迎的书评",
+      "type": "rss",
+      "url": "https://www.douban.com/feed/review/book",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "ctrip-tech-rss",
+      "channelId": "ctrip-tech",
+      "name": "携程技术",
+      "type": "rss",
+      "url": "https://rss.csdn.net/ctrip_tech/rss/map",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "notes": "CSDN rss/map 源；原清单描述「CSDN 通用 rss 能力」",
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "iao-su-rss",
+      "channelId": "iao-su",
+      "name": "iao.su",
+      "type": "rss",
+      "url": "https://iao.su/feed",
+      "enabled": false,
+      "language": "zh-CN",
+      "interval": 30,
+      "notes": "2026-09-15 复测：301 → https://oe.do/ 且返回 0 条目，域名已易主，原 feed 不再可用",
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
+    },
+    {
+      "id": "stats-gov-cn-rss",
+      "channelId": "stats-gov-cn",
+      "name": "国家统计局 · 数据解读",
+      "type": "rss",
+      "url": "https://www.stats.gov.cn/sj/sjjd/rss.xml",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-15T00:00:00Z"
     }
   ]
 }

@@ -76,6 +76,13 @@ export interface Channel {
   icon?: string;
   language?: Language;
   weight?: number;
+  /**
+   * 自由标签（非受控词表，仅作展示/检索；正式分类请用 `category`）。
+   * 承载外部源清单导入时的原始标签，如 `['Mac', '软件下载']`。
+   */
+  tags?: string[];
+  /** 渠道自由描述（如「已断更，最新文章 2024 年」），来自外部源清单导入，不参与采集逻辑 */
+  description?: string;
   createdAt: string;
   updatedAt: string;
 }
