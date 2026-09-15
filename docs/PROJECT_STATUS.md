@@ -1,119 +1,92 @@
 # RSS Radar 功能现状对照（vs 设计方案）
 
-> 生成日期：2026-09-15 ｜ HEAD：`6e20c61`（真机回归报告）｜ 累计 76 commit
-> 真机回归：`docs/qa/p3-sort-timerange-regression-qa-report.md` —— 11 项判据全通过，`domVerified: true`
-> 对照基准：`docs/PRD.md`（产品需求）、`docs/ARCHITECTURE.md`（架构）、`docs/IMPLEMENTATION_PLAN.md`（任务拆解）
+> 更新日期：2026-09-15 ｜ 对照基准：`docs/PRD.md` / `docs/ARCHITECTURE.md` / `docs/IMPLEMENTATION_PLAN.md`
 > 用途：回答「哪些实现了 / 哪些还需优化 / 哪些还没开始」
+> 本文件在 P4/P5 落地后重写：P1~P5 代码侧已全部实现，**三项真实环境验证待老登提供条件**
 
 ---
 
 ## 一、已实现（对照设计已交付）
 
-### P1 脚手架与数据契约（完成）
-| 项 | 状态 | 说明 |
-|---|---|---|
-| Vite + React + MUI + Tailwind 脚手架 | ✅ | Tailwind `preflight:false` 与 MUI 协同 |
-| TypeScript strict 全开 | ✅ | Node ESM `"type":"module"` |
-| 数据契约（TS 类型 + JSON Schema） | ✅ | `src/types/models.ts` + `docs/data-model/schema/*.schema.json` |
-| 双轨校验（ajv 产物 + Zod 脚本内） | ✅ | `npm run validate` 5/5 通过 |
-| Connector Registry + 排除规则 + 3 连接器 | ✅ | 后扩至 8 连接器 |
+### P1 脚手架与数据契约 ✅
+Vite + React + MUI + Tailwind（`preflight:false` 协同）｜ TypeScript strict + ESM ｜ 数据契约（`src/types/models.ts` + `docs/data-model/schema/*.schema.json`）｜ 双轨校验（ajv 产物 + Zod 脚本内，`npm run validate` 5/5）｜ Connector Registry + 排除规则。
 
-### P2 数据管线（完成，T-P2-01 ~ T-P2-10）
-| 项 | 状态 | 说明 |
-|---|---|---|
-| URL 标准化 / 去重 L1~L5 | ✅ | `normalize.mjs` / `dedup.mjs` |
-| 事件流 NDJSON + 月度归档 | ✅ | `append-events.mjs` / `archive.mjs` |
-| 报告生成（热点 / 分类 / 健康度） | ✅ | `analyze.mjs` / `report.mjs` |
-| URL 健康检查 | ✅ | `url-health.mjs`（`sourceHealth[]` 产出） |
-| 8 个连接器 | ✅ | 阮一峰×2 / V2EX / 少数派 / HN / HF Blog / GitHub Blog / 内核恐慌 |
-| node:test 覆盖 | ✅ | 253 用例全绿 |
+### P2 数据管线 ✅（T-P2-01 ~ T-P2-10）
+URL 标准化与去重 L1~L5 ｜ 事件流 NDJSON + 月度归档 ｜ 报告生成（热点/分类/健康度）｜ URL 健康检查（`sourceHealth[]`）｜ 端到端管线测试 ｜ **11 个渠道 / 11 个源**。
 
-### P3 前端（完成，T-P3-01 ~ T-P3-08 + 修复轮）
-| 项 | 状态 | 说明 |
-|---|---|---|
-| 前端地基 + MUI 浅色主题 | ✅ | 主色 `#2f6bff`（D10 单主题） |
-| 公共组件库 | ✅ | 15 个组件（FilterBar / ItemCard / Chart / ConfigDrawer …） |
-| 页面1 聚合热榜流 | ✅ | 含响应式筛选栏、时间档、空态逃生 |
-| 页面2 渠道分栏看板 | ✅ | 含取消全渠道空态、全局空态（PRD:587） |
-| 页面3 分析报告 | ✅ | 饼图口径对齐、百分比最大余数法（Σ=100） |
-| 页面4 历史趋势与回看 | ✅ | |
-| 关于页 | ✅ | |
-| 通知模块（4 渠道：邮件/飞书/钉钉/企微） | ✅ | `scripts/notify/**`，加签算法按渠道分离 |
-| 通知状态面板 | ✅ | 只读，无发送入口（ARCH §12 硬约束） |
-| 双轨数据加载（构建期内联 + 运行时 fetch） | ✅ | dev bridge 同刷 snapshot + report |
+### P3 前端 ✅（T-P3-01 ~ T-P3-08 + 修复轮）
+前端地基 + MUI 浅色主题（主色 `#2f6bff`）｜ 15 个公共组件 ｜ 页面1 聚合热榜流（响应式筛选栏 + 空态逃生）｜ 页面2 渠道看板（取消全渠道/全局空态）｜ 页面3 分析报告（最大余数法取整）｜ 页面4 历史趋势 ｜ 关于页 ｜ 通知模块 4 渠道 ｜ 通知状态面板（只读）。
 
-### P3 修复轮（本阶段内闭环）
-| 缺陷 | 修复 commit | 说明 |
+### P4 自动化与部署 ✅（代码侧）
+| 任务 | 交付 |
+|---|---|
+| T-P4-01~03 | **6 个 workflow** `.github/workflows/{collect,notify,archive,deploy-gh-pages,deploy-cf-pages,keepalive}.yml`；`wrangler-action` 固定到真实 SHA `9acf94ace14e7dc412b076f2c5c20b8ce93c79cd`（GitHub API 取自 v3 tag）；无 `pages-action` |
+| T-P4-04~08 | README 重写 ｜ `docs/{USAGE,SOURCES,NOTIFY,DEPLOYMENT}.md` |
+| T-P4-09 | `docs/VERIFICATION.md`（验证流程）｜ `docs/CONTRIBUTING.md`（贡献指南） |
+| 渠道扩容 | 8 → **11**（奇客Solidot / 爱范儿 / 机核，均实测可达可解析） |
+| 采集链路补全 | `main.mjs` 接入 `rolloverIfNewDay`（`d70f4b7`）——「次日转历史」真正随采集自动发生 |
+
+### P5 集成验证与回归 ✅（本地侧）
+| 任务 | 交付 | 实测 |
 |---|---|---|
-| A11「今日 M 条」取了快照全量 | `235af2b` | 改为 `countByShanghaiDay` 派生计数，与列表同源 |
-| dev bridge 只刷 snapshot 不刷 report | `211c2ea` | 同刷两产物，20==20 核对通过 |
-| P1-1 页面1 恒空（无「全部」档、空态死路） | `7483f8e` | 加「全部」档 + `p1-show-all-time` 逃生 |
-| P3-4 favicon 全环境 404 | `7483f8e` | 建 `public/favicon.svg` + 改相对路径 |
-| C9/C9b/C18 响应式筛选缺失 | `2f13035` | ≥1024 左侧 248px 粘性栏 / ≤1023 折叠 |
-| B10 取消全渠道死路 | `fe9ec58` | 去掉双重强制回退 + `resolveBoardState` |
-| 排序双档切换（主理人口径：整合排序） | `f94c4e2` | 删 UI，恒 `updatedAt\|\|publishedAt` 倒序 |
-| 时间档含「近3小时」、顺序不符 | `d661349` | 改为 近6小时 / 今天 / 全部，默认今天 |
-| 排序档位死代码（`DEFAULT_SORT` / `defaultSort` 配置+类型+schema+文档 8 处） | `e092865` | 纯删除，build 产物主 chunk 哈希不变 |
+| T-P5-02 | `tests/regression/snapshot-harness.mjs` + `run.sh`（97 条断言移植，扩至 118 条；A~F 六类） | **118/118 通过、0 未验证、domVerified: true、退出码 0**；变异测试（Chrome 不存在 → 2；篡改时间档标签 → 1） |
+| T-P5-03 | `tests/e2e/full-pipeline.mjs` + `docs/qa/release-checklist.md` | **31 断言全过、8 阶段（含跨天 rollover / 归档 / history-index 读回）、退出码 0**；`--mutate` 必然失败 |
 
 ---
 
 ## 二、待优化（已实现但有偏差或技术债）
 
-| # | 项 | 偏差说明 | 影响 | 建议时机 |
-|---|---|---|---|---|
-| 1 | 连接器契约漂移 | `fieldMapping`/`auth`/`pagination` 在 schema + TS + ARCH + data-model 四份产物与实现形状不一致 | **会静默损毁数据**（标题变 `(untitled)`） | P4 push 前 |
-| 2 | hot-score 归一化偏离 | ARCH §5.1 写 log+max 归一化，实现用 `min(sourceCount/5,1)` 线性截断 | 热点排序权重与文档不符 | P4 push 前 |
-| 3 | `286c6f3` commit message 有字面 `\n` | 提交信息排版错乱 | 可读性 | P4 push 前 rebase reword |
-| 4 | `public/data/today/snapshot.json` 仍是 P1 手工 fixture | 3 条假数据，git 跟踪的唯一 data 文件 | 首次部署展示内容不真实 | P4 push 前换真实快照 |
-| 5 | 采集端无条目时间窗过滤 | 低频源把几周前文章带进快照 → 「今天」可能恒 0，只能靠「全部」档逃生 | 体验折损（已有逃生出口） | P4 视情况 |
-| 6 | `lastStatus=error` 持久化缺失 | 归 T-P2-01 文档化，未实现 | 故障渠道无历史痕迹 | P4 视情况 |
-| 7 | 黄条文案在受限网络下长期出现 | 本地无代理时 5/8 渠道 `fetch failed`，黄条常驻 | 噪音（非缺陷） | 上 Actions 后观察 |
-| 8 | `cheerio` 依赖未使用 | 预留未来 HTML 兜底 | 包体积 | 保留或移除待定 |
-| 9 | 文档口径残留 | PRD 部分段落仍引用旧档位/旧排序表述（本轮已修 `:497`） | 文档与实现漂移 | 随改随修 |
+| # | 项 | 状态 |
+|---|---|---|
+| 1 | 连接器契约漂移（`fieldMapping`/`auth`/`pagination` 四份产物与实现形状不一致，会静默损毁标题） | **未修，P4 收尾前必修** |
+| 2 | hot-score 归一化偏离（ARCH §5.1 log+max vs 实现线性截断） | 未修 |
+| 3 | `286c6f3` commit message 含字面 `\n` | 未改（可选 rebase reword） |
+| 4 | `public/data/today/snapshot.json` 仍是 P1 手工 fixture | 未换（真实快照已生成但未入库，见下） |
+| 5 | 采集端无条目时间窗过滤 | 设计如此（页1 用「今天/全部」档兜） |
+| 6 | 黄条在受限网络下常驻（本地 5/8 或 5/11 渠道 `fetch failed`） | 接受（上 Actions 后收敛） |
+| 7 | `cheerio` 依赖未使用 | 保留待定 |
+| 8 | 量级断言（items≥40 / historyDays≥365 等）未启用 | 待跨天数据累积后开启 |
+| ~~9~~ | ~~dedup 跨源合并统计恒为 0~~ | **已修 `ba1e487`**（L2 计数口径 `K-1`；经 `project-snapshot` 影响 `stats.mergedCount`，属用户可见统计） |
+| ~~10~~ | ~~排序档位死代码 `DEFAULT_SORT`~~ | **已清 `e092865`** |
 
 ---
 
-## 三、未开始（P4 / P5）
+## 三、未开始（需真实环境，非代码问题）
 
 | 任务 | 内容 | 阻塞条件 |
 |---|---|---|
-| T-P4-01 | 6 个 workflow：collect / notify / archive / deploy-gh-pages / deploy-cf-pages / keepalive | **`.github/workflows` 尚不存在**；需先确定 fork 沙箱仓库策略（D12） |
-| T-P4-02 | collect.yml 详细步骤（checkout 双分支 + secrets 注入） | 依赖 T-P4-01 |
-| T-P4-03 | CF Pages 部署 workflow（wrangler-action 固定 commit SHA） | 依赖 T-P4-01 + **CLOUDFLARE_API_TOKEN / ACCOUNT_ID / CF Pages 项目**（老登已决定延后到代码上传远程仓库后） |
-| T-P4-09 | `docs/VERIFICATION.md` + `docs/CONTRIBUTING.md` | 无硬阻塞（README / USAGE / SOURCES / NOTIFY / DEPLOYMENT 已提前完成） |
-| T-P5-01 | Actions 真实触发 → CF Pages 部署验证 | 依赖 T-P4-01/02/03 |
-| T-P5-02 | prototype smoke-test 97 条断言移植回归 | 依赖 T-P5-01 |
-| T-P5-03 | 端到端冒烟 + `docs/qa/release-checklist.md` | 依赖 T-P5-01/02 |
+| **T-P5-01** | Actions 真实触发 → CF Pages 部署验证（`<proj>.pages.dev` 可访问、四页面渲染、raw.githubusercontent 拉到当天数据） | ① 代码 push 远程仓库；② CF Pages 三件套（项目 / `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID`） |
+| ④ GH Pages 真实发布 | `deploy-gh-pages.yml` 手动触发验证 | 远程仓库 + Pages 设置 |
+| ⑤ 通知真实发送 | 4 渠道 `enabled:false` → 真实凭据与 Secrets | SMTP / 各 webhook 凭据 |
 
-**当前真正的阻塞点只有两个**：① 代码还没 push 到远程仓库；② CF Pages 三件套（项目 / Token / Account ID）待老登提供。
+> **当前真阻塞只有两个**：代码未 push 到远程仓库；CF Pages 三件套与通知凭据待老登提供。
 
 ---
 
-## 四、五道门禁现状（HEAD `d661349`）
+## 四、门禁与校验现状（P4/P5 收尾）
 
-| 门禁 | 结果 |
+| 检查 | 结果 |
 |---|---|
 | `npm run typecheck` | 0 错误 |
-| `npx vitest run` | 64 passed（改前 62，+2 防回退断言） |
-| `npm run test:node` | 253 passed / 0 fail |
+| `npx vitest run` | 62 passed |
+| `npm run test:node` | **259 passed / 0 fail** |
 | `npm run validate` | 通过 5 / 失败 0 |
-| `npm run build` | 成功，1.36s |
+| `npm run build` | 成功（~1.6s） |
+| `npm run test:e2e:full` | 31 断言全过，退出码 0 |
+| `npm run test:regression` | 118/118，domVerified true，退出码 0 |
+| 6 个 workflow YAML | 全部可解析、cron 合法、无 `pages-action`、wrangler 固定 SHA |
+| 真实采集（11 源） | `ok=6 err=5 items=79`；跨天模拟封口验证通过 |
+| **未验证** | Actions 真实触发 / CF Pages 真实部署 / 通知真实发送 |
 
 ---
 
-## 五、快照数据现状说明（回答「5 个渠道为什么失败」）
+## 五、快照数据现状（回答「一批渠道为什么失败」）
 
-`public/data/today/snapshot-2026-09-14.json` 的 `stats.sourceHealth[]`（8 条）：
+以 2026-09-15 真实采集（11 源）为例：**ok=6 / failed=5**，共 79 条条目。
 
-| 渠道 | 结果 | 原因 |
+| 失败源 | 原因 | 性质 |
 |---|---|---|
-| 阮一峰的网络日志 | ok | — |
-| 少数派 | ok | — |
-| GitHub Blog | ok | — |
-| 科技爱好者周刊 | **failed** | `HTTP 404`（RSS 地址失效/变更） |
-| V2EX | **failed** | `fetch failed`（本地网络直连不通） |
-| Hacker News | **failed** | `fetch failed`（同上） |
-| Hugging Face Blog | **failed** | `fetch failed`（同上） |
-| 内核恐慌 | **failed** | `fetch failed`（同上） |
+| 科技爱好者周刊 | `HTTP 404` | RSS 地址失效，需换源 |
+| V2EX / Hacker News / Hugging Face Blog / 内核恐慌 | `fetch failed` | 本地沙箱无代理（境外站被拦） |
 
-结论：**4 个是本地沙箱无代理导致的网络不通，1 个是源地址 404，均非解析/代码缺陷**。采集链路本身正常（3 个可达源产出 20 条条目）。上 GitHub Actions（机房网络）后失败数会大幅收敛；若 404 那条仍挂，则需更换该 RSS 地址。
+新增的 3 个国内源（奇客Solidot / 爱范儿 / 机核）**全部 200 且解析正常**（19/20/20 条）。结论：**非解析或代码缺陷**；上 GitHub Actions（机房网络）后 `fetch failed` 组会大幅收敛，404 那条若仍挂则换地址。
