@@ -61,6 +61,8 @@ jobs:
           git config user.email "radar@users.noreply.github.com"
 
           # 切到 deploy 分支（首次无 origin/deploy 时建 orphan）
+          # 采集阶段（health-check）会修改 config/sources.json，需先丢弃工作树改动
+          git checkout -- .
           git fetch origin deploy || true
           if git rev-parse --verify origin/deploy >/dev/null 2>&1; then
             git checkout -B deploy origin/deploy
