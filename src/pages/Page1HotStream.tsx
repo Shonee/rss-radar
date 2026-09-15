@@ -7,8 +7,10 @@
 //     比较键恒为 `updatedAt || publishedAt`（优先更新时间，缺失 / 回落用创建时间），整体倒序；
 //     同值按「渠道名升序 → id 升序」稳定尾序
 //   - 筛选（渠道 / 分类 / 时间范围 / 搜索，复用 FilterBar）
-//   - 响应式筛选布局（PRD §6.1 / 原型 .layout-split）：≥1024px 左侧 248px 粘性筛选栏；
-//     ≤1023px 单列折叠，用 `p1-filter-toggle` 按钮展开（`p1-filter-panel` 面板）
+//   - 响应式筛选布局（主理人 2026-09-15 拍板改版）：**取消 248px 左栏**，筛选条横贯顶部。
+//     原因：FilterBar 本身是横向 flex-wrap 条（页面2/3/4 亦如此），塞进 248px 窄栏会被迫竖排堆叠、
+//     下方留一大片空白。现在 ≥1024px 单列顶部常驻（sticky 吸附在页头之下）；
+//     ≤1023px 折叠，用 `p1-filter-toggle` 按钮展开（`p1-filter-panel` 面板），开关置于面板上方。
 //   - 懒加载：桌面每批 20、移动每批 10；滚动到底自动加载 + `p1-load-more` 手动加载
 //   - 深链 `?channel=<id>` 直达（配合页面2「查看全部」）
 //   - file:// 外链修复由 AppShell 统一处理
@@ -402,40 +404,46 @@ export default function Page1HotStream() {
       {header}
       {alerts}
 
-      {/* 布局（对齐原型 .layout-split）：≥1024px 两列 [248px | 1fr]，≤1023px 单列 */}
+      {/* 单列布局（主理人 2026-09-15 拍板：取消 248px 左栏，筛选条横贯顶部）。
+          用 flex `order` 复用同一个 `p1-filter-panel` 节点，避免重复 id：
+          - ≥1024px：筛选条(order 1) → 计数行(order 2) → 列表，筛选条 sticky 吸附页头之下
+          - ≤1023px：[筛选]开关+计数(order 1) → 面板(order 2，折叠时 display:none) → 列表
+            开关必须在面板之上，故用 order 换位而非复制节点 */}
       <Box
         data-testid="p1-layout"
         sx={{
-          display: 'grid',
-          gridTemplateColumns: isNarrow ? '1fr' : '248px minmax(0, 1fr)',
-          columnGap: 3,
-          rowGap: 2,
-          alignItems: 'start',
+          display: 'flex',
+          flexDirection: 'column',
+          minWidth: 0,
         }}
       >
-        {/* 筛选栏（原型 .side）：桌面粘性常驻；窄屏默认折叠，由「筛选」按钮控制显隐 */}
+        {/* 筛选栏（原 .side 左栏已取消；桌面常驻且粘性，窄屏默认折叠由「筛选」按钮控制显隐） */}
         <Box
           component="aside"
           id="p1-filter-panel"
           data-testid="p1-filter-panel"
           aria-label="筛选条件"
-          data-open={filterOpen ? 'true' : 'false'}
-          sx={
-            isNarrow
-              ? { display: filterOpen ? 'block' : 'none', position: 'static', minWidth: 0 }
+          data-open={isNarrow ? (filterOpen ? 'true' : 'false') : 'true'}
+          sx={{
+            order: isNarrow ? 2 : 1,
+            mb: 1.5,
+            minWidth: 0,
+            ...(isNarrow
+              ? { display: filterOpen ? 'block' : 'none' }
               : {
                   position: 'sticky',
                   top: `calc(${tokens.headerH} + ${tokens.space[4]})`,
-                  alignSelf: 'start',
-                  minWidth: 0,
-                }
-          }
+                  zIndex: 2,
+                }),
+          }}
         >
           <FilterBar value={filter} onChange={setFilter} channels={CHANNEL_OPTIONS} />
         </Box>
 
-        <Box component="section" aria-label="条目列表" sx={{ minWidth: 0 }}>
-          {toolbar}
+        {/* 计数行（窄屏还含「筛选」开关，故在面板之上） */}
+        <Box sx={{ order: isNarrow ? 1 : 2 }}>{toolbar}</Box>
+
+        <Box component="section" aria-label="条目列表" sx={{ minWidth: 0, order: 3 }}>
           {body}
         </Box>
       </Box>
