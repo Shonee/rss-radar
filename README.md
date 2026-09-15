@@ -150,7 +150,7 @@ node scripts/dev/seed-history.mjs --days 7   # 7 天
 
 | Workflow | 触发条件 | 用途 |
 |---|---|---|
-| `collect.yml` | cron `7,37 * * * *` + `workflow_dispatch`；提交带 `[skip ci]`，当天 amend / 跨天新建 | 每 30 分钟跑采集，结果写 `deploy` 分支 |
+| `collect.yml` | cron `7 * * * *` + `workflow_dispatch`；提交带 `[skip ci]`，当天 amend / 跨天新建 | 每小时跑采集，结果写 `deploy` 分支 |
 | `notify.yml` | cron `3 0 * * *`（≈ 08:03 Asia/Shanghai）+ `workflow_dispatch` | 每日日报 + 实时热点阈值触发，写 `stats/notify-*.json` |
 | `archive.yml` | cron `23 0 1 1 *`（每年 1/1）+ `workflow_dispatch` | 年度归档 |
 | `deploy-gh-pages.yml` | `push:` 默认注释 + `workflow_dispatch` | 手动部署到 GitHub Pages |

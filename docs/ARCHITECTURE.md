@@ -33,7 +33,7 @@
 | **🆕 当天数据「追加」vs「去重」的语义冲突** | v1.0 的 `mergeWrite` 是「读-合并-写」，而老登要「追加」；二者语义打架 | **当天双写**：对外**投影快照**（覆盖写，给前端一次 `JSON.parse`）+ **当天事件流 NDJSON**（真·追加，last-write-wins 折叠去重），见 §6.7 |
 | **🆕 历史归档后前端读不到** | GitHub Release 资产无稳定 raw/CORS 直读 URL | **分层**：一年内站内可查（`history-index.json` + 月度 NDJSON + 按天快照）；超一年站内只读元数据 + 跳 Release 下载，见 §13 |
 | **🆕 可插拔源 + 排除** | 新增源免改代码；三级排除；正则来自配置有 ReDoS 风险 | 连接器注册表（§10）+ 排除规则引擎（§11，`re2` 免疫灾难性回溯） |
-| **🆕 通知的「实时」现实边界** | Actions cron 最小 5 分钟且常延迟 5–30 分钟 | 明确为**准实时**（采集后 ≤35 分钟），不承诺真实时；通知在 Actions 侧发送，见 §12 |
+| **🆕 通知的「实时」现实边界** | Actions cron 最小 5 分钟且常延迟 5–30 分钟 | 明确为**准实时**（采集触发后 ≤35 分钟送达；源发布到采集的轮询等待最多另计 60 分钟），不承诺真实时；通知在 Actions 侧发送，见 §12 |
 
 ### 2.2 技术选型
 
@@ -69,7 +69,7 @@ flowchart TD
       EX[排除规则 exclusions.json 🆕]
       NF[通知配置 notify.json 🆕]
     end
-    subgraph ING["接入层 Ingestion（Actions 每30分）"]
+    subgraph ING["接入层 Ingestion（Actions 每小时）"]
       C1[RSS/Atom/JSON Feed]
       C2[本地 JSON/CSV]
       C3[飞书多维表格]
@@ -574,7 +574,7 @@ function runSnapshot(date, fetchedItems, cfg):
 
 ```mermaid
 sequenceDiagram
-    participant Cron as GitHub Actions(cron */30)
+    participant Cron as GitHub Actions(cron 7 * * * *)
     participant Coll as Collector
     participant Conn as Connector(源)
     participant Norm as Normalizer
@@ -661,7 +661,7 @@ hotScore  = w1*Z_source + w2*Z_freq + w3*decay + w4*Z_channel + w5*Z_kw
 1. 报告是快照的纯派生 → 与快照**同一事务**生成，天然一致（PRD F-060「报告与快照一致」）。
 2. 前端**零算力**（移动端不吃力），首屏/SEO 好。
 3. 避免「数据更新 → 重建」循环 → 产物（`dist`）稳定、部署零噪音（v1.2 下 CF 已改直传、不计构建配额，但「数据/部署解耦」仍是正确设计，见 §6.3）。
-4. 与「每 30 分钟采集 + 报告只做当天」协同：每轮采集结束即产出**当天最新**报告并覆盖落盘；前端运行时 fetch 拿到的就是最新报告，无需重建。
+4. 与「每小时采集 + 报告只做当天」协同：每轮采集结束即产出**当天最新**报告并覆盖落盘；前端运行时 fetch 拿到的就是最新报告，无需重建。
 
 **降级**：若首次构建早于首次采集（无 report），前端用 snapshot 做**同公式轻量兜底计算**（JS 版 `hotScore`），保证页面不空。
 
@@ -686,7 +686,7 @@ hotScore  = w1*Z_source + w2*Z_freq + w3*decay + w4*Z_channel + w5*Z_kw
 
 | Workflow | 触发 | 职责 | 默认启用 | 关键点 |
 |---|---|---|---|---|
-| `collect.yml` | `schedule: '7,37 * * * *'` + `workflow_dispatch` | 采集 → 归一化 → 分类 → **排除** → 去重 → **追加事件流 + 投影快照 + 报告** → 推 `deploy` 分支 → **实时通知判定** | ✅ 自动 | **避开整点**（7/37 分）降低延迟；提交带 `[skip ci]`；**当天 amend、跨天新建提交** |
+| `collect.yml` | `schedule: '7 * * * *'` + `workflow_dispatch` | 采集 → 归一化 → 分类 → **排除** → 去重 → **追加事件流 + 投影快照 + 报告** → 推 `deploy` 分支 → **实时通知判定** | ✅ 自动 | **避开整点**（7 分）降低延迟；提交带 `[skip ci]`；**当天 amend、跨天新建提交** |
 | `notify.yml` | `schedule`（每日 08:00 Asia/Shanghai）+ `workflow_dispatch` | **每日报告推送**（读 `deploy` 分支昨日报告 → 分发通知渠道） | ✅ 自动（启用通知时） | 见 §12.3 |
 | `archive.yml` 🆕 | `schedule`（每年 1 月 1 日）+ `workflow_dispatch` | **把上一年的历史打包进 GitHub Release**，写 `archive-index.json`，再从 `deploy` 移出旧年数据 | ✅ 自动 | 归档**先成功后删除**（可回滚）；见 §6.9 |
 | **`deploy-gh-pages.yml`**（v1.1 的 `deploy.yml` 改名） | **`push`(master, 代码 paths)【默认注释】+ `workflow_dispatch`** | 构建 Vite → **GitHub Pages**（`actions/deploy-pages`） | ⚠️ **默认仅手动** | **不由数据提交触发**；触发段默认注释，见 §7.5 |
@@ -760,7 +760,7 @@ jobs:
 
 | 方案 | 机制 | 取舍 |
 |---|---|---|
-| **workflow_run** | `deploy` 由 `collect` 完成事件触发（绕过 `[skip ci]`） | 可行，但每 30 分钟触发一次部署 → **Actions 免费（公开仓库）尚可，但毫无必要**（数据走运行时 fetch 即可），且徒增部署噪音 |
+| **workflow_run** | `deploy` 由 `collect` 完成事件触发（绕过 `[skip ci]`） | 可行，但每小时触发一次部署 → **Actions 免费（公开仓库）尚可，但毫无必要**（数据走运行时 fetch 即可），且徒增部署噪音 |
 | **paths filter** | push 时按路径过滤 | 与 `[skip ci]` 冲突（跳过则完全不触发） |
 | **chatops** | 评论 `/deploy` 手动触发 | 灵活但需人工，不适合自动新鲜度 |
 | **repository_dispatch** | collect 调 API 派发部署事件 | 可行、显式，但同样存在**构建次数**问题；需 token 权限 |
@@ -768,23 +768,23 @@ jobs:
 
 ### 6.3 静态站在「不重新构建」下读最新数据（关键决策）
 
-PRD F-073 要求运行时刷新。**v1.2 校准**：CF Pages 改由 **Direct Upload 直传**后，**"500 次/月构建限额"不再是约束**（直传不发生构建，见 §7.6）。但**运行时 fetch 仍是正确设计**——它把**数据更新**与**站点部署**彻底解耦：数据每 30 分钟变一次，前端的**构建产物（`dist`）却无需为此重新部署**，产物稳定、部署零噪音。若每次数据更新都重建部署（48 次/天），则 Actions 分钟白白浪费、产物反复刷、无任何收益。故**继续走运行时 fetch**。
+PRD F-073 要求运行时刷新。**v1.2 校准**：CF Pages 改由 **Direct Upload 直传**后，**"500 次/月构建限额"不再是约束**（直传不发生构建，见 §7.6）。但**运行时 fetch 仍是正确设计**——它把**数据更新**与**站点部署**彻底解耦：数据每小时变一次，前端的**构建产物（`dist`）却无需为此重新部署**，产物稳定、部署零噪音。若每次数据更新都重建部署（24 次/天），则 Actions 分钟白白浪费、产物反复刷、无任何收益。故**继续走运行时 fetch**。
 
 | 方案 | 机制 | 构建次数 | 新鲜度 | CORS | 缓存 | 结论 |
 |---|---|---|---|---|---|---|
 | A 同分支内联 | 构建期打进产物 | 需重建 | ≤30 分钟滞后 | — | — | **兜底/SEO 用** |
 | **B raw.githubusercontent.com** | 前端 fetch 原始文件 | **0** | 好（CDN `max-age=300`） | ✅ `ACAO:*` | 短 | **推荐主方案** |
 | C jsDelivr / Statically | CDN 加速仓库文件 | 0 | 一般（**分支引用缓存可达数小时**，须用 commit/tag） | ✅ | 长 | **回退方案** |
-| D 数据分支 + 每次重建 | workflow_run 触发重建 | 48/天（≈1400+/月） | 好 | — | — | ❌ **无收益**（产物反复刷、Actions 分钟浪费；v1.2 下 CF 直传虽不计构建配额，但仍无必要） |
+| D 数据分支 + 每次重建 | workflow_run 触发重建 | 24/天（≈720/月） | 好 | — | — | ❌ **无收益**（产物反复刷、Actions 分钟浪费；v1.2 下 CF 直传虽不计构建配额，但仍无必要） |
 
 #### 6.3.1 「拿到最新数据」的完整链路与延迟上界（实证）
 
-老登最关心「30 分钟更新」的体感。我们把**端到端链路**拆开，给出**每一跳的延迟上界**：
+老登最关心「每小时更新」的体感。我们把**端到端链路**拆开，给出**每一跳的延迟上界**：
 
 ```
 ① 源站发布新文章
-   ↓  （轮询间隔，最多 30 分钟）
-② collect.yml 触发（cron 7,37 分）      ← Actions 调度延迟：整点前后 5–30 分钟（偶发 60+）
+   ↓  （轮询间隔，最多 60 分钟）
+② collect.yml 触发（cron 第 7 分）      ← Actions 调度延迟：整点前后 5–30 分钟（偶发 60+）
    ↓  （抓取+处理+提交+push ≤ 1 分钟）
 ③ deploy 分支被 amend + force-push（当日内）
    ↓  （raw CDN 边缘缓存 TTL）
@@ -797,13 +797,13 @@ PRD F-073 要求运行时刷新。**v1.2 校准**：CF Pages 改由 **Direct Upl
 
 | 跳 | 延迟上界 | 说明 |
 |---|---|---|
-| ①→② 采集触发 | **5–30 分钟**（整点高峰更久，偶发 60+） | GitHub 官方明说 schedule 高峰可能延迟、甚至丢弃 |
+| ①→② 采集触发 | **5–90 分钟**（轮询等待最多 60 分钟 + GitHub 调度延迟 5–30 分钟，整点高峰更久，偶发 120+） | GitHub 官方明说 schedule 高峰可能延迟、甚至丢弃 |
 | ②→③ 处理+push | ≤ 1 分钟 | 我们的脚本 |
 | ③→④ raw CDN 刷新 | **≤ 5 分钟**（`max-age=300`） | **不可用 query 参数绕过**（见下） |
 | ④→⑤ 浏览器 | ~0（`no-store`） | 浏览器缓存可绕 |
-| **合计（最坏）** | **≈ 36–45 分钟** | 典型 **≈ 30–35 分钟** |
+| **合计（最坏）** | **≈ 96 分钟（偶发 120+）** | 典型 **≈ 50 分钟** |
 
-> **结论**：端到端「最坏 ≈ 36–45 分钟，典型 ≈ 30–35 分钟」。（PRD §11.7 已按此口径把「实时」定义为**准实时**。）
+> **结论**：端到端「最坏 ≈ 96 分钟（偶发 120+），典型 ≈ 50 分钟」。（PRD §11.7 已按此口径把「实时」定义为**准实时**。）
 
 #### 6.3.2 force-push 之后，旧 commit 的 raw URL 会怎样？（必须澄清）
 
@@ -865,9 +865,9 @@ async function loadLatest():
 |---|---|---|---|---|
 | A 纯 force-push（v1.0 原设计） | 1（可变形） | ❌ 无 | 最低 | 简单，但丢 provenance |
 | **B amend + 每日提交（v1.1 采用）** | **1（amend，可变）** | ✅ 有（1 commit/天） | 低（≈1 commit/天） | **兼顾低噪音与可追溯** |
-| C 每次采集都提交 | 48/天 | ✅ 有 | ❌ 高 | 不用 |
+| C 每次采集都提交 | 24/天 | ✅ 有 | ❌ 高 | 不用 |
 
-- **一天内的 48 次采集**：`git commit --amend` + `git push --force-with-lease`（当天只有 1 个可变提交，无 48 次噪音）。
+- **一天内的 24 次采集**：`git commit --amend` + `git push --force-with-lease`（当天只有 1 个可变提交，无 24 次噪音）。
 - **跨天**：不再 amend，**新建提交**追加到 `deploy` 分支（每天 1 个 commit，`git log` 可追溯）。
 - 提交信息统一含 **`[skip ci]`**（防循环，且 CF 也识别该标记）。
 - **量化**：单日 ≈ 0.6 MB 裸 / ≈0.13 MB(zlib)；**保留一年 ≈ 220 MB 裸 / 仓库实际 ≈ 48 MB**（详见 §13.4），远低于 GH 1 GB 软限与单文件 100 MB 上限。
@@ -877,16 +877,16 @@ async function loadLatest():
 
 | 约束 | 数值 | 应对 |
 |---|---|---|
-| 最小间隔 | 5 分钟 | 用 30 分钟（`7,37` 分避整点） |
+| 最小间隔 | 5 分钟 | 用 60 分钟（`7` 分避整点） |
 | 免费额度 | 公开仓库**无限分钟** | 满足 |
 | 延迟 | 高峰 5–30 分钟 | 本项目可容忍；避整点 |
-| **60 天不活跃自动禁用 schedule** | 会导致项目"凉了" | **保活**：`keepalive.yml` 每周推 trivial 提交；且采集每 30 分钟提交 data 分支本身即"活动"（双保险） |
+| **60 天不活跃自动禁用 schedule** | 会导致项目"凉了" | **保活**：`keepalive.yml` 每周推 trivial 提交；且采集每小时提交 data 分支本身即"活动"（双保险） |
 | 权限 | 默认只读 | `permissions: contents: write` |
 | 分支限制 | 只跑默认分支(master)的 workflow | workflow 文件放 master |
 
-> ⚠️ 注意：即使 `deploy` 分支每 30 分钟有数据提交，**GitHub 对 schedule 的禁用是"仓库 60 天无活动"**；本仓库 master 的开发活动 + deploy 的持续提交都算"活动"。但仍建议 `keepalive.yml` + 监控（失败告警）双保险。
+> ⚠️ 注意：即使 `deploy` 分支每小时有数据提交，**GitHub 对 schedule 的禁用是"仓库 60 天无活动"**；本仓库 master 的开发活动 + deploy 的持续提交都算"活动"。但仍建议 `keepalive.yml` + 监控（失败告警）双保险。
 >
-> **【v1.1 校准】cron 延迟实测口径**：GitHub 官方与社区实测——**整点前后是高峰，schedule 常延迟 5–30 分钟，偶发 60+ 分钟甚至被丢弃**。因此：① 我们用 `7,37`（**避整点、取奇数分钟**）降低平均延迟；② **通知与历史归档不承诺"准点"**（见 §12.1）；③ 端到端新鲜度上界见 §6.3.1。
+> **【v1.1 校准】cron 延迟实测口径**：GitHub 官方与社区实测——**整点前后是高峰，schedule 常延迟 5–30 分钟，偶发 60+ 分钟甚至被丢弃**。因此：① 我们用 `7`（**避开整点**）降低平均延迟；② **通知与历史归档不承诺"准点"**（见 §12.1）；③ 端到端新鲜度上界见 §6.3.1。
 
 ### 6.6 失败处理
 
@@ -903,7 +903,7 @@ async function loadLatest():
 | 方案 | 形态 | 满足"追加"？ | 去重正确？ | 前端首屏 | 写放大 | 结论 |
 |---|---|---|---|---|---|---|
 | A 事件日志 LWW | 当天 NDJSON 事件流，每次**追加**本次新增/变更行；读取按 `id` 取**最后一行**（last-write-wins） | ✅ 真·追加 | ✅ 折叠后正确 | ⚠️ 前端要自己折叠 | **无**（O(1)） | 机制采用 |
-| B 纯 JSON 数组覆盖 | 每 30 分钟读-合并-写整个数组 | ❌ 不满足 | ✅ | ✅ 一次 parse | **高**（O(n)/轮） | 不满足"追加" |
+| B 纯 JSON 数组覆盖 | 每小时读-合并-写整个数组 | ❌ 不满足 | ✅ | ✅ 一次 parse | **高**（O(n)/轮） | 不满足"追加" |
 | **C 双写（采用）** | **对外投影快照**（覆盖写，给前端一次 `JSON.parse`）+ **当天事件流 NDJSON**（真·追加，给归档/审计） | ✅ | ✅ | ✅ | 低（仅小快照 O(n)） | **✅ 采用** |
 
 **采用方案 C**：它是 **A + B 的组合**——既用**事件流 NDJSON 满足"追加"**（老登原话诉求），又用**投影快照满足前端首屏**（一次 parse），两者数据一致（快照由事件流折叠而来）。
@@ -1144,7 +1144,7 @@ function rolloverIfNewDay(today):
 | Pages Functions | 计入 Workers 配额（Free **10 万请求/天**） | 本项目**不用 Functions**（纯静态），✅ |
 | 并发构建 | 1 | **不适用**（直传不构建） |
 
-> **对比 Git 集成项目**：受 **500 builds/月、1 并发构建**约束，且**默认对所有非生产分支自动建预览**——`deploy` 分支每 30 分钟一 push 会产生预览构建（≈1440/月）从而超限。**这正是 v1.1 需要一堆 Branch control/`[skip ci]` 规避的原因；v1.2 改用直传后，此问题从根上消失。**
+> **对比 Git 集成项目**：受 **500 builds/月、1 并发构建**约束，且**默认对所有非生产分支自动建预览**——`deploy` 分支每小时一 push 会产生预览构建（≈720/月）从而超限。**这正是 v1.1 需要一堆 Branch control/`[skip ci]` 规避的原因；v1.2 改用直传后，此问题从根上消失。**
 
 **增量上传（决定部署耗时）**：`wrangler pages deploy` **按文件内容哈希比对，只上传变更文件**（未变更文件复用）。依据：
 - *「wrangler … hashes every file in public/, uploads only the changed ones… The first deploy uploads everything, subsequent deploys only push the diff so they are quick.」*（[jamieede.com](https://jamieede.com/posts/deploying-a-hugo-site-on-gitea-to-cloudflare-pages-with-gitea-actions)）
@@ -1266,7 +1266,7 @@ flowchart TD
     B2 --> DIST
     DIST --> P1["GitHub Pages：actions/deploy-pages"]
     DIST --> P2["Cloudflare Pages：wrangler-action → pages deploy dist（直传，CF 不构建）"]
-    DB["deploy 分支：collect.yml 每 30 分钟写数据"] -. "运行时 fetch（raw 主 + jsDelivr 回退）" .-> FE["前端页面 1/2/3/4"]
+    DB["deploy 分支：collect.yml 每小时写数据"] -. "运行时 fetch（raw 主 + jsDelivr 回退）" .-> FE["前端页面 1/2/3/4"]
     P1 --> FE
     P2 --> FE
 ```
@@ -1320,7 +1320,7 @@ flowchart TD
 rss-radar/  (branch: master)          # ★只放代码与配置，不含数据
 ├─ .github/
 │  └─ workflows/
-│     ├─ collect.yml              # 采集(7,37) → 落 deploy 分支 + 实时通知判定
+│     ├─ collect.yml              # 采集(第 7 分) → 落 deploy 分支 + 实时通知判定
 │     ├─ notify.yml               # 每日报告推送(08:00) + workflow_dispatch（§12.3）
 │     ├─ archive.yml              # 年度归档(1/1) + workflow_dispatch
 │     ├─ deploy-gh-pages.yml      # 🆕(v1.2改名) 构建 → GitHub Pages（自动触发默认注释禁用，仅手动）
@@ -1453,7 +1453,7 @@ deploy-branch:/  (branch: deploy, orphan)      # ☆只有数据，供页面运�
 
 | 风险 | 影响 | 缓解 |
 |---|---|---|
-| Actions cron 延迟/丢任务 | 数据更新间歇 | 可容忍；避整点（7,37 分）；运行时 fetch 幂等 |
+| Actions cron 延迟/丢任务 | 数据更新间歇 | 可容忍；避整点（7 分）；运行时 fetch 幂等 |
 | 60 天不活跃禁用 | 采集停摆 | `keepalive.yml` + 监控 |
 | ~~CF Pages 500 次/月~~ | ~~重建受限~~ | **【v1.2 已消解】** CF 改 **Direct Upload 直传**，**不消耗构建配额**（§7.6.2）；数据更新本就走运行时 fetch（§6.3） |
 | **🆕(v1.2) Direct Upload 项目不可逆** | 选定后无法切回 Git 集成 | **一次性拍板决策**（§7.6.4/§7.6.6）；本项目选**直传** |
@@ -1703,7 +1703,7 @@ for (const s of dueSources) {
 |---|---|
 | Actions **最小 cron 间隔** | **5 分钟** |
 | Actions schedule **实际延迟** | 高峰期 **5–30 分钟**，偶发 **60+ 分钟**，极高负载下**可能被丢弃** |
-| 采集本身有 **30 分钟轮询**周期 | 新条目最多在发布后 30 分钟才被采集到 |
+| 采集本身有 **60 分钟轮询**周期 | 新条目最多在发布后 60 分钟才被采集到 |
 
 **因此我们对「实时」的定义（诚实版）**：
 
@@ -1714,7 +1714,7 @@ for (const s of dueSources) {
 
 | 定时 | 载体 | 做法 |
 |---|---|---|
-| **采集** | `collect.yml`（cron `7,37 * * * *`） | 每 30 分钟采集；**采集末尾**做**实时阈值判定**（同一 workflow，避免多一套调度） |
+| **采集** | `collect.yml`（cron `7 * * * *`） | 每小时采集；**采集末尾**做**实时阈值判定**（同一 workflow，避免多一套调度） |
 | **每日报告** | **独立 `notify.yml`**（cron，默认 08:00 Asia/Shanghai） | **不**塞进 collect（两者 SLA 与失败处理不同）；**到点**构建并推送**前一天**的完整报告 |
 
 > ⚠️ **"每天早 8 点准点推"做不到准点**：Actions schedule 也受 5–30 分钟延迟影响。**做法**：`notify.yml` 用 `cron: '3 0 * * *'`（= 08:03 Asia/Shanghai，避开整点降低延迟），**不追求准点**；文案与 PRD §11.7 一致（**08:00 ± 5 分钟**为目标，实际可能更晚）。

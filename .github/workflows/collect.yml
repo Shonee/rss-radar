@@ -1,6 +1,6 @@
 # collect.yml — 采集工作流（T-P4-01 / T-P4-02）
 #
-# 触发：每 30 分钟（避开整点，cron 7/37 分）+ 手动 workflow_dispatch
+# 触发：每小时（避开整点，cron 第 7 分）+ 手动 workflow_dispatch
 # 职责：采集 → 归一化 → 分类 → 排除 → 去重 → 投影快照 + 事件流 + 报告
 #       → 推送到独立的 `deploy` 分支（提交信息带 [skip ci]，避免触发部署死循环）
 #       当天同日内多次采集用 --amend 折叠为 1 个提交，跨天新建提交（每日本地可追溯）
@@ -15,7 +15,7 @@ name: collect
 
 on:
   schedule:
-    # 每 30 分钟一轮，避开整点（7/37 分）降低 GitHub schedule 延迟（ARCHITECTURE §6.3.1）
+    # 每小时一轮，避开整点（第 7 分）降低 GitHub schedule 延迟（ARCHITECTURE §6.3.1）
     - cron: '7 * * * *'
   workflow_dispatch:
 
