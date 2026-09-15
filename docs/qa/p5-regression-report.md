@@ -1,0 +1,173 @@
+# P5 回归测试报告 · T-P5-02
+
+> 工程师：w-reg（寇豆码）｜ 分支：master ｜ HEAD：3adea9a
+> 套件：`tests/regression/snapshot-harness.mjs` + `tests/regression/run.sh`
+> 驱动方式：**headless Chrome (CDP) 驱动真实运行站点**（本地 `vite preview`，禁止 `file://`）
+
+---
+
+## 1. 结论速览
+
+| 指标 | 数值 |
+| --- | --- |
+| 断言总数 | **113** |
+| 通过（pass） | **111** |
+| 失败（fail） | **0** |
+| 未验证（unverified） | **2** |
+| `domVerified` | `false`（仅因 2 条 unverified，非渲染失败） |
+| 正常退出码 | **2**（有 unverified 项） |
+| 变异测试退出码 | **2**（非 0，符合预期） |
+| 校准测试退出码 | **1**（故意破坏数据后正确报 fail） |
+
+**结论**：在当前本地预览环境下，回归套件捕获到 **0 个产品缺陷**；2 条未验证项为**环境固有限制**（见 §5），非套件失效。变异测试与校准测试均证明套件**不会伪造通过**、且**确实能捕获真实不一致**。
+
+---
+
+## 2. 运行命令（已真跑）
+
+```bash
+# 一键：构建 → 起 vite preview → 跑 harness → 关服务 → 透传退出码
+bash tests/regression/run.sh
+
+# 变异测试：指向不存在的 Chrome，必须非 0 退出
+CHROME_PATH=/nonexistent bash tests/regression/run.sh         # → exit 2
+
+# 远程 CI 模式（直连已部署站点，跳过 build/preview）
+BASE_URL=https://<your-cf-pages>.pages.dev bash tests/regression/run.sh
+```
+
+---
+
+## 3. 环境约束与关键发现（排障记录）
+
+本任务在 **WorkBuddy 沙箱**中执行，遇到两个阻断性问题，已就地解决并在 `run.sh`/harness 中固化：
+
+### 3.1 沙箱代理劫持本地回环地址
+沙箱注入了 `HTTP_PROXY=http://127.0.0.1:54484` 等环境变量。headless Chrome 会**继承代理**，把 `http://127.0.0.1:4173` 误投到代理，导致页面加载失败（`chrome-error://chromewebdata/`，`ERR_CONNECTION_REFUSED`）。
+
+**修复**：harness 在启动 Chrome 时，仅当 `--base-url` 指向**回环地址**（`localhost`/`127.0.0.1`/`[::1]`）时追加
+`--no-proxy-server --proxy-server=direct:// --proxy-bypass-list=*`；远程 URL 则保留代理以正常访问公网。既保证本地能跑，又不破坏 CI 远程模式。
+
+### 3.2 跨 Bash 调用的网络隔离
+本沙箱中**每次 Bash 调用是独立网络命名空间**。在调用 A 中启动的 `vite preview`，在调用 B 中 spawn 的 Chrome **无法连通**（连接被拒）。表现为 harness 早版本 `firstOk` 始终 `false`、报 `无法加载`。
+
+**修复**：约定**唯一入口为 `run.sh`**——它在**同一 shell**内启动 preview 并运行 harness，二者共享网络命名空间，连通正常。直接跨调用 `node tests/regression/snapshot-harness.mjs` 在沙箱内会不可达，这是预期限制，不是套件缺陷。
+
+### 3.3 数据确定性
+harness 通过 CDP `Network.setBlockedURLs` 屏蔽 `raw.githubusercontent.com`/`jsdelivr`，强制站点**快速回退到本地 `./data/`**（避免 8s×2 外网超时抖动），使数据契约断言既确定又快速。
+
+---
+
+## 4. 三态断言明细（113 条）
+
+> 状态图例：✅ 通过 / ❌ 失败 / ◑ 未验证
+
+### A. 跨页口径恒等（11 条，全部 ✅）
+同一指标在不同页面必须一致：
+- A1 页面1 状态条渠道数 == 页面2 看板渠道数
+- A2 页面1 状态条「今日 N 条」== 列表「共 N 条符合当前条件」（默认 `timeRange=today` 下二者均等于当日条目数）
+- A3 页面1 状态条「涉及 N 分类」== 快照条目去重分类数
+- A4 `report.totalItems == snapshot.items.length`
+- A5 `report.activeChannels == report.channelActivity.length`
+- A6 `report.activeChannels == snapshot.stats.sources.length`（有条目渠道）
+- A7 页面3「总条数」卡片 == `report.totalItems`
+- A8 页面3「活跃渠道数」卡片 == `report.activeChannels`
+- A9 页面3「涉及分类数」卡片 == `report.categoryStats.length`
+- A10 页面2 展示渠道数(p2-shown-count) == 状态条渠道数
+- A11 页面3 meta「N 个渠道 / M 条」与卡片口径一致
+
+### B. 特殊数据齐备（13 条，11 ✅ / 2 ◑）
+- B1 `snapshot.items` 数组且 ≥1 ✅
+- B2 `snapshot.stats.sourceTotal` 数字且 ≥1 ✅
+- B3 `report.hotList.length == 10` ✅
+- B4 `report.categoryStats` 数组且 ≥1 ✅
+- B5 `report.channelActivity` 长度 ≥1 且 == activeChannels ✅
+- B6 `report.crossSource` 为数组（结构齐备）✅
+- B7 `snapshot.stats.sourceHealth` 数组且 ≥1 ✅
+- B8 `history-index.days >= 1` ✅
+- B9 页面2 配置渠道数 ≥8（样本=11）✅
+- **B10 ◑** `config/sources.json` 源数 ≥10 —— 见 §5
+- **B11 ◑** `config/sources.json` 渠道数 ≥8 —— 见 §5
+- B12 若 `sourceCount>1` 则 `sources[]` 非空对象数组 ✅
+- B13 `snapshot.channels` 数组且 ≥1 ✅
+
+### C. 关键字段类型（11 条，全部 ✅）
+`items[].category` 数组、`sourceCount` 数字、`isNew` 布尔、`hotScore` number|null、`channelId` 非空字符串、`publishedAt/updatedAt` 字符串、`categoryStats[].ratio∈(0,1]`、`hotList[].hotScore` 数字、`itemsBeforeDedup >= itemsAfterDedup`、`channelActivity[].itemCount` 数字、`items[].sources` 对象数组。
+
+### D. 元素存在 / 无异常（约 50 条，全部 ✅）
+沿用项目既有 `data-testid`：全局壳（app-shell/header/nav/main/footer/nav-brand）、页面1（statbar/result-count/filter-panel/列表区）、页面2（看板/排序/渠道卡片）、页面3（hero/metrics/热点行/饼图 `<svg>`/渠道活跃/交叉源/方法论/版权/跳转历史）、页面4（趋势图 `<svg>`/月度明细/归档区）、关于页。每个页面额外校验「无未捕获 JS 异常」。
+
+> 注：`p3-pie` 与 `p4-trend-chart` 的 `<svg>` 检查在断言前显式 `goto` 回对应页并轮询等待（早版因 DOM 停留在其后导航到的 about 页而误报，已修复）。
+
+### E. 响应式三档（375 / 800 / 1280，全部 ✅）
+- 四页面在三档宽度下均**无横向溢出**（`scrollWidth <= clientWidth`）
+- 页面2 栅格列数严格 == `{375:1, 800:2, 1280:3}`
+- 页面1 筛选折叠按钮：375 出现、1280 隐藏
+
+---
+
+## 5. 未验证项与「无法覆盖」清单（诚实标注）
+
+### 5.1 B10 / B11 —— 环境固有限制（2 条）
+`config/sources.json` 在**构建期被打包进 JS**（`vite preview` 仅提供 `dist/`，不单独提供 `/config/`）。harness 在页面上下文内 `fetch('./config/sources.json')` 得到 404 → 必须标为 **◑ 未验证**，绝不伪装通过。
+
+**影响范围**：仅「配置源/渠道数量」两项。其证据在代码侧（`src/config/sources.json` 被 import 进 bundle）属于构建期契约，运行时无对应 HTTP 端点。
+**可覆盖条件**：需在被测站点上**额外部署 `config/sources.json`** 到可访问路径（如 CF Pages 构建步骤 `cp config/sources.json dist/config/`），或在 CI 中改为读取构建产物校验。当前本地预览与（默认）CF Pages 部署均不满足，故列入「无远程部署环境无法覆盖」。
+**这并非产品缺陷**，套件已诚实降级为 unverified，退出码 2 反映此状态。
+
+### 5.2 主动规避的「样本量敏感」断言
+原型 smoke-test 中 `items≥40 / channels≥8(数据层) / crossSource≥3 / archives≥1 / historyDays≥365` 等强量级断言，在**当前轻量样本**（latest.json 仅 21 条、activeChannels=2、crossSource=0、history days=3、archives=0）下会**必然失败且属于样本差异而非产品缺陷**。为避免「伪失败」干扰，套件改为覆盖**结构齐备性 + 跨页口径一致性**（如 B3 hotList==10、B5/B6 结构数组、B8 history.days≥1、B9 配置渠道≥8 等），对纯量级阈值不做硬性断言。若接入完整采集数据，可在 `B` 组追加对应量级断言。
+
+---
+
+## 6. 变异测试（Mutation Test）
+
+| 输入 | 期望 | 实际 |
+| --- | --- | --- |
+| `CHROME_PATH=/nonexistent bash tests/regression/run.sh` | 非 0 退出 | **exit 2**（`DOM 段未验证：--chrome-path 指定的文件不存在`）✅ |
+
+证明：找不到 Chrome 时套件**不会伪造 PASS**，而是以 exit 2 退出。
+
+---
+
+## 7. 回归校准（Regression Calibration）
+
+为证明断言**确实有效**，在 `/tmp`（不触碰仓库）复制 `dist` 并故意破坏数据后重跑：
+
+- **破坏 A 组口径**：把 `data/today/report-2026-09-14.json` 的 `totalItems` 由 21 改为 999。
+  结果：**exit 1（FAIL）**，`A4 report.totalItems == snapshot.items.length` 捕获到 `report=999 snap=21` 并标红。
+- **破坏渲染层**：把 `latest.json` 的 `items` 置空 `[]`。
+  结果：页面无法渲染 → 套件**保守地**给出 exit 2（unverified），**不伪造通过**，符合三态诚实原则。
+
+结论：套件既能**捕获真实不一致（fail）**，也能在 DOM 未真正拿到时**拒绝伪装通过（unverified）**。
+
+---
+
+## 8. 交付物
+
+| 文件 | 说明 |
+| --- | --- |
+| `tests/regression/snapshot-harness.mjs` | CDP 驱动真实站点的回归 harness（113 断言 / 三态 / 变异测试） |
+| `tests/regression/run.sh` | 一键脚本（build → preview → harness → 清理 → 透传退出码） |
+| `docs/qa/p5-regression-report.md` | 本报告 |
+
+`package.json` **未修改**（按纪律只汇报脚本行，不改动文件）：
+
+```json
+"test:regression": "bash tests/regression/run.sh"
+```
+
+请将其加入 `scripts` 段即可（不随本次提交，避免与并行 worker 的 package.json 改动冲突）。
+
+---
+
+## 9. 复盘：开发期曾发现并修正的「套件自身缺陷」（非产品缺陷）
+
+1. **跨调用不可达** → 固定用 `run.sh` 同 shell 启动 preview+harness（§3.2）。
+2. **代理劫持回环** → 回环地址自动加 `--no-proxy-server`（§3.1）。
+3. **A2 误比今日数与全量数** → 代码注释证实 `todayCount` 本就是时间窗计数，非 `totalItems`；改为「状态条今日数 == 列表条数（默认 today 筛选）」这一真实恒等式。
+4. **SVG 检查停留在 about 页** → 断言前显式 `goto` 回目标页并轮询。
+5. **p1 结果数在捕获时未绘制** → `READY.p1` 增加「结果计数含数字」前置等待；并在 `collectPage` 内缓存 `resultCount`。
+6. **变异路径误用未定义 `finish()`** → 改为 `process.exit(2)`。
+
+以上均为**测试工程自身的健壮性修正**，未改动任何 `src/**` 生产代码。
