@@ -791,13 +791,13 @@ flowchart LR
 | displayLimit | 每卡片展示条数 | 否 | 页面2 默认 10 |
 | icon | 图标/首字母 | 否 | 展示 |
 | language | 语言 | 否 | 过滤/展示 |
-| auth | 鉴权信息引用（不存明文，指向 secrets） | 否 | API/飞书/Notion 接入 |
-| fieldMapping | 异构源字段映射规则 | 否 | 接入层归一化 |
+| auth | 鉴权信息引用（不存明文；形状随源类型，见 SOURCES §6） | 否 | API/飞书/Notion 接入 |
+| fieldMapping | 异构源字段映射规则（两套形状，随源类型，见 SOURCES §6） | 否 | 接入层归一化 |
 | interval | 该源抓取间隔覆盖 | 否 | 调度优化 |
 | createdAt | 源创建时间 | 是 | 对比分析 |
 | updatedAt | 源更新时间 | 是 | 对比分析 |
 | lastFetchAt | 最近抓取时间 | 否 | 健康状态 |
-| lastStatus | 最近抓取状态（ok/error/empty） | 否 | 健康状态 |
+| lastStatus | 最近抓取状态（ok/moved/blocked/dead/pendingDead/unknown） | 否 | 健康状态 |
 | lastError | 最近错误信息 | 否 | 排障 |
 
 ### 7.2 条目（Item）字段需求

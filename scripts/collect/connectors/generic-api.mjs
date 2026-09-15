@@ -46,6 +46,9 @@ function defaultItemListPath() {
 }
 
 function pickValue(obj, path) {
+  // 路径缺失（如 fieldMapping 里没写 title）→ undefined，让调用方走 (untitled) 兜底。
+  // 与 feishu-bitable / notion-db 的 pickField 保持一致；此前返回整行会把 title 变成 [object Object]。
+  if (path === undefined || path === null) return undefined;
   if (typeof path === 'string') return obj?.[path];
   if (!Array.isArray(path) || path.length === 0) return obj;
   let cur = obj;
@@ -80,12 +83,12 @@ function buildUrl(base, qs) {
 }
 
 /** 解析 Link header (RFC 5988) 找 rel="next" 的 URL */
-function parseLinkHeader(link) {
+function parseLinkHeader(link, rel = 'next') {
   if (!link) return null;
   const parts = link.split(',').map((s) => s.trim());
   for (const p of parts) {
     const m = p.match(/<([^>]+)>;\s*rel="([^"]+)"/);
-    if (m && m[2] === 'next') return m[1];
+    if (m && m[2] === rel) return m[1];
   }
   return null;
 }
@@ -170,7 +173,10 @@ export async function run(source) {
       if (!nextCursor) done = true;
       else cursorState = nextCursor;
     } else if (pagination.kind === 'link_header') {
-      const nextUrl = parseLinkHeader(res.headers.get(pagination.headerName ?? 'Link'));
+      const nextUrl = parseLinkHeader(
+        res.headers.get(pagination.headerName ?? 'Link'),
+        pagination.relNext ?? 'next',
+      );
       if (!nextUrl) done = true;
       else source.url = nextUrl;
     }

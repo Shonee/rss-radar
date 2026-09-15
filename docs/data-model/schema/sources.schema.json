@@ -99,6 +99,11 @@
         "interval": { "type": "integer", "minimum": 5, "default": 30, "description": "该源抓取间隔(分钟)，覆盖全局 cron；调度器据此跳过未到期的源" },
         "language": { "type": "string", "description": "源默认语言", "examples": ["zh-CN"] },
         "pagination": { "$ref": "#/definitions/pagination" },
+        "method": { "type": "string", "enum": ["GET", "POST"], "default": "GET", "description": "仅 generic_api：HTTP 方法，默认 GET" },
+        "itemListPath": { "$ref": "#/definitions/fieldPath", "description": "仅 generic_api：响应中条目数组的路径（string 或路径数组），默认 ['data']" },
+        "body": { "type": "object", "description": "仅 notion_db：query body（filter / sorts），原样作为请求体字段", "additionalProperties": true },
+        "pageSize": { "type": "integer", "minimum": 1, "description": "仅 notion_db：每页条数（Notion 上限 100）" },
+        "params": { "type": "object", "description": "仅 feishu_bitable：附加查询参数，如 {\"page_size\": 200}", "additionalProperties": true },
         "headers": { "type": "object", "description": "附加请求头(不得放密钥值，仅静态头如 Accept)", "additionalProperties": { "type": "string" } },
         "notes": { "type": "string", "description": "备注(如「待核实连通性」)" },
         "createdAt": { "type": "string", "format": "date-time" },
@@ -112,51 +117,86 @@
     },
     "auth": {
       "type": "object",
-      "description": "鉴权引用。绝不允许存放明文密钥，仅存放引用名/环境变量名。",
-      "required": ["type"],
+      "description": "鉴权配置。形状随 source.type 而变（接入前必读 docs/SOURCES.md §6）：generic_api → {kind,tokenEnv|token,valueEnv,headerName}；feishu_bitable → {appId,appSecret,tokenType,tokenUrl}；notion_db → {token}。声明式 {type,ref,headerName,scheme,note} 仍被接受。绝不允许把明文密钥提交进仓库——用 tokenEnv/valueEnv 引用环境变量，或在 CI 里注入配置。",
       "additionalProperties": false,
       "properties": {
         "type": { "type": "string", "enum": ["none", "env", "actions_secret", "bearer_env", "header_env", "query_env"] },
         "ref": { "type": "string", "description": "引用名：本地取 .env 变量名，CI 取 Actions Secrets 名(${{ secrets.X }})", "examples": ["FEISHU_APP_TOKEN"] },
-        "headerName": { "type": "string", "description": "当 type=header_env 时，注入的请求头名", "examples": ["Authorization"] },
+        "headerName": { "type": "string", "description": "注入的请求头名", "examples": ["Authorization", "X-Api-Key"] },
         "scheme": { "type": "string", "description": "鉴权前缀", "examples": ["Bearer"] },
-        "note": { "type": "string", "description": "注入方式说明" }
+        "note": { "type": "string", "description": "注入方式说明" },
+        "kind": { "type": "string", "enum": ["none", "bearer", "api_key"], "description": "仅 generic_api：鉴权方式" },
+        "token": { "type": "string", "description": "仅 notion_db（或 generic_api bearer）：token 值；禁止提交真实 token" },
+        "tokenEnv": { "type": "string", "description": "仅 generic_api + kind=bearer：token 所在环境变量名", "examples": ["MY_TOKEN"] },
+        "value": { "type": "string", "description": "仅 generic_api + kind=api_key：key 值；禁止提交真实 key" },
+        "valueEnv": { "type": "string", "description": "仅 generic_api + kind=api_key：key 所在环境变量名", "examples": ["MY_API_KEY"] },
+        "appId": { "type": "string", "description": "仅 feishu_bitable：应用 app_id", "examples": ["cli_xxx"] },
+        "appSecret": { "type": "string", "description": "仅 feishu_bitable：应用 app_secret；禁止提交真实值，由 .env / Secrets 注入" },
+        "tokenType": { "type": "string", "description": "仅 feishu_bitable：token 类型", "examples": ["tenant_access_token"] },
+        "tokenUrl": { "type": "string", "description": "仅 feishu_bitable：换取 token 的地址", "examples": ["https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"] }
       }
+    },
+    "fieldPath": {
+      "description": "字段路径：字符串取单层键，数组表示逐层下钻（如 [\"fields\",\"标题\"] 或 [\"properties\",\"Name\",\"title\",0,\"plain_text\"]）",
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "array",
+          "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] }
+        }
+      ]
     },
     "fieldMapping": {
       "type": "object",
-      "description": "异构源 → 内部 Item 字段的映射规则。补充逻辑见 docs/data-model/README.md 归一化映射表。",
-      "required": ["mode", "map"],
-      "additionalProperties": false,
+      "description": "异构源 → 内部 Item 字段的映射。⚠️ 形状随 source.type 而变，当前两种并存（权威说明见 docs/SOURCES.md §6）：① local_json / local_csv 读 {itemsPath,map,typeCoercion,defaults}，map =「内部字段 → 源字段/列名」；② feishu_bitable / notion_db / generic_api 读**顶层** <内部字段> = 路径（string 或路径数组）。把 ① 的形状用在 ② 的连接器上会被静默忽略、标题退化为 (untitled)——npm run validate 的语义守卫会拦截这种写法。",
+      "additionalProperties": { "$ref": "#/definitions/fieldPath" },
       "properties": {
-        "mode": { "type": "string", "enum": ["jsonpath", "table", "header"], "description": "jsonpath=通用 API/JSON；table=飞书/Notion 列名→字段；header=CSV 表头→字段" },
-        "itemsPath": { "type": "string", "description": "jsonpath 模式下条目数组的路径", "examples": ["$.data.list[*]", "$.items[*]"] },
+        "mode": { "type": "string", "enum": ["jsonpath", "table", "header"], "description": "① local_json/local_csv 使用；② 的连接器不读取" },
+        "itemsPath": { "type": "string", "description": "① local_json：条目数组的 JSONPath", "examples": ["$.data.list[*]", "$[*]"] },
         "map": {
           "type": "object",
-          "description": "内部字段名 → 来源字段路径/列名/表头",
+          "description": "① local_json/local_csv：内部字段名 → 来源字段路径/列名/表头",
           "additionalProperties": { "type": "string" }
         },
         "typeCoercion": {
           "type": "object",
-          "description": "需要类型转换的字段：字段 → 目标类型",
+          "description": "① local_json/local_csv：需要类型转换的字段：字段 → 目标类型",
           "additionalProperties": { "type": "string", "enum": ["string", "number", "boolean", "date", "array"] }
         },
-        "defaults": { "type": "object", "description": "缺失字段的兜底值", "additionalProperties": true }
+        "defaults": { "type": "object", "description": "① local_json：缺失字段的兜底值", "additionalProperties": true },
+        "id": { "$ref": "#/definitions/fieldPath", "description": "② 顶层形状：内部字段 → 路径" },
+        "title": { "$ref": "#/definitions/fieldPath" },
+        "url": { "$ref": "#/definitions/fieldPath" },
+        "summary": { "$ref": "#/definitions/fieldPath" },
+        "publishedAt": { "$ref": "#/definitions/fieldPath" },
+        "author": { "$ref": "#/definitions/fieldPath" },
+        "tags": { "$ref": "#/definitions/fieldPath" }
       }
     },
     "pagination": {
       "type": "object",
-      "description": "分页/翻页策略",
+      "description": "分页/翻页策略。⚠️ generic_api 真实读取的是 kind（及其配套参数），不是 strategy；声明式 strategy 字段保留兼容但 generic_api 不读取（详见 docs/SOURCES.md §6）。",
       "additionalProperties": false,
       "properties": {
-        "strategy": { "type": "string", "enum": ["none", "page", "offset", "cursor", "link_header"], "default": "none" },
-        "pageParam": { "type": "string", "description": "页码参数名", "examples": ["page"] },
-        "pageSizeParam": { "type": "string", "examples": ["page_size"] },
-        "pageSize": { "type": "integer", "default": 100 },
-        "offsetParam": { "type": "string", "examples": ["offset"] },
-        "cursorParam": { "type": "string", "examples": ["page_token"] },
-        "cursorPath": { "type": "string", "description": "响应中下一页游标的 jsonpath", "examples": ["$.data.next_page_token"] },
-        "maxPages": { "type": "integer", "default": 20, "description": "翻页上限，防失控" }
+        "strategy": { "type": "string", "enum": ["none", "page", "offset", "cursor", "link_header"], "default": "none", "description": "声明式旧字段；generic_api 不读取" },
+        "kind": { "type": "string", "enum": ["none", "page", "offset", "cursor", "link_header"], "default": "none", "description": "仅 generic_api：真实读取的分页方式" },
+        "pageParam": { "type": "string", "description": "声明式旧字段", "examples": ["page"] },
+        "pageSizeParam": { "type": "string", "description": "声明式旧字段", "examples": ["page_size"] },
+        "pageSize": { "type": "integer", "default": 100, "description": "声明式旧字段" },
+        "offsetParam": { "type": "string", "description": "kind=offset：偏移参数名", "examples": ["offset"] },
+        "cursorParam": { "type": "string", "description": "kind=cursor / 声明式：游标参数名", "examples": ["page_token", "cursor"] },
+        "cursorPath": { "type": "string", "description": "声明式旧字段：响应中下一页游标的 JSONPath", "examples": ["$.data.next_page_token"] },
+        "maxPages": { "type": "integer", "default": 20, "description": "翻页上限，防失控" },
+        "paramName": { "type": "string", "description": "kind=page：页码参数名", "examples": ["page"] },
+        "size": { "type": "integer", "description": "kind=page：每页条数" },
+        "sizeParamName": { "type": "string", "description": "kind=page：每页条数参数名", "examples": ["per_page"] },
+        "startAt": { "type": "integer", "default": 1, "description": "kind=page|offset：起始页/起始偏移" },
+        "totalPath": { "$ref": "#/definitions/fieldPath", "description": "kind=page：总数字段路径", "examples": [["meta", "total"]] },
+        "limitParam": { "type": "string", "description": "kind=offset：单页条数参数名", "examples": ["limit"] },
+        "limit": { "type": "integer", "description": "kind=offset：单页条数" },
+        "responsePath": { "$ref": "#/definitions/fieldPath", "description": "kind=cursor：响应中下一页游标的路径", "examples": [["data", "next_cursor"]] },
+        "headerName": { "type": "string", "description": "kind=link_header：Link 头名", "examples": ["Link"] },
+        "relNext": { "type": "string", "description": "kind=link_header：next 关系名", "examples": ["next"] }
       }
     }
   }

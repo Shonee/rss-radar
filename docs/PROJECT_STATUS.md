@@ -38,7 +38,7 @@ URL 标准化与去重 L1~L5 ｜ 事件流 NDJSON + 月度归档 ｜ 报告生�
 
 | # | 项 | 状态 |
 |---|---|---|
-| 1 | 连接器契约漂移（`fieldMapping`/`auth`/`pagination` 四份产物与实现形状不一致，会静默损毁标题） | **未修，P4 收尾前必修** |
+| ~~1~~ | ~~连接器契约漂移（`fieldMapping`/`auth`/`pagination` 四份产物与实现形状不一致，会静默损毁标题）~~ | **已修**：schema/TS/ARCH/data-model/SOURCES 全部对齐连接器**真实形状**（两套并存）；新增 `npm run validate` **语义守卫** `checkSourceShapes`，把「形状用错连接器」从静默损数据变成配置期报错；`sources.example.json` 加测试锁；顺带修 `--check` 参数解析错位、`generic_api` 路径缺失返回整行、`relNext` 声明但未实现 |
 | 2 | hot-score 归一化偏离（ARCH §5.1 log+max vs 实现线性截断） | 未修 |
 | 3 | `286c6f3` commit message 含字面 `\n` | 未改（可选 rebase reword） |
 | 4 | `public/data/today/snapshot.json` 仍是 P1 手工 fixture | 未换（真实快照已生成但未入库，见下） |

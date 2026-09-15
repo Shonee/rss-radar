@@ -164,13 +164,16 @@ PRD §9.1 固定枚举，`channels[].category` 与快照/报告中的 `category`
 
 **时间解析要点**：RSS `pubDate` 是 RFC 822（`Sat, 06 Dec 2025 10:00:00 GMT`），解析后**统一转 UTC 秒级 ISO**；缺失或非法时间则回退到 `fetchedAt` 并在日志告警。
 
-### 3.2 本地 JSON / 通用 API → Item（FieldMapping: jsonpath 模式）
+### 3.2 本地 JSON / 本地 CSV → Item（`{itemsPath, map}` 形状）
 
-`fieldMapping.itemsPath` 定位条目数组，`fieldMapping.map` 定义「内部字段 → 源字段 JSONPath」：
+> 🔴 **只有 `local_json` / `local_csv` 用这一套**。`feishu_bitable` / `notion_db` / `generic_api` 用的是
+> **顶层字段路径**形状（§3.3），两套**不通用**——把这一套写在那三个连接器上会被**静默忽略**。
+> 权威说明见 [`docs/SOURCES.md` §6](../SOURCES.md)。
+
+`fieldMapping.itemsPath` 定位条目数组，`fieldMapping.map` 定义「内部字段 → 源字段」：
 
 ```jsonc
 {
-  "mode": "jsonpath",
   "itemsPath": "$.data.items[*]",
   "map": {
     "title": "$.attributes.title",
@@ -184,46 +187,76 @@ PRD §9.1 固定枚举，`channels[].category` 与快照/报告中的 `category`
 }
 ```
 
-- `map` 的 key 必须是**内部字段名**（见 §4.1 Item 字段字典），value 是 **JSONPath**。
+- `map` 的 key 必须是**内部字段名**（见 §4.1 Item 字段字典）：`local_json` 的 value 是 **JSONPath**，
+  `local_csv` 的 value 是 **CSV 表头列名**。
+- `mode` 字段可写可不写，**连接器不读取**（保留仅为旧文档兼容）。
 - 未被 `map` 覆盖的内部字段走**默认规则**（如 `id/dedupKey` 由系统生成，`fetchedAt` 由系统填）。
 - `typeCoercion` 处理类型转换（字符串时间→date、逗号分隔串→array）。
 - `defaults` 兜底。
+- CSV 约定编码 UTF-8、首行为表头，`tags` 列用 `|` 分隔。
 
-### 3.3 本地 CSV → Item（FieldMapping: header 模式）
+### 3.3 顶层字段路径形状（`feishu_bitable` / `notion_db` / `generic_api`）
 
-`fieldMapping.map` 的 value = **CSV 表头列名**：
+这三个连接器读的是**顶层** `fieldMapping.<内部字段> = 路径`。路径可以是
+**字符串**（单层键）或**数组**（逐层下钻，可含数字下标）：
 
 ```jsonc
-{ "mode": "header", "map": { "title": "标题", "url": "链接", "publishedAt": "发布时间", "summary": "摘要", "author": "作者", "tags": "标签" }, "typeCoercion": { "publishedAt": "date", "tags": "array" } }
+"fieldMapping": {
+  "id":   ["record_id"],
+  "title": ["fields", "标题"],
+  "url":   ["fields", "链接"],
+  "publishedAt": ["fields", "发布时间"]
+}
 ```
 
-- 约定编码 UTF-8，首行为表头；`tags` 列用 `|` 分隔（写入时同理）。
-- 解析库建议 `papaparse`（流式、容错强）。
+- ⚠️ **`{itemsPath, map}` 形状在这里会被完全忽略**，标题会退化为 `(untitled)`。
+  `npm run validate` 的语义守卫（`scripts/validate-schema.mjs` 的 `checkSourceShapes`）会在配置期直接报错拦截。
+- ⚠️ **字符串路径 = 单层键，不支持点号路径**。`"title": "attributes.title"` 会去找一个字面名为
+  `attributes.title` 的键 → 取不到。嵌套**必须**写数组：`"title": ["attributes","title"]`。
+- `feishu_bitable` / `notion_db` 的取值函数**只接受数组**，写字符串一律取不到值（守卫会拦）。
+  `generic_api` 两种都接受。
+- 三个连接器各自内置**默认映射**（§3.4~§3.6）；列名/属性名与默认一致时可以省略整个 `fieldMapping`。
 
-### 3.4 飞书多维表格 → Item（FieldMapping: table 模式）
+### 3.4 飞书多维表格 → Item（`feishu_bitable`）
 
 - 地址：`GET https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records`
-- `map` 的 value = **列名**：`{"title":"标题","url":"链接","publishedAt":"发布时间","summary":"摘要","author":"作者","tags":"标签"}`。
-- 飞书单元格是**富文本/多值结构**（如 `{"text":"…","type":"text"}`、多选数组），需做**取值展开**：取 `.text` 或数组 join。
-- 鉴权：`Authorization: Bearer <tenant_access_token>`；`auth.type=actions_secret`，`ref=FEISHU_APP_TOKEN`（也需 `FEISHU_APP_SECRET` 换 token）。
+- 字段映射：**顶层形状**（§3.3），value = 路径数组，如 `["fields","标题"]`。
+- 飞书单元格是**富文本/多值结构**（如 `{"text":"…","type":"text"}`、多选数组），连接器做**取值展开**：取 `.text` 或数组 join。
+- 鉴权：`auth.{ appId, appSecret, tokenType?, tokenUrl? }`，换 `tenant_access_token`（缓存 110 分钟）。
+  **不得提交真实 `appSecret`**，由 `.env` / Actions Secrets 注入。
+- 分页：连接器内部用 `page_token`（`has_more` + `page_token`，`page_size ≤ 500`）；
+  只可传 `params: { page_size: 200 }` 调页大小，**不使用 `pagination` 字段**。
 
-### 3.5 Notion 数据库 → Item（FieldMapping: table 模式）
+### 3.5 Notion 数据库 → Item（`notion_db`）
 
 - 地址：`POST https://api.notion.com/v1/databases/{database_id}/query`
-- `map` 的 value = **属性名（property name）**。
-- Notion 属性是**按类型包装**的（`title[0].plain_text`、`rich_text[0].plain_text`、`date.start`、`select.name`、`multi_select[].name`），需按 `type` 解包。
-- 鉴权：`Authorization: Bearer <integration_token>` + `Notion-Version: 2022-06-28`。
+- 字段映射：**顶层形状**（§3.3），value = 路径数组，如 `["properties","Name","title",0,"plain_text"]`。
+- Notion 属性是**按类型包装**的（`title[0].plain_text`、`rich_text[0].plain_text`、`date.start`、`select.name`、`multi_select[].name`），连接器按路径逐层解包。
+- 鉴权：`auth.token`，请求带 `Authorization: Bearer <token>` + `Notion-Version: 2022-06-28`。
+- 其它：`body`（可选 query body，如 `filter` / `sorts`）、`pageSize`（默认 100，Notion 上限 100）。
 
-### 3.6 通用 API → Item
+### 3.6 通用 API → Item（`generic_api`）
 
-- 鉴权：`auth` 指定头名 + 环境变量引用（见 §1.4）。
-- 分页：`pagination.strategy` ∈ `none/page/offset/cursor/link_header`；`cursor` 用 `cursorPath` 从响应取下一页游标；上限 `maxPages`。
-- 字段映射：同 §3.2（jsonpath）。
+- 请求：`method`（默认 `GET`，另支持 `POST`）；`body`（可选请求体）。
+- 字段映射：**顶层形状**（§3.3）。字符串 = 单层键（`"title": "title"`），嵌套用数组（`"title": ["attributes","title"]`）。
+- 条目数组定位：`itemListPath`（路径字符串或数组，默认 `["data"]`）。
+- 分页：读的是 **`pagination.kind`**（`none` / `page` / `offset` / `cursor` / `link_header`），配套参数如下表；
+  `maxPages` 只是概念上的上限说明，实际由各策略的终止条件决定。
+
+  | `kind` | 配套参数（括号内为默认值） |
+  |---|---|
+  | `page` | `paramName`(`page`)、`sizeParamName`(`per_page`)、`size`(`20`)、`startAt`(`1`)、`totalPath` |
+  | `offset` | `offsetParam`(`offset`)、`limitParam`(`limit`)、`limit`(`20`)、`startAt`(`0`) |
+  | `cursor` | `cursorParam`(`cursor`)、`responsePath`(`["next_cursor"]`) |
+  | `link_header` | `headerName`(`Link`)、`relNext`(`next`) |
+
+- 鉴权：**`auth.kind`** = `none` / `bearer`（配 `tokenEnv` 或 `token`）/ `api_key`（配 `valueEnv` 或 `value`，头名 `headerName` 默认 `X-Api-Key`）。
+- ⚠️ 声明式的 `pagination.strategy` 与 `auth.{type,ref}` **generic_api 不读取**，写了也会被守卫拦下。
 
 ### 3.7 归一化总原则
 
 1. **一律先归一化再入库**：接入器只负责「源格式 → Item 原始字段」，`Normalizer` 统一做时间、去 HTML、截断、补 Channel 冗余字段、生成 `id/dedupKey`。
-2. **缺失必填字段的处理**：缺 `url` 的条目直接丢弃并记 warning；缺 `title` 用 `url` 兜底。
+2. **缺失必填字段的处理**：缺 `url` 的条目直接丢弃并记 warning；缺 `title` 落 `(untitled)` 兜底（**不是**用 `url` 代替，见 `scripts/collect/normalize.mjs`）。
 3. **统一编码 UTF-8**，去除 BOM、控制字符。
 4. **summary 只存纯文本**，去标签、解码实体、压缩空白、按 `analysis.summaryMaxChars`（默认 200 字符）截断。
 

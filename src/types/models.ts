@@ -80,24 +80,74 @@ export interface Channel {
   updatedAt: string;
 }
 
+/**
+ * 鉴权配置。形状随 `source.type` 而变（权威说明见 docs/SOURCES.md §6）：
+ * - `generic_api` → `{ kind, tokenEnv | token, valueEnv, headerName }`
+ * - `feishu_bitable` → `{ appId, appSecret, tokenType, tokenUrl }`
+ * - `notion_db` → `{ token }`
+ * 声明式 `{ type, ref, headerName, scheme, note }` 仍被接受（旧配置兼容）。
+ * ⚠️ 绝不允许把明文密钥提交进仓库，用 tokenEnv/valueEnv 引用环境变量。
+ */
 export interface AuthRef {
-  type: 'none' | 'env' | 'actions_secret' | 'bearer_env' | 'header_env' | 'query_env';
+  /** 声明式旧字段（generic_api 不读取） */
+  type?: 'none' | 'env' | 'actions_secret' | 'bearer_env' | 'header_env' | 'query_env';
   ref?: string;
   headerName?: string;
   scheme?: string;
   note?: string;
+  /** generic_api 真实读取的鉴权方式 */
+  kind?: 'none' | 'bearer' | 'api_key';
+  token?: string;
+  tokenEnv?: string;
+  value?: string;
+  valueEnv?: string;
+  /** feishu_bitable */
+  appId?: string;
+  appSecret?: string;
+  tokenType?: string;
+  tokenUrl?: string;
 }
 
+/** 字段路径：字符串取单层键，数组逐层下钻（如 `['fields','标题']`、`['properties','Name','title',0,'plain_text']`） */
+export type FieldPath = string | Array<string | number>;
+
+/**
+ * 异构源 → 内部 Item 字段的映射。⚠️ 两种形状并存，按 `source.type` 定（见 docs/SOURCES.md §6）：
+ * - `local_json` / `local_csv` → `{ itemsPath, map, typeCoercion, defaults }`（①）
+ * - `feishu_bitable` / `notion_db` / `generic_api` → **顶层** `<内部字段>: FieldPath`（②）
+ *
+ * 把 ① 的形状用在 ② 的连接器上会被**静默忽略**、标题退化为 `(untitled)`；
+ * `npm run validate` 的语义守卫（`scripts/validate-schema.mjs` `checkSourceShapes`）会拦截这种写法。
+ */
 export interface FieldMapping {
-  mode: 'jsonpath' | 'table' | 'header';
+  // ---- ① local_json / local_csv 形状 ----
+  /** ① 使用；② 的连接器不读取 */
+  mode?: 'jsonpath' | 'table' | 'header';
   itemsPath?: string;
-  map: Record<string, string>;
+  map?: Record<string, string>;
   typeCoercion?: Record<string, 'string' | 'number' | 'boolean' | 'date' | 'array'>;
   defaults?: Record<string, unknown>;
+  // ---- ② feishu_bitable / notion_db / generic_api 顶层形状 ----
+  id?: FieldPath;
+  title?: FieldPath;
+  url?: FieldPath;
+  summary?: FieldPath;
+  publishedAt?: FieldPath;
+  author?: FieldPath;
+  tags?: FieldPath;
+  /** ② 形状允许任意内部字段名 */
+  [internalField: string]: unknown;
 }
 
+/**
+ * 分页/翻页策略。⚠️ `generic_api` 真实读取的是 `kind`（及其配套参数），
+ * 不是声明式的 `strategy`（见 docs/SOURCES.md §6）。
+ */
 export interface Pagination {
-  strategy: 'none' | 'page' | 'offset' | 'cursor' | 'link_header';
+  /** 声明式旧字段；generic_api 不读取 */
+  strategy?: 'none' | 'page' | 'offset' | 'cursor' | 'link_header';
+  /** generic_api 真实读取的分页方式 */
+  kind?: 'none' | 'page' | 'offset' | 'cursor' | 'link_header';
   pageParam?: string;
   pageSizeParam?: string;
   pageSize?: number;
@@ -105,6 +155,17 @@ export interface Pagination {
   cursorParam?: string;
   cursorPath?: string;
   maxPages?: number;
+  // ---- generic_api 配套参数 ----
+  paramName?: string;
+  size?: number;
+  sizeParamName?: string;
+  startAt?: number;
+  totalPath?: FieldPath;
+  limitParam?: string;
+  limit?: number;
+  responsePath?: FieldPath;
+  headerName?: string;
+  relNext?: string;
 }
 
 export interface Source {
@@ -119,6 +180,16 @@ export interface Source {
   interval?: number;
   language?: Language;
   pagination?: Pagination;
+  /** 仅 generic_api：HTTP 方法，默认 GET */
+  method?: 'GET' | 'POST';
+  /** 仅 generic_api：响应中条目数组的路径，默认 ['data'] */
+  itemListPath?: FieldPath;
+  /** 仅 notion_db：query body（filter / sorts） */
+  body?: Record<string, unknown>;
+  /** 仅 notion_db：每页条数（Notion 上限 100） */
+  pageSize?: number;
+  /** 仅 feishu_bitable：附加查询参数，如 { page_size: 200 } */
+  params?: Record<string, unknown>;
   headers?: Record<string, string>;
   notes?: string;
   createdAt: string;

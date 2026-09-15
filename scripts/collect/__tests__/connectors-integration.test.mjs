@@ -9,6 +9,7 @@ import '../connectors/index.mjs';
 import * as registry from '../connectors/registry.mjs';
 import { _resetTokenCache } from '../connectors/feishu-bitable.mjs';
 import { parseJsonFeed } from '../connectors/feed-base.mjs';
+import { normalizeItem } from '../normalize.mjs';
 
 // rss-parser 是 ESM-only npm 依赖，沙箱无 npm install 时加载会抛 ERR_MODULE_NOT_FOUND
 let RSS_PARSER_OK = true;
@@ -389,6 +390,70 @@ describe('generic-api connector: 4 种 pagination + 解析', () => {
       });
       assert.equal(r.items.length, 2);
       assert.equal(call, 2);
+    } finally {
+      restore();
+    }
+  });
+
+  it('pagination=link_header + 自定义 relNext', async () => {
+    let call = 0;
+    const restore = installMock(async () => {
+      call += 1;
+      const items = [{ id: `r-${call}`, title: `r ${call}`, url: `https://g.com/r-${call}` }];
+      const headers = call === 1
+        ? { 'content-type': 'application/json', 'x-nav': '<https://api.example.com/items?p=2>; rel="next-page"' }
+        : { 'content-type': 'application/json' };
+      return new Response(JSON.stringify({ data: items }), { status: 200, headers });
+    });
+    try {
+      const c = registry.get('generic_api');
+      const r = await c.run({
+        url: 'https://api.example.com/items',
+        auth: { kind: 'none' },
+        pagination: { kind: 'link_header', headerName: 'X-Nav', relNext: 'next-page' },
+        fieldMapping: { id: 'id', title: 'title', url: 'url' },
+      });
+      assert.equal(r.items.length, 2, `relNext 未生效：call=${call}`);
+      assert.equal(call, 2);
+    } finally {
+      restore();
+    }
+  });
+
+  // ⚠️ 契约漂移的**可执行证据**（背景见 docs/SOURCES.md §6）：
+  // generic_api 读「顶层 fieldMapping.<内部字段> = 路径」，**不读** {mode,map}。
+  // 用错形状时映射被静默忽略、标题退化为 (untitled) —— 由 npm run validate 的语义守卫在配置期拦截。
+  it('形状陷阱：generic_api 用 {mode,map} → 映射被忽略，title=(untitled)', async () => {
+    const restore = installMock(async () => new Response(
+      JSON.stringify({ data: [{ id: 'a', title: '真实标题', url: 'https://g.com/a' }] }),
+      { status: 200, headers: { 'content-type': 'application/json' } },
+    ));
+    try {
+      const c = registry.get('generic_api');
+      const r = await c.run({
+        url: 'https://api.example.com/items',
+        auth: { kind: 'none' },
+        fieldMapping: { mode: 'jsonpath', map: { title: 'title', url: 'url' } },
+      });
+      assert.equal(r.items.length, 1);
+      assert.equal(
+        r.items[0].title,
+        '(untitled)',
+        '若此处不再是 (untitled)，说明连接器改了读取形状——请同步 docs/SOURCES.md §6 与 validate-schema.mjs 的语义守卫',
+      );
+
+      // 端到端：用户最终看到的标题确实不是「真实标题」
+      const normalized = normalizeItem(
+        r.items[0],
+        { id: 'demo-api', channelId: 'demo', type: 'generic_api', url: 'https://api.example.com/items' },
+        { id: 'demo', name: 'Demo', category: ['news'] },
+      );
+      assert.notEqual(normalized.title, '真实标题');
+      assert.equal(
+        normalized.title,
+        '(untitled)',
+        '映射被忽略后落库标题必须是 (untitled)，不能是 [object Object]',
+      );
     } finally {
       restore();
     }

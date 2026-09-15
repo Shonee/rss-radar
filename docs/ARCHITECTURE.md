@@ -166,6 +166,10 @@ classDiagram
       +string ref
       +string headerName
       +string scheme
+      +enum kind
+      +string tokenEnv
+      +string appId
+      +string appSecret
     }
     class FieldMapping {
       +enum mode
@@ -173,6 +177,9 @@ classDiagram
       +map map
       +map typeCoercion
       +map defaults
+      +path title
+      +path url
+      +path id
     }
     class Connector {
       <<interface>>
@@ -358,7 +365,7 @@ classDiagram
 
 **（5）NotionConnector（F-014）**：`POST /v1/databases/{id}/query`；`start_cursor`/`next_cursor` 翻页；属性按 `type` 解包（title/rich_text/date/select/multi_select）。
 
-**（6）GenericApiConnector（F-015）**：见 `data-model/README §3.2、§3.6`；`map` + `pagination` 声明式配置。
+**（6）GenericApiConnector（F-015）**：见 `data-model/README §3.3、§3.6`；**顶层** `fieldMapping.<内部字段>=路径`（字符串取单层、数组取多层）+ `pagination.kind` 声明式配置；`auth.kind` 三态（none/bearer/api_key）。
 
 ### 3.6 归一化映射表（核心资产摘要）
 
@@ -1580,6 +1587,10 @@ for (const s of dueSources) {
 > 若该 `channelId` 还不存在，需同时在 `channels[]` 加一条（name/homepage/category/enabled）。**仅编辑 `config/sources.json` 并提交 master 即可，无需改任何代码。**
 
 **字段路径速查**：`config/sources.json` → `channels[]`（展示属性）+ `sources[]`（采集属性，含 `type/url/auth/fieldMapping/pagination`）。
+
+> ⚠️ `fieldMapping` / `auth` / `pagination` 在连接器实现里都是**两套形状并存**（`local_json`/`local_csv` 一套，
+> `feishu_bitable`/`notion_db`/`generic_api` 另一套），按 `source.type` 选。权威说明见
+> [`docs/SOURCES.md` §6](./SOURCES.md)，错写由 `npm run validate` 的语义守卫拦截。
 
 ---
 

@@ -270,7 +270,7 @@
       "createdAt": "2026-09-01T00:00:00Z",
       "updatedAt": "2026-09-01T00:00:00Z",
       "lastFetchAt": "2026-09-12T09:30:14Z",
-      "lastStatus": "empty"
+      "lastStatus": "ok"
     },
     {
       "id": "v2ex-jsonplaceholder",
@@ -282,7 +282,6 @@
       "language": "zh-CN",
       "interval": 30,
       "fieldMapping": {
-        "mode": "jsonpath",
         "itemsPath": "$.topics[*]",
         "map": { "title": "$.title", "url": "$.link", "publishedAt": "$.created", "summary": "$.excerpt", "author": "$.author" },
         "typeCoercion": { "publishedAt": "date" },
@@ -290,7 +289,7 @@
       },
       "createdAt": "2026-09-01T00:00:00Z",
       "updatedAt": "2026-09-01T00:00:00Z",
-      "notes": "渠道备份示例：本地 JSON 源"
+      "notes": "渠道备份示例：本地 JSON 源（{itemsPath,map} 形状，只有 local_json / local_csv 用这一套）"
     },
     {
       "id": "my-feishu-source-table",
@@ -300,44 +299,42 @@
       "url": "https://open.feishu.cn/open-apis/bitable/v1/apps/FLYER_APP_TOKEN/tables/tblXXXXXXXX/records",
       "enabled": false,
       "auth": {
-        "type": "actions_secret",
-        "ref": "FEISHU_APP_TOKEN",
-        "headerName": "Authorization",
-        "scheme": "Bearer",
-        "note": "CI 中由 ${{ secrets.FEISHU_APP_TOKEN }} 注入；本地由 .env 注入；仓库内只存引用名，绝不放明文"
+        "appId": "cli_xxx",
+        "appSecret": "FEISHU_APP_SECRET",
+        "tokenType": "tenant_access_token",
+        "note": "实际值由 .env / Actions Secrets 注入，仓库内绝不放明文；形状见 docs/SOURCES.md §6"
       },
+      "params": { "page_size": 200 },
       "fieldMapping": {
-        "mode": "table",
-        "map": {
-          "title": "标题",
-          "url": "链接",
-          "publishedAt": "发布时间",
-          "summary": "摘要",
-          "author": "作者",
-          "tags": "标签"
-        },
-        "typeCoercion": { "publishedAt": "date", "tags": "array" }
+        "id": ["record_id"],
+        "title": ["fields", "标题"],
+        "url": ["fields", "链接"],
+        "publishedAt": ["fields", "发布时间"],
+        "summary": ["fields", "摘要"],
+        "author": ["fields", "作者"]
       },
-      "pagination": { "strategy": "cursor", "cursorParam": "page_token", "pageSizeParam": "page_size", "pageSize": 100, "cursorPath": "$.data.page_token", "maxPages": 20 },
       "createdAt": "2026-09-05T02:00:00Z",
       "updatedAt": "2026-09-05T02:00:00Z",
-      "notes": "飞书多维表格接入示例"
+      "notes": "飞书多维表格接入示例（顶层 fieldMapping 形状；翻页由连接器内部 page_token 处理，不写 pagination）"
     },
     {
       "id": "generic-api-demo",
       "channelId": "hacker-news",
       "name": "通用 API（REST 分页 + 字段映射）",
-      "type": "api",
+      "type": "generic_api",
       "url": "https://api.example.com/v1/posts",
       "enabled": false,
-      "auth": { "type": "env", "ref": "DEMO_API_KEY", "headerName": "X-Api-Key", "note": "本地 .env / CI secrets 注入" },
+      "method": "GET",
+      "auth": { "kind": "api_key", "valueEnv": "DEMO_API_KEY", "headerName": "X-Api-Key" },
+      "itemListPath": ["data", "items"],
       "fieldMapping": {
-        "mode": "jsonpath",
-        "itemsPath": "$.data.items[*]",
-        "map": { "title": "$.attributes.title", "url": "$.links.self", "publishedAt": "$.attributes.created_at", "summary": "$.attributes.abstract", "author": "$.attributes.author.name" },
-        "typeCoercion": { "publishedAt": "date" }
+        "title": ["attributes", "title"],
+        "url": ["links", "self"],
+        "publishedAt": ["attributes", "created_at"],
+        "summary": ["attributes", "abstract"],
+        "author": ["attributes", "author", "name"]
       },
-      "pagination": { "strategy": "offset", "offsetParam": "offset", "pageSizeParam": "limit", "pageSize": 100 },
+      "pagination": { "kind": "offset", "offsetParam": "offset", "limitParam": "limit", "limit": 100 },
       "headers": { "Accept": "application/json" },
       "interval": 30,
       "createdAt": "2026-09-05T02:00:00Z",

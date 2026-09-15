@@ -33,9 +33,10 @@
 | `notion_db` | `notion-db.mjs` | Notion Database | Bearer token |
 | `generic_api` | `generic-api.mjs` | 通用 REST API（声明式分页 + 字段映射） | none / bearer / api_key |
 
-> ⚠️ **`generic_api` 不是 `api`**。早期文档（如 `docs/ARCHITECTURE.md §10`、`docs/IMPLEMENTATION_PLAN.md T-P4-06` 与 `docs/data-model/examples/sources.example.json`）里的 `api` 是**过时叫法**；`sources.schema.json` 的 `type` 枚举与注册表**都是 `generic_api`**。
+> ⚠️ **`generic_api` 不是 `api`**。早期文档（如 `docs/ARCHITECTURE.md §10`、`docs/IMPLEMENTATION_PLAN.md T-P4-06`）里的 `api` 是**过时叫法**；`sources.schema.json` 的 `type` 枚举与注册表**都是 `generic_api`**。
 >
-> ⚠️ `sources.example.json` 里仍写着 `"type": "api"`，且使用下文 §3.1 的旧 `fieldMapping` 形状——该 example **未经运行时校验**，接入时以本文档与连接器源码为准。
+> ✅ `docs/data-model/examples/sources.example.json` 已于 2026-09-15 校正为连接器真实形状，
+> 且被 `scripts/__tests__/validate-source-shapes.test.mjs` 的断言锁住（漂移即测试失败）。
 
 ---
 
@@ -161,7 +162,9 @@
 
 ### 3.3 声明式三兄弟：`feishu_bitable` / `notion_db` / `generic_api`
 
-> 🔴 **务必先读 §6 的「字段形状分歧」**。这三个连接器**不读取** `sources.schema.json` 里描述的 `fieldMapping.{mode,map}`，而是读取**顶层 `fieldMapping.<内部字段> = 路径`**。下面的示例按**连接器源码实测形状**给出（我已用 mock fetch 实跑验证）。
+> ℹ️ 这三个连接器读取的是**顶层 `fieldMapping.<内部字段> = 路径`**形状（**不是** `{mode,map}`）。
+> `sources.schema.json` 已同时接受两套真实形状，错写由 `npm run validate` 的语义守卫在配置期拦截——详见 §6。
+> 下面的示例按**连接器源码实测形状**给出（已用 mock fetch 实跑验证）。
 
 **`feishu_bitable`**（飞书多维表格）：
 
@@ -355,35 +358,44 @@
 
 ---
 
-## 6. 🔴 字段形状分歧（schema 与连接器，接入前必读）
+## 6. ✅ 字段形状：两套真实形状并存（接入前必读）
 
-`docs/data-model/schema/sources.schema.json` 描述的是**声明式**形状：
+> **状态：已对齐（2026-09-15）。** `sources.schema.json` 已放宽为**同时接受**下列两套真实形状，
+> 并新增**语义守卫**，把「形状用错连接器」从「静默损数据」变成「`npm run validate` 直接报错」。
+> 本节保留分歧由来，作为改动的依据与说明。
 
-- `fieldMapping`：`{ mode, itemsPath, map, typeCoercion, defaults }`，`map` =「内部字段 → 来源字段」
-- `pagination`：`{ strategy, pageParam, offsetParam, cursorParam, … }`
-- `auth`：`{ type, ref, headerName, scheme }`
+`fieldMapping` 在连接器实现里是**两套并存**的形状，必须按 `source.type` 选：
 
-但**部分连接器实际读取的字段形状与之不同**（我逐份读了 `scripts/collect/connectors/*.mjs` 并用 mock fetch 实跑核对）：
-
-| 连接器 | 实际读取的字段形状 | 与 schema 是否一致 |
+| 连接器 | `fieldMapping` 形状 | 值的形式 |
 |---|---|---|
-| `rss` / `atom` / `json_feed` | 只用 `url`（+ `etag` / `lastModified`） | 一致（不涉及） |
-| `local_json` | `fieldMapping.{itemsPath,map,typeCoercion,defaults}` | ✅ 一致 |
-| `local_csv` | `fieldMapping.map` | ✅ 一致（子集） |
-| `feishu_bitable` | **顶层** `fieldMapping.<内部字段> = path[]`；`auth.{appId,appSecret}`；`params.page_size` | ❌ 不一致（不读 `mode/map`） |
-| `notion_db` | **顶层** `fieldMapping.<内部字段> = path[]`；`auth.token`；`body`；`pageSize` | ❌ 不一致 |
-| `generic_api` | **顶层** `fieldMapping.<内部字段> = path`；`itemListPath`；`pagination.{kind,…}`；`auth.{kind,…}` | ❌ 不一致（`pagination.kind` ≠ schema `pagination.strategy`） |
+| `rss` / `atom` / `json_feed` | 不使用 | 只认 `url`（+ `etag` / `lastModified`） |
+| `local_json` / `local_csv` | ① `{ itemsPath, map, typeCoercion, defaults }` | `map` 的 value = JSONPath / CSV 表头列名 |
+| `feishu_bitable` / `notion_db` | ② **顶层** `<内部字段>: 路径` | **必须是路径数组**，如 `["fields","标题"]` |
+| `generic_api` | ② **顶层** `<内部字段>: 路径` | 字符串（单层键）或数组（逐层下钻） |
 
-**实测证据**（feishu_bitable，mock fetch，列名 `MyTitle`）：
+配套字段也按 type 分：
+
+| 连接器 | `auth` | `pagination` | 其它字段 |
+|---|---|---|---|
+| `feishu_bitable` | `{ appId, appSecret, tokenType?, tokenUrl? }` | **不使用**（内部固定 `page_token`） | `params.page_size` |
+| `notion_db` | `{ token }` | **不使用**（内部固定 `start_cursor`） | `body`、`pageSize` |
+| `generic_api` | `{ kind, tokenEnv\|token, valueEnv\|value, headerName }` | **读 `kind`**（不是 `strategy`） | `method`、`itemListPath`、`body`、`headers` |
+
+**错写会怎样**（这正是必须有守卫的原因）：
 
 ```
-连接器形状  fieldMapping: { "title": ["fields","MyTitle"] }   →  title = "自定义标题"   ✅
-schema 形状 fieldMapping: { "mode":"table", "map":{"title":"MyTitle"} } → title = "(untitled)" ❌
+✅ 连接器形状      fieldMapping: { "title": ["fields","MyTitle"] }             → title = "自定义标题"
+❌ ① 用在 ② 上      fieldMapping: { "mode":"table", "map":{"title":"MyTitle"} }  → title = "(untitled)"
+❌ 字符串写 feishu   fieldMapping: { "title": "MyTitle" }                       → title = "(untitled)"
+❌ generic_api 分页  pagination: { "strategy": "cursor" }                        → 分页失效
 ```
 
-> **结论**：接入 `feishu_bitable` / `notion_db` / `generic_api` 时，**以连接器源码为准**（用 §3.3 的示例形状）。`sources.schema.json` 目前仍描述旧的 `{mode,map}` 形状，**二者尚未对齐**。
->
-> ⚠️ 连带影响：`npm run validate` 只校验 `config/*.json`，而**当前 `config/sources.json` 里只有 `rss`/`atom` 源**（不含 `fieldMapping` / `pagination`），所以校验通过、**不会暴露该分歧**。一旦你按连接器形状给 `generic_api` 源加 `method` / `itemListPath` / `pagination.kind` / `auth.kind` 等字段，`npm run validate` 可能因 schema 的 `additionalProperties:false` 与枚举不匹配而**报错**。**这会是一个 P4 需要对齐的已知问题**（本文档如实标注，未在本阶段修改任何代码）。
+> 以上写法现在都会被 `npm run validate` 的语义守卫
+> （`scripts/validate-schema.mjs` 的 `checkSourceShapes`）在**配置期**拦下，并直接给出修复指引，
+> 不会再静默损数据。回归测试见 `scripts/__tests__/validate-source-shapes.test.mjs`。
+
+**一处已修的历史行为差异**：`generic_api` 的路径取值在映射缺失时曾返回**整行对象**（落库标题变
+`[object Object]`），已与其他两个连接器统一为 `undefined` → `(untitled)` 兜底（有测试锁定）。
 
 ---
 
@@ -399,7 +411,8 @@ schema 形状 fieldMapping: { "mode":"table", "map":{"title":"MyTitle"} } → ti
 | `cursor` | 游标翻页；无 `next_cursor` 即停 | `cursorParam` / `responsePath`(默认 `["next_cursor"]`) |
 | `link_header` | 解析响应 `Link` 头的 `rel="next"` | `headerName`(默认 `Link`) / `relNext`(默认 `next`) |
 
-> `sources.schema.json` 的 `pagination.strategy` 取值集合同为 `none/page/offset/cursor/link_header`，但**键名不同**（`strategy` vs `kind`，参数名也不同）——见 §6。
+> `sources.schema.json` 里 `pagination` **同时**声明了 `kind`（generic_api 实际读取）与
+> `strategy`（声明式历史字段，连接器不读取）——语义守卫会在只写 `strategy` 时报错，见 §6。
 
 `feishu_bitable` / `notion_db` 的分页是**内部固定实现**（各用各自官方的 cursor 协议），不受 `pagination` 影响。
 
@@ -407,7 +420,9 @@ schema 形状 fieldMapping: { "mode":"table", "map":{"title":"MyTitle"} } → ti
 
 ## 8. 鉴权（`auth`）——密钥只引用，绝不入库明文
 
-**schema 的设计意图**是：`auth` 只放**引用名**，运行时读取环境变量 / GitHub Secrets：
+`auth` 有**两套形状**，`sources.schema.json` 已同时接受（§6 已对齐）：
+
+**① 引用式（声明式，schema 原始设计）**——只放引用名，运行时读环境变量 / GitHub Secrets：
 
 ```jsonc
 "auth": { "type": "actions_secret", "ref": "FEISHU_APP_TOKEN", "headerName": "Authorization", "scheme": "Bearer" }
@@ -415,16 +430,20 @@ schema 形状 fieldMapping: { "mode":"table", "map":{"title":"MyTitle"} } → ti
 
 - `auth.type` 枚举：`none` / `env` / `actions_secret` / `bearer_env` / `header_env` / `query_env`。
 - `auth.ref`：**引用名**（本地取 `.env` 变量名，CI 取 Actions Secrets 名）。
+- ⚠️ 这一套 **`generic_api` 不读取**（写了会被语义守卫拦下），仅早期声明式接入有意义。
+
+**② 连接器实际读取的形状**：
+
+| 连接器 | 形状 | 是否引用式 |
+|---|---|---|
+| `generic_api` | `{ kind: 'bearer', tokenEnv }` 或 `{ kind: 'api_key', valueEnv, headerName }` | ✅ `*Env` 是**引用**环境变量 |
+| `feishu_bitable` | `{ appId, appSecret, tokenType?, tokenUrl? }` | ❌ 读取**字面值** |
+| `notion_db` | `{ token }` | ❌ 读取**字面值** |
+| Feed / 本地文件类 | 无鉴权 | — |
+
 - **配置文件内绝不出现明文密钥**（ARCHITECTURE §12.5 硬约束）。
-
-**连接器实际鉴权读取**（同 §6 的分歧）：
-
-- `generic_api`：`auth.kind = bearer` + `tokenEnv`（**引用环境变量**，符合「只引用」原则）；或 `api_key` + `valueEnv`。
-- `feishu_bitable`：`auth.appId` / `auth.appSecret`（当前读取**字面值**）。
-- `notion_db`：`auth.token`（当前读取**字面值**）。
-- Feed / 本地文件类：无鉴权。
-
-> ⚠️ `feishu_bitable` / `notion_db` 当前读取 `auth` 的**字面值**，与 schema 的「`auth.ref` 引用式」设计**不一致**。若要用它们，**务必不要让明文密钥进入 `sources.json`**（应在 CI 里由 Secrets 生成/注入配置，本地用 `.env`）。
+- ⚠️ `feishu_bitable` / `notion_db` 读的是**字面值**：**务必别把明文密钥写进 `sources.json`**——
+  应在 CI 里由 Secrets 生成/注入配置，本地用 `.env`。schema 已对 `appSecret` / `token` 标注该约束。
 
 ---
 
