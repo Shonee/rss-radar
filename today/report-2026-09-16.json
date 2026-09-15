@@ -1,0 +1,1701 @@
+{
+  "schemaVersion": "1.0",
+  "date": "2026-09-16",
+  "timezone": "Asia/Shanghai",
+  "generatedAt": "2026-09-15T23:20:21Z",
+  "totalItems": 1735,
+  "activeChannels": 25,
+  "windowStart": "2026-09-15T16:00:00Z",
+  "windowEnd": "2026-09-15T23:20:21Z",
+  "weights": {
+    "sourceOverlap": 0.4,
+    "recency": 0.25,
+    "frequency": 0.2,
+    "channelWeight": 0.1,
+    "keywordHeat": 0.05
+  },
+  "categoryStats": [
+    {
+      "category": "ai",
+      "label": "AI",
+      "itemCount": 1029,
+      "channelCount": 23,
+      "ratio": 0.5930835734870317
+    },
+    {
+      "category": "news",
+      "label": "新闻",
+      "itemCount": 575,
+      "channelCount": 18,
+      "ratio": 0.3314121037463977
+    },
+    {
+      "category": "tech_blog",
+      "label": "科技博客",
+      "itemCount": 338,
+      "channelCount": 18,
+      "ratio": 0.19481268011527378
+    },
+    {
+      "category": "dev_community",
+      "label": "开发者社区",
+      "itemCount": 99,
+      "channelCount": 13,
+      "ratio": 0.057060518731988474
+    },
+    {
+      "category": "newsletter",
+      "label": "周报",
+      "itemCount": 87,
+      "channelCount": 9,
+      "ratio": 0.05014409221902017
+    },
+    {
+      "category": "finance",
+      "label": "财经",
+      "itemCount": 63,
+      "channelCount": 7,
+      "ratio": 0.03631123919308357
+    },
+    {
+      "category": "other",
+      "label": "其他",
+      "itemCount": 55,
+      "channelCount": 4,
+      "ratio": 0.03170028818443804
+    },
+    {
+      "category": "podcast",
+      "label": "播客",
+      "itemCount": 24,
+      "channelCount": 5,
+      "ratio": 0.0138328530259366
+    }
+  ],
+  "hotList": [
+    {
+      "rank": 1,
+      "id": "it_41c7c0845c80",
+      "title": "国家统计局贸经司首席统计师袁彦解读1—8月份消费市场数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202609/t20260915_1965328.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 1,
+      "sourceCount": 7,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2026-09-15T03:00:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0.095,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 2,
+      "id": "it_2ee1d4c89193",
+      "title": "国家统计局新闻发言人就2026年8月份国民经济运行情况答记者问",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202609/t20260915_1965332.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9911898355373913,
+      "sourceCount": 25,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2026-09-15T03:34:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0.102,
+        "zChannel": 0.6,
+        "zKw": 0.8,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 3,
+      "id": "it_3e535805301f",
+      "title": "国家统计局城市司首席统计师董莉娟解读2026年8月份CPI和PPI数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202609/t20260909_1965261.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9748320289183451,
+      "sourceCount": 41,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2026-09-09T09:30:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 4,
+      "id": "it_05c4e8b3a41c",
+      "title": "国家统计局投资司首席统计师罗毅飞解读2025年1—11月份投资数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202512/t20251215_1962084.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news",
+        "finance"
+      ],
+      "hotScore": 0.9748320257175684,
+      "sourceCount": 20,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2025-12-15T03:00:02Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 5,
+      "id": "it_2b10a8ca203f",
+      "title": "国家统计局工业司统计师于卫宁解读工业企业利润数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202501/t20250127_1958494.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9748320257175684,
+      "sourceCount": 16,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2025-01-27T09:30:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 6,
+      "id": "it_0cd91b828e9d",
+      "title": "国家统计局工业司首席统计师于卫宁解读2026年1—7月份工业企业利润数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202608/t20260827_1965127.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9748320257175684,
+      "sourceCount": 6,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2026-08-27T09:30:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 7,
+      "id": "it_c31815cc573a",
+      "title": "国家统计局工业司统计师于卫宁解读2025年7月份工业企业利润数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202508/t20250827_1960883.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9748320257175684,
+      "sourceCount": 6,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2025-08-27T09:30:01Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 8,
+      "id": "it_a6e955092850",
+      "title": "国家统计局社科文司高级统计师张鹏解读2025年一季度全国规模以上文化及相关产业企业数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202504/t20250429_1959507.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9748320257175684,
+      "sourceCount": 6,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2025-04-29T09:30:01Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 9,
+      "id": "it_2624d0559d41",
+      "title": "国家统计局服务业调查中心高级统计师赵庆河解读2025年8月中国采购经理指数",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202508/t20250831_1960936.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9641748459813624,
+      "sourceCount": 29,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2025-08-31T09:30:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 0.8,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 10,
+      "id": "it_cb6b3f37ce55",
+      "title": "国家统计局城市司首席统计师王中华解读2026年4月份商品住宅销售价格变动情况统计数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202605/t20260518_1963721.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9641748459813624,
+      "sourceCount": 28,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2026-05-18T09:30:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 0.8,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "word": "经济",
+      "count": 375,
+      "weight": 1
+    },
+    {
+      "word": "统计",
+      "count": 343,
+      "weight": 0.9146666666666666
+    },
+    {
+      "word": "发展",
+      "count": 327,
+      "weight": 0.872
+    },
+    {
+      "word": "ai",
+      "count": 319,
+      "weight": 0.8506666666666667
+    },
+    {
+      "word": "消费",
+      "count": 303,
+      "weight": 0.808
+    },
+    {
+      "word": "数据",
+      "count": 272,
+      "weight": 0.7253333333333334
+    },
+    {
+      "word": "工业",
+      "count": 266,
+      "weight": 0.7093333333333334
+    },
+    {
+      "word": "生产",
+      "count": 258,
+      "weight": 0.688
+    },
+    {
+      "word": "macos",
+      "count": 226,
+      "weight": 0.6026666666666667
+    },
+    {
+      "word": "服务",
+      "count": 220,
+      "weight": 0.5866666666666667
+    },
+    {
+      "word": "国家",
+      "count": 200,
+      "weight": 0.5333333333333333
+    },
+    {
+      "word": "市场",
+      "count": 197,
+      "weight": 0.5253333333333333
+    },
+    {
+      "word": "中央",
+      "count": 192,
+      "weight": 0.512
+    },
+    {
+      "word": "季度",
+      "count": 177,
+      "weight": 0.472
+    },
+    {
+      "word": "月份",
+      "count": 176,
+      "weight": 0.4693333333333333
+    },
+    {
+      "word": "完成",
+      "count": 174,
+      "weight": 0.464
+    },
+    {
+      "word": "全国",
+      "count": 168,
+      "weight": 0.448
+    },
+    {
+      "word": "支持",
+      "count": 168,
+      "weight": 0.448
+    },
+    {
+      "word": "平稳",
+      "count": 167,
+      "weight": 0.44533333333333336
+    },
+    {
+      "word": "hugging",
+      "count": 165,
+      "weight": 0.44
+    }
+  ],
+  "crossSource": [
+    {
+      "topic": "上周蠎快讯 2025/22",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_3c08e22c0872"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "国家统计局农村司司长魏锋华解读早稻生产情况",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_ea55812176e5"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司首席统计师袁彦解读1—2月份消费市场数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_088ae578950e"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "张毅：前三季度居民收入和消费支出稳定增长",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_8eb7e2501801"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司统计师孙晓解读5月份工业生产数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_ff68a91cf5dd"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司首席统计师袁彦解读5月份消费市场数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_49de6a78543f"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司首席统计师袁彦解读4月份消费市场数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_b6f3047ae709"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "王萍萍：一季度就业形势总体稳定",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_da07148e82c7"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司统计师于卫宁解读工业企业利润数据",
+      "sourceCount": 16,
+      "itemIds": [
+        "it_2b10a8ca203f"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司统计师孙晓解读11月份工业生产数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_995592098af9"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司统计师付加奇解读11月份消费市场数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_20917633f2e8"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司统计师孙晓解读10月份工业生产数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_80f433ffaf0c"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司统计师付加奇解读10月份消费市场数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_b1e578c638c1"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司统计师孙晓解读8月份工业生产数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_5f8e9e96ba22"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司统计师付加奇解读8月份消费市场数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_5dce01b0a03e"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局农村司司长王贵荣解读早稻生产情况",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_33e0e63e5120"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "王萍萍：上半年就业形势总体稳定",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_aca81d7339ef"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局农村司司长王贵荣解读夏粮生产情况",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_00b4c748a46a"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司首席统计师王新解读4月份工业生产数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_e7c5ed116dd7"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司统计师孙晓解读工业企业利润数据",
+      "sourceCount": 4,
+      "itemIds": [
+        "it_3db476018884"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "Building a Healthcare Robot from Simulation to Deployment with NVIDIA Isaac",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_4754c48ec89e"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "Training and Finetuning Sparse Embedding Models with Sentence Transformers",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_78a74dd6e22c"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "Open R1: Update #4",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_1172932ec030"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "Accelerating PyTorch Transformers with Intel Sapphire Rapids - part 2",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_ae2e9a534ac7"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "2D Asset Generation: AI for Game Development #4",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_44d1f35b84fd"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "AI for Game Development: Creating a Farming Game in 5 Days. Part 2",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_0114fe4831df"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "An Introduction to Q-Learning Part 2/2",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_5889a8d85a8c"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": ":fire: xbatis 1.10.9 正式发版，mybatis 系列最好用最简单最方便的 ORM !!!",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_49f6457d22b6"
+      ],
+      "channelNames": [
+        "开源中国",
+        "开源中国"
+      ]
+    },
+    {
+      "topic": "【黑果小兵】【微信首发】macOS Big Sur 11.3.1 20E241 Installer for OpenCore 0.6.8 and CLOVER 5134 and PE三EFI分区原版镜像",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_469fdd72dc76"
+      ],
+      "channelNames": [
+        "黑果小兵的部落阁",
+        "黑果小兵的部落阁"
+      ]
+    },
+    {
+      "topic": "【黑果小兵】【微信首发】macOS Big Sur 11.2.2 20D80 Installer for OpenCore 0.6.7 and CLOVER 5131 and PE三EFI分区原版镜像",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_488c42889f2f"
+      ],
+      "channelNames": [
+        "黑果小兵的部落阁",
+        "黑果小兵的部落阁"
+      ]
+    },
+    {
+      "topic": "【微信首发】macOS Catalina 10.15.7 19H15 正式版 Clover 5126/OC/PE三分区支持Intel及AMD双平台原版镜像",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_fa8efa3ef1ed"
+      ],
+      "channelNames": [
+        "黑果小兵的部落阁",
+        "黑果小兵的部落阁"
+      ]
+    },
+    {
+      "topic": "【黑果小兵】macOS High Sierra 10.13DB9 17A360a with Clover 4189原版镜像",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_b59a3046cd99"
+      ],
+      "channelNames": [
+        "黑果小兵的部落阁",
+        "黑果小兵的部落阁"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2025/21",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_22ee2c3db279"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2025/19",
+      "sourceCount": 10,
+      "itemIds": [
+        "it_d70e38537d97"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2025/09",
+      "sourceCount": 7,
+      "itemIds": [
+        "it_f8580849a839"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2025/08",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_070054f7c831"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2024/52",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_22538d19cf44"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2024/49",
+      "sourceCount": 6,
+      "itemIds": [
+        "it_1b36352fd7ee"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2024/47",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_a5d0fd146fd1"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2024/39",
+      "sourceCount": 5,
+      "itemIds": [
+        "it_d14976d6c926"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "国家统计局新闻发言人就2026年8月份国民经济运行情况答记者问",
+      "sourceCount": 25,
+      "itemIds": [
+        "it_2ee1d4c89193"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司首席统计师孙晓解读2026年8月份工业生产数据",
+      "sourceCount": 4,
+      "itemIds": [
+        "it_6f60b3412e01"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局投资司张刚解读2026年1—8月份投资数据",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_9e536d8e342b"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司首席统计师袁彦解读1—8月份消费市场数据",
+      "sourceCount": 7,
+      "itemIds": [
+        "it_41c7c0845c80"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局城市司高级统计师杨彩芳解读2026年8月份商品住宅销售价格变动情况统计数据",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_a776299f610e"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局城市司首席统计师董莉娟解读2026年8月份CPI和PPI数据",
+      "sourceCount": 41,
+      "itemIds": [
+        "it_3e535805301f"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局服务业调查中心首席统计师霍丽慧解读2026年8月中国采购经理指数",
+      "sourceCount": 12,
+      "itemIds": [
+        "it_76933aea5d42"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局统计科学研究所所长闾海琪解读2025年我国经济发展新动能指数",
+      "sourceCount": 4,
+      "itemIds": [
+        "it_8f2ae04f634b"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司首席统计师于卫宁解读2026年1—7月份工业企业利润数据",
+      "sourceCount": 6,
+      "itemIds": [
+        "it_0cd91b828e9d"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局农村司司长魏锋华解读夏粮生产情况",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_f10b00deae31"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局投资司张刚解读2026年1—5月份投资数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_508c9c65cb39"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局城市司首席统计师王中华解读2026年4月份商品住宅销售价格变动情况统计数据",
+      "sourceCount": 28,
+      "itemIds": [
+        "it_cb6b3f37ce55"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局社科文司统计师潘旭华解读2025年全国规模以上文化及相关产业企业数据",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_e5d24173f817"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局局长就2025年全年国民经济运行情况答记者问",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_7031d5e073d6"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司首席统计师于卫宁解读2025年1—11月份工业企业利润数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_a75ba8fb74be"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司首席统计师孙晓解读11月份工业生产数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_836111b4c473"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局投资司首席统计师罗毅飞解读2025年1—11月份投资数据",
+      "sourceCount": 20,
+      "itemIds": [
+        "it_05c4e8b3a41c"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局社科文司统计师林梅解读2024年中国创新指数",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_00793f1121bd"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局服务业调查中心高级统计师赵庆河解读2025年8月中国采购经理指数",
+      "sourceCount": 29,
+      "itemIds": [
+        "it_2624d0559d41"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司统计师于卫宁解读2025年7月份工业企业利润数据",
+      "sourceCount": 6,
+      "itemIds": [
+        "it_c31815cc573a"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局人口和就业统计司司长王萍萍解读2024年城镇单位就业人员平均工资数据",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_dbd65d0fb3a4"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局社科文司高级统计师张鹏解读2025年一季度全国规模以上文化及相关产业企业数据",
+      "sourceCount": 6,
+      "itemIds": [
+        "it_a6e955092850"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局副局长就2025年一季度国民经济运行情况答记者问",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_b75b66ca07b7"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局社科文司高级统计师张鹏解读2024年前三季度全国规模以上文化及相关产业企业数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_7a7cc63540c7"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局城市司高级统计师沈赟解读2023年12月份商品住宅销售价格变动情况统计数据",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_24cbc8cfb1ba"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局城市司高级统计师沈赟解读2023年11月份商品住宅销售价格变动情况统计数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_5937164a6005"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局城市司首席统计师绳国庆解读2023年7月份商品住宅销售价格变动情况统计数据",
+      "sourceCount": 4,
+      "itemIds": [
+        "it_a4732683459a"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司首席统计师王新解读7月份工业生产数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_4f13b5a522c8"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司统计师付加奇解读7月份社会消费品零售总额数据",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_a35abf2d70e4"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    }
+  ],
+  "channelActivity": [
+    {
+      "channelId": "huggingface-blog",
+      "channelName": "Hugging Face Blog",
+      "category": [
+        "ai"
+      ],
+      "itemCount": 853,
+      "lastUpdatedAt": "2026-09-15T16:00:44Z",
+      "activityScore": 0.49164265129683
+    },
+    {
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "itemCount": 264,
+      "lastUpdatedAt": "2026-09-15T09:30:00Z",
+      "activityScore": 0.1521613832853026
+    },
+    {
+      "channelId": "daliansky",
+      "channelName": "黑果小兵的部落阁",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 123,
+      "lastUpdatedAt": "2026-07-10T01:51:04Z",
+      "activityScore": 0.07089337175792507
+    },
+    {
+      "channelId": "pychina-weekly",
+      "channelName": "蠎周刊（Python 周刊）",
+      "category": [
+        "newsletter",
+        "tech_blog",
+        "news"
+      ],
+      "itemCount": 71,
+      "lastUpdatedAt": "2026-09-13T09:42:00Z",
+      "activityScore": 0.04092219020172911
+    },
+    {
+      "channelId": "ithome",
+      "channelName": "IT之家",
+      "category": [
+        "news",
+        "ai"
+      ],
+      "itemCount": 60,
+      "lastUpdatedAt": "2026-09-15T23:18:46Z",
+      "activityScore": 0.0345821325648415
+    },
+    {
+      "channelId": "oschina",
+      "channelName": "开源中国",
+      "category": [
+        "dev_community",
+        "ai",
+        "tech_blog",
+        "news"
+      ],
+      "itemCount": 48,
+      "lastUpdatedAt": "2026-09-15T11:57:16Z",
+      "activityScore": 0.0276657060518732
+    },
+    {
+      "channelId": "36kr",
+      "channelName": "36氪",
+      "category": [
+        "news",
+        "ai",
+        "tech_blog"
+      ],
+      "itemCount": 30,
+      "lastUpdatedAt": "2026-09-15T23:18:15Z",
+      "activityScore": 0.01729106628242075
+    },
+    {
+      "channelId": "hacker-news",
+      "channelName": "Hacker News",
+      "category": [
+        "dev_community",
+        "news"
+      ],
+      "itemCount": 29,
+      "lastUpdatedAt": "2026-09-15T21:07:47Z",
+      "activityScore": 0.016714697406340056
+    },
+    {
+      "channelId": "solidot",
+      "channelName": "奇客Solidot",
+      "category": [
+        "news"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-09-15T16:45:24Z",
+      "activityScore": 0.011527377521613832
+    },
+    {
+      "channelId": "ifanr",
+      "channelName": "爱范儿",
+      "category": [
+        "news"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-09-15T13:04:35Z",
+      "activityScore": 0.011527377521613832
+    },
+    {
+      "channelId": "gcores",
+      "channelName": "机核",
+      "category": [
+        "podcast"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-09-15T11:30:35Z",
+      "activityScore": 0.011527377521613832
+    },
+    {
+      "channelId": "hutusi",
+      "channelName": "胡涂说",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-08-30T00:00:00Z",
+      "activityScore": 0.011527377521613832
+    },
+    {
+      "channelId": "bytedance-tech",
+      "channelName": "字节跳动技术团队官方博客",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2024-04-16T01:01:10Z",
+      "activityScore": 0.011527377521613832
+    },
+    {
+      "channelId": "xueqiu",
+      "channelName": "今日话题 - 雪球",
+      "category": [
+        "finance",
+        "ai"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-09-15T13:59:37Z",
+      "activityScore": 0.011527377521613832
+    },
+    {
+      "channelId": "douban",
+      "channelName": "豆瓣",
+      "category": [
+        "other"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-09-15T11:51:05Z",
+      "activityScore": 0.011527377521613832
+    },
+    {
+      "channelId": "ctrip-tech",
+      "channelName": "携程技术",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-05-13T02:08:50Z",
+      "activityScore": 0.011527377521613832
+    },
+    {
+      "channelId": "woshipm",
+      "channelName": "人人都是产品经理",
+      "category": [
+        "other",
+        "ai"
+      ],
+      "itemCount": 15,
+      "lastUpdatedAt": "2026-09-08T01:09:34Z",
+      "activityScore": 0.008645533141210375
+    },
+    {
+      "channelId": "wpdaxue",
+      "channelName": "WordPress大学",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 12,
+      "lastUpdatedAt": "2026-08-18T05:53:13Z",
+      "activityScore": 0.0069164265129683
+    },
+    {
+      "channelId": "sspai",
+      "channelName": "少数派",
+      "category": [
+        "tech_blog",
+        "dev_community",
+        "newsletter"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-09-15T09:00:00Z",
+      "activityScore": 0.005763688760806916
+    },
+    {
+      "channelId": "github-blog",
+      "channelName": "GitHub Blog",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-09-11T18:26:10Z",
+      "activityScore": 0.005763688760806916
+    },
+    {
+      "channelId": "xclient",
+      "channelName": "精品MAC应用分享",
+      "category": [
+        "other"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-09-15T19:22:48Z",
+      "activityScore": 0.005763688760806916
+    },
+    {
+      "channelId": "appinn",
+      "channelName": "小众软件",
+      "category": [
+        "other",
+        "newsletter"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-09-15T08:22:14Z",
+      "activityScore": 0.005763688760806916
+    },
+    {
+      "channelId": "williamlong",
+      "channelName": "月光博客",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-09-08T12:19:18Z",
+      "activityScore": 0.005763688760806916
+    },
+    {
+      "channelId": "techug",
+      "channelName": "程序员、编程语言、软件开发、编程技术",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-05-20T13:43:40Z",
+      "activityScore": 0.005763688760806916
+    },
+    {
+      "channelId": "meituan-tech",
+      "channelName": "美团技术团队",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-09-15T23:20:02Z",
+      "activityScore": 0.005763688760806916
+    }
+  ],
+  "summary": "今日热度榜首《国家统计局贸经司首席统计师袁彦解读1—8月份消费市场数据》（来自 国家统计局 · 数据解读，hotScore=1），关键词「经济」热度居前；69 个跨源主题。"
+}
