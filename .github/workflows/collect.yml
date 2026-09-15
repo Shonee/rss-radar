@@ -1,0 +1,96 @@
+# collect.yml — 采集工作流（T-P4-01 / T-P4-02）
+#
+# 触发：每 30 分钟（避开整点，cron 7/37 分）+ 手动 workflow_dispatch
+# 职责：采集 → 归一化 → 分类 → 排除 → 去重 → 投影快照 + 事件流 + 报告
+#       → 推送到独立的 `deploy` 分支（提交信息带 [skip ci]，避免触发部署死循环）
+#       当天同日内多次采集用 --amend 折叠为 1 个提交，跨天新建提交（每日本地可追溯）
+#
+# 双分支策略（ARCHITECTURE §6.6~§6.8）：
+#   1) 在 master 检出代码 + 配置（config/*、scripts/*）
+#   2) 采集产物写到仓库外的 /tmp/deploy-data（dev-bridge 会顺手写到 public/data，需清理）
+#   3) 再切到 deploy 分支，把数据目录并入并提交（仅提交数据路径，不动代码）
+#
+# secrets：本工作流不直接使用第三方密钥（通知由 notify.yml 负责）；推送用内置 GITHUB_TOKEN。
+name: collect
+
+on:
+  schedule:
+    # 每 30 分钟一轮，避开整点（7/37 分）降低 GitHub schedule 延迟（ARCHITECTURE §6.3.1）
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+
+# 最小权限：仅需向 deploy 分支推送内容
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout master (code + config)
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0   # 需要完整历史以判断「当天是否已有提交」做 amend
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run collector (output to out-of-tree dir)
+        # 真实 CLI：node scripts/collect/index.mjs [--out <dir>]（见 scripts/collect/index.mjs）
+        # --out 指向仓库外目录，避免污染工作树；dev-bridge 仍会写到 public/data，下面清理
+        run: node scripts/collect/index.mjs --out /tmp/deploy-data
+
+      - name: Clean dev-bridge artifacts (untracked public/data)
+        run: rm -rf public/data/today public/data/latest.json
+
+      - name: Publish to deploy branch (same-day amend / cross-day new)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "radar-bot"
+          git config user.email "radar@users.noreply.github.com"
+
+          # 切到 deploy 分支（首次无 origin/deploy 时建 orphan）
+          git fetch origin deploy || true
+          if git rev-parse --verify origin/deploy >/dev/null 2>&1; then
+            git checkout -B deploy origin/deploy
+          else
+            git checkout --orphan deploy
+            git rm -rf --cached . >/dev/null 2>&1 || true
+          fi
+
+          # 用 master 采集产物并入 deploy（仅数据路径）
+          rm -rf today
+          cp -R /tmp/deploy-data/today ./today
+          [ -f /tmp/deploy-data/latest.json ] && cp /tmp/deploy-data/latest.json ./latest.json || true
+          mkdir -p stats history
+          [ -d /tmp/deploy-data/stats ]   && cp -R /tmp/deploy-data/stats/.   ./stats/   || true
+          [ -d /tmp/deploy-data/history ] && cp -R /tmp/deploy-data/history/. ./history/ || true
+          git add today latest.json stats history
+
+          if git diff --cached --quiet; then
+            echo "collect: 无数据变更，跳过提交"
+            exit 0
+          fi
+
+          TODAY=$(date -u +%F)
+          LAST_MSG=$(git log -1 --format=%s 2>/dev/null || true)
+          MSG="chore(data): $TODAY [skip ci]"
+          if echo "$LAST_MSG" | grep -q "^chore(data): $TODAY "; then
+            # 当天已有提交 → amend 折叠（保持单日 1 个可变提交，低噪音）
+            git commit --amend --author="radar-bot <radar@users.noreply.github.com>" -m "$MSG"
+          else
+            # 跨天 → 新建提交（每天 1 个 commit，git log 可追溯）
+            git commit --author="radar-bot <radar@users.noreply.github.com>" -m "$MSG"
+          fi
+
+          git push --force-with-lease origin deploy

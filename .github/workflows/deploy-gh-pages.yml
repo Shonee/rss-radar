@@ -1,0 +1,72 @@
+# deploy-gh-pages.yml — GitHub Pages 部署（T-P4-01）
+#
+# 触发：默认仅手动 workflow_dispatch（老登要求：先注释掉不启用，只留手动）。
+#   自动触发段（push: master + 代码 paths）已按 ARCHITECTURE §6.1.1 方案 B 整块注释，
+#   需要时取消注释 4 行 push 段即可启用；job 上的 `if` 守卫是双保险。
+#   deploy 分支的数据提交带 [skip ci] 且不在 paths 内 → 不会触发本工作流（无循环）。
+#
+# 步骤：checkout → setup-node → npm ci → npm run build → configure-pages
+#       → upload-pages-artifact(dist) → deploy-pages
+#
+# secrets：无（仅用内置 GITHUB_TOKEN）
+# 权限：contents: read, pages: write, id-token: write（OIDC 发布 Pages）
+name: deploy-gh-pages
+
+on:
+  # ⛔ 自动触发默认禁用（老登要求：先注释掉不启用，只留手动）。
+  #    需要启用时取消下面 4 行注释即可（同时可删掉 job 上的 if 守卫）。
+  # push:
+  #   branches: [master]
+  #   paths:
+  #     - 'src/**'
+  #     - 'config/**'
+  #     - 'package.json'
+  #     - 'index.html'
+  #     - 'vite.config.ts'
+  workflow_dispatch:        # ✅ 始终保留，保证「手动可触发」且文件合法
+    inputs:
+      target:
+        description: '部署目标'
+        type: choice
+        options: [gh-pages]
+        default: gh-pages
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    if: github.event_name == 'workflow_dispatch'   # 🛡 非手动不跑（开自动后删除本行）
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

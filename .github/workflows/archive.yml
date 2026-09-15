@@ -1,0 +1,92 @@
+# archive.yml — 年度归档工作流（T-P4-01）
+#
+# 触发：每年 1 月 1 日 00:23 UTC（cron '23 0 1 1 *'）+ 手动 workflow_dispatch
+# 职责：调用项目既有归档脚本 scripts/collect/archive.mjs，
+#       把 ≥ 365 天前的历史 NDJSON 打包 Release 资产并安全删除（ARCHITECTURE §6.9 / §13.5）。
+#
+# 真实 CLI（见 scripts/collect/archive.mjs）：
+#   node scripts/collect/archive.mjs --year <YYYY> --execute   # 真删（CI 跑，需 GH_TOKEN）
+#   node scripts/collect/archive.mjs --year <YYYY> --dry-run   # 仅列清单（默认）
+#
+# 双分支策略：归档操作的是 deploy 分支上的 history/。为避免「切到 deploy 后丢失 master 的脚本」，
+#   用 git worktree 把 deploy 检出到 /tmp/deploy-deploy，脚本仍在 master 工作树运行，
+#   round-root 指向 worktree，删除直接在 deploy 工作树发生，最后在 worktree 内提交并推送。
+#
+# secrets：
+#   GITHUB_TOKEN  内置，用于 Release 资产上传与推送 deploy 分支（contents: write）
+name: archive
+
+on:
+  schedule:
+    # 每年元旦 00:23 UTC 执行年度归档
+    - cron: '23 0 1 1 *'
+  workflow_dispatch:
+    inputs:
+      year:
+        description: '归档哪一年（默认去年）'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout master (code + config)
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prepare deploy worktree
+        run: |
+          set -euo pipefail
+          git fetch origin deploy || true
+          if git rev-parse --verify origin/deploy >/dev/null 2>&1; then
+            git worktree add -b deploy /tmp/deploy-deploy origin/deploy
+          else
+            echo "archive: deploy 分支尚不存在，跳过归档"
+            exit 0
+          fi
+
+      - name: Run archive (prune + release assets)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -n "${{ github.event.inputs.year }}" ]; then
+            YEAR="${{ github.event.inputs.year }}"
+          else
+            YEAR=$(date -d 'last year' +%Y)
+          fi
+          echo "archive: 归档年份=$YEAR（round-root=/tmp/deploy-deploy）"
+          # 真删模式（CI）；如需先预览可改为 --dry-run
+          node scripts/collect/archive.mjs --year "$YEAR" --execute --round-root /tmp/deploy-deploy
+
+      - name: Commit archived changes to deploy branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          cd /tmp/deploy-deploy
+          git config user.name "radar-bot"
+          git config user.email "radar@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "archive: 无可归档变更"
+            exit 0
+          fi
+          git commit --author="radar-bot <radar@users.noreply.github.com>" -m "chore(archive): prune history [skip ci]"
+          git push --force-with-lease origin deploy

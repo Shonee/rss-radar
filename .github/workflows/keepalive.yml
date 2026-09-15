@@ -1,0 +1,41 @@
+# keepalive.yml — 防止 GitHub 因长期无活动禁用 scheduled workflow（T-P4-01）
+#
+# 触发：每周日 00:00 UTC（cron '0 0 * * 0'）+ 手动 workflow_dispatch
+# 职责：向 master 推送一个空的 keepalive 提交，维持仓库「活跃」，
+#       避免 GitHub 把本仓库的定时任务（collect/notify/archive）自动禁用。
+#
+# 说明：空提交带 [skip ci]，不会触发 deploy-* 工作流（且其 push 段本就默认注释）。
+# 提交使用内置 GITHUB_TOKEN，author 固定为 radar-bot。
+#
+# secrets：无（仅用内置 GITHUB_TOKEN）
+name: keepalive
+
+on:
+  schedule:
+    # 每周日 00:00 UTC 一次轻量提交
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Push keepalive empty commit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "radar-bot"
+          git config user.email "radar@users.noreply.github.com"
+          git commit --allow-empty -m "chore(keepalive): prevent scheduled-workflow disable [skip ci]"
+          git push origin HEAD:master

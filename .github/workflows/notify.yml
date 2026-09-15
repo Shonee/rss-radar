@@ -1,0 +1,92 @@
+# notify.yml — 每日报告推送工作流（T-P4-01 / T-P4-02）
+#
+# 触发：每天 00:03 UTC（≈ 北京 08:03）+ 手动 workflow_dispatch
+# 职责：读 deploy 分支上的昨日报告 → 构建日报 → 分发到各订阅渠道 → 结果记录提交 stats/notify-*.json
+#
+# 双分支说明：
+#   通知模块需要 config/notify.json、config/site-config.json（在 master），
+#   又要消费 deploy 分支上的 today/report-*.json。
+#   故先 checkout master 拿到代码+配置，再把 deploy 的 today/history 覆盖进工作树
+#   （不切 HEAD），最后把产出的 stats/notify-*.json 提交到 deploy 分支归档。
+#
+# secrets（按 config/notify.json 的 refs.* 注入；MVP 允许全部为空 → 渠道自动 skipped，不报错）：
+#   SMTP_PASSWORD     邮件渠道密码（refs.password）
+#   FEISHU_WEBHOOK    飞书 webhook（refs.webhookRef）
+#   DINGTALK_WEBHOOK  钉钉 webhook（refs.webhookRef）
+#   WECOM_WEBHOOK     企业微信 webhook（refs.webhookRef）
+#   注：YAML 中绝不写入任何真实密钥，仅引用 ${{ secrets.* }}。
+name: notify
+
+on:
+  schedule:
+    # 00:03 UTC ≈ 北京 08:03（ARCHITECTURE §6.1 notify 行）
+    - cron: '3 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  daily-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout master (code + config)
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Overlay deploy data (report/snapshot) without switching HEAD
+        run: |
+          set -euo pipefail
+          git fetch origin deploy || true
+          if git rev-parse --verify origin/deploy >/dev/null 2>&1; then
+            git checkout origin/deploy -- today history 2>/dev/null || true
+          fi
+          mkdir -p public/data/today
+          # 把最近一份 report 放到 notify 自动探测路径（public/data/today/report.json）
+          LATEST=$(ls -t today/report-*.json 2>/dev/null | head -n1 || true)
+          if [ -n "$LATEST" ]; then cp "$LATEST" public/data/today/report.json; fi
+
+      - name: Send daily report
+        # 真实 CLI：node scripts/notify/main.mjs --event dailyReport（见 scripts/notify/main.mjs）
+        # 所有渠道在 config/notify.json 中默认 disabled / 缺 secrets → skipped，不会导致失败
+        env:
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+          DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
+          WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
+        run: node scripts/notify/main.mjs --event dailyReport
+
+      - name: Commit notify stats to deploy branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "radar-bot"
+          git config user.email "radar@users.noreply.github.com"
+          git fetch origin deploy || true
+          if git rev-parse --verify origin/deploy >/dev/null 2>&1; then
+            git checkout -B deploy origin/deploy
+          else
+            git checkout --orphan deploy
+            git rm -rf --cached . >/dev/null 2>&1 || true
+          fi
+          mkdir -p stats
+          git add stats/notify-*.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "notify: 无结果记录可提交"
+            exit 0
+          fi
+          git commit --author="radar-bot <radar@users.noreply.github.com>" -m "chore(notify): daily report stats [skip ci]"
+          git push --force-with-lease origin deploy
