@@ -157,7 +157,7 @@ npm run smoke      # 采集 → 校验 → 产物契约断言
 
 见 [`DEPLOYMENT.md`](./DEPLOYMENT.md)：本地构建、GitHub Pages、Cloudflare Pages（**Git 集成** / **Direct Upload** 两条路径）三套。若走 CF Pages，**请先读该文档 §3.0** —— 两种项目类型创建后**不可互转**。
 
-> ⚠️ 现状（详见 `DEPLOYMENT.md` §0）：`.github/workflows/` 下 6 个文件**已创建**，`collect` 已按 30 分钟周期真实运行并维护 `deploy` 数据分支；但 **Cloudflare Pages 项目尚未创建**，两个 deploy workflow 的 `push:` 自动触发段仍是注释，**部署端到端尚未验证**。
+> ⚠️ 现状（详见 `DEPLOYMENT.md` §0）：`.github/workflows/` 下 6 个文件**已创建**，`collect` 已按 30 分钟周期真实运行并维护 `deploy` 数据分支；**Cloudflare Pages 项目已创建（路径 A：Git 集成 —— 依据 2026-09-15 构建日志推断，未能本地验证）并触发过首次构建**，但该次构建**失败**于跨平台可选依赖问题（`@rollup/rollup-linux-x64-gnu`，已修复 lock，见 `DEPLOYMENT.md` §3.1.7），**部署端到端仍未跑通**；两个 deploy workflow 的 `push:` 自动触发段仍是注释。
 
 ---
 
