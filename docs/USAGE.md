@@ -44,7 +44,7 @@ npm run validate
 
 一个 `Channel` 可挂多个 `Source`（多渠道备份）。**一个源能不能被采集，取决于 `source.enabled` 与 `channel.enabled` 两者都开启**。
 
-> 现有 11 个渠道、11 个源（全部是 `rss` / `atom`）。字段完整说明见 [`SOURCES.md`](./SOURCES.md)。
+> 现有 32 个渠道、34 个源（类型分布 `rss` 31 + `atom` 3；其中 2 个源实测失效已标 `enabled:false`）。字段完整说明见 [`SOURCES.md`](./SOURCES.md)。
 
 ### 1.3 改一个源 / 启停一个源
 
@@ -155,9 +155,9 @@ npm run smoke      # 采集 → 校验 → 产物契约断言
 
 ## 4. 部署到线上
 
-见 [`DEPLOYMENT.md`](./DEPLOYMENT.md)：本地构建、GitHub Pages、Cloudflare Pages（Direct Upload）三套。
+见 [`DEPLOYMENT.md`](./DEPLOYMENT.md)：本地构建、GitHub Pages、Cloudflare Pages（**Git 集成** / **Direct Upload** 两条路径）三套。若走 CF Pages，**请先读该文档 §3.0** —— 两种项目类型创建后**不可互转**。
 
-> ⚠️ 当前 `.github/workflows/` **尚未创建**，所以线上定时采集与自动部署**还没接线**（属 P4）。文档为「按架构设计的操作手册」，端到端**尚未验证**。
+> ⚠️ 现状（详见 `DEPLOYMENT.md` §0）：`.github/workflows/` 下 6 个文件**已创建**，`collect` 已按 30 分钟周期真实运行并维护 `deploy` 数据分支；但 **Cloudflare Pages 项目尚未创建**，两个 deploy workflow 的 `push:` 自动触发段仍是注释，**部署端到端尚未验证**。
 
 ---
 

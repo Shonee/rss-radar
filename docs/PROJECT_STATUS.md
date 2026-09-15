@@ -12,7 +12,7 @@
 Vite + React + MUI + Tailwind（`preflight:false` 协同）｜ TypeScript strict + ESM ｜ 数据契约（`src/types/models.ts` + `docs/data-model/schema/*.schema.json`）｜ 双轨校验（ajv 产物 + Zod 脚本内，`npm run validate` 5/5）｜ Connector Registry + 排除规则。
 
 ### P2 数据管线 ✅（T-P2-01 ~ T-P2-10）
-URL 标准化与去重 L1~L5 ｜ 事件流 NDJSON + 月度归档 ｜ 报告生成（热点/分类/健康度）｜ URL 健康检查（`sourceHealth[]`）｜ 端到端管线测试 ｜ **11 个渠道 / 11 个源**。
+URL 标准化与去重 L1~L5 ｜ 事件流 NDJSON + 月度归档 ｜ 报告生成（热点/分类/健康度）｜ URL 健康检查（`sourceHealth[]`）｜ 端到端管线测试 ｜ 渠道/源清单（P6 由 11/11 扩充至 **32 渠道 / 34 源**，见下）。
 
 ### P3 前端 ✅（T-P3-01 ~ T-P3-08 + 修复轮）
 前端地基 + MUI 浅色主题（主色 `#2f6bff`）｜ 15 个公共组件 ｜ 页面1 聚合热榜（响应式筛选栏 + 空态逃生）｜ 页面2 渠道看板（取消全渠道/全局空态）｜ 页面3 分析报告（最大余数法取整）｜ 页面4 历史趋势 ｜ 关于页 ｜ 通知模块 4 渠道 ｜ 通知状态面板（只读）。
@@ -31,6 +31,17 @@ URL 标准化与去重 L1~L5 ｜ 事件流 NDJSON + 月度归档 ｜ 报告生�
 |---|---|---|
 | T-P5-02 | `tests/regression/snapshot-harness.mjs` + `run.sh`（97 条断言移植，扩至 118 条；A~F 六类） | **118/118 通过、0 未验证、domVerified: true、退出码 0**；变异测试（Chrome 不存在 → 2；篡改时间档标签 → 1） |
 | T-P5-03 | `tests/e2e/full-pipeline.mjs` + `docs/qa/release-checklist.md` | **31 断言全过、8 阶段（含跨天 rollover / 归档 / history-index 读回）、退出码 0**；`--mutate` 必然失败 |
+
+### P6 外部源清单整合 ✅（T-P6-01 ~ T-P6-03）
+> 目标：把原 `rss_private` 项目的 RSS 源、相关文档与脚本整合进本仓库，并补齐其唯一缺失能力。
+
+| 任务 | 交付 |
+|---|---|
+| T-P6-01 | 整合原 `rss_private/data/rss.csv` 全量源清单：**11 → 32 渠道 / 34 源**（`rss` 31 + `atom` 3）；`Channel` 新增 `tags?` / `description?` 可选字段承载原始「标签/描述」零丢失；跳过已存在的阮一峰；小众软件、豆瓣各合并为 1 channel + 2 source；2 个实测失效源标 `enabled:false` + `notes` 写明原因（`iao-su-rss` 域名易主、`douban-movie-review` 404）|
+| T-P6-02 | `scripts/sync-sources.mjs` —— 飞书多维表格「**源清单注册表**」→ `config/sources.json` 增量同步。默认 `--dry-run`、`--write` 才落盘、`--json` 机器可读输出；**ajv 校验通过才写盘**；凭证只从 `FEISHU_APP_ID` / `FEISHU_APP_SECRET` 环境变量读取 |
+| T-P6-03 | 归档原 Python 脚本（5 个）至 `tools/legacy-python/`（**已脱敏**：硬编码飞书凭证改为环境变量注入）+ 3 份 RSS 文档至 `docs/research/rss-private/`（逐字归档、零删改）|
+
+**能力覆盖结论**：原 `rss_private` 的 feed 解析（`requests` + `feedparser`，按「昨天零点」时间窗过滤）在 rss-radar 中被严格超越（连接器重试 / ETag 条件请求 / URL 健康检查 / 多级去重 L1~L5 / 分类 / 规范化）。**唯一独有能力**是「飞书多维表格当源清单注册表 + 增量同步」，已由 T-P6-02 补齐。经实测：`rss_private` 的 24 条源 URL **100% 被本仓库 config 覆盖（零遗漏）**，且 `sync-sources` 对已整合状态**幂等**（真实表数据回灌：新增 0 / 跳过 24）。
 
 ---
 

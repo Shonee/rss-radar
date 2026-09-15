@@ -438,3 +438,7 @@
 ---
 
 *本文件为调研素材，具体技术选型与 JSON Schema 由架构师在后续阶段确定。*
+
+## 延伸阅读
+
+- 原 `rss_private` 项目的 3 份 RSS 参考文档（RSS 介绍 / RSS 工具 / RSSHub 具体路由）已原样归档至 [`docs/research/rss-private/README.md`](./rss-private/README.md)，作为本调研的补充覆盖（RSSHub 路由清单、Folo API 端点、22 个开源项目清单等为本文件未详尽展开的部分）。

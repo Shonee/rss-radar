@@ -14,7 +14,7 @@
 | 加一个**具体源**（已支持的类型） | 只改 `config/sources.json` | §4 |
 | 加一种**来源类型**（新数据形态） | 写 connector 文件 + 注册一行（+ 可选扩 schema） | §5 |
 
-权威配置样本：`config/sources.json`（当前 11 个渠道 / 11 个源，全部是 `rss` / `atom`）。字段定义参考 `docs/data-model/schema/sources.schema.json`。
+权威配置样本：`config/sources.json`（当前 32 个渠道 / 34 个源，类型为 `rss` 31 + `atom` 3）。字段定义参考 `docs/data-model/schema/sources.schema.json`。
 
 ---
 

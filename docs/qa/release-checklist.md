@@ -22,7 +22,7 @@
 
 - **判据**：`config/sources.json` 中 `channels` 与 `sources` 数量 ≥ 10，且均为 `enabled:true`。
 - **当前证据**：
-  - `config/sources.json` → `channels: 11`、`sources: 11`。
+  - `config/sources.json` → `channels: 32`（启用 31）、`sources: 34`（启用 32）。P6 整合原 `rss_private` 源清单后由 11/11 扩充至 32/34；2 个实测失效源（`iao-su-rss`、`douban-movie-review`）标 `enabled:false`。
   - 渠道覆盖：ruanyifeng-blog、ruanyifeng-weekly、v2ex、sspai、hacker-news、huggingface-blog、github-blog、kernel-panic（播客）、**solidot（奇客）**、**ifanr（爱范儿）**、**gcores（机核）**。
   - 品类（CategoryKey 启用集）覆盖 `tech_blog / ai / news / dev_community / podcast / newsletter / finance / other`（`config/categories.json`）。
 - **状态**：✅ 已满足（11 ≥ 10，含计划扩容的 3 个新增渠道，已随扩容 commit 生效）。
