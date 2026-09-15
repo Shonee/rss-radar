@@ -43,6 +43,12 @@ URL 标准化与去重 L1~L5 ｜ 事件流 NDJSON + 月度归档 ｜ 报告生�
 
 **能力覆盖结论**：原 `rss_private` 的 feed 解析（`requests` + `feedparser`，按「昨天零点」时间窗过滤）在 rss-radar 中被严格超越（连接器重试 / ETag 条件请求 / URL 健康检查 / 多级去重 L1~L5 / 分类 / 规范化）。**唯一独有能力**是「飞书多维表格当源清单注册表 + 增量同步」，已由 T-P6-02 补齐。经实测：`rss_private` 的 24 条源 URL **100% 被本仓库 config 覆盖（零遗漏）**，且 `sync-sources` 对已整合状态**幂等**（真实表数据回灌：新增 0 / 跳过 24）。
 
+**T-P6-04 归档**：原 Python 脚本 5 个 + 3 份 RSS 文档归档至 `tools/legacy-python/` 与 `docs/research/rss-private/`（文档逐字一致；**已脱敏**，硬编码飞书凭证改为环境变量注入）。
+
+**T-P6-05 口径修复**：P6 首次引入停用渠道（`iao-su`）后**暴露一处潜伏缺陷** —— 页面2 看板头部用 `CHANNELS.length`（32，含停用），页面1 状态条用启用数（31），跨页口径分叉致回归断言 A1 失败。根因是**渠道数无单一来源**（两页各自从 `config/sources.json` 派生）。已新建 `src/services/channels.ts` 作为唯一口径来源（`ALL_CHANNELS` / `ENABLED_CHANNELS` / `ENABLED_CHANNEL_IDS`），两页与配置抽屉统一改用；配置抽屉不再列出停用渠道，`cards` 的「已存选择」分支补启用过滤（防 localStorage 残留旧选择）。
+
+**P6 门禁实测**：`npm run typecheck` 0 错误 ｜ `npx vitest run` 62 passed ｜ `npm run test:node` 320 passed / 0 fail ｜ `npm run validate` 5/5 ｜ `npm run build` 成功 ｜ `npm run test:regression` **118/118、`domVerified: true`、exit 0** ｜ 渠道数三处恒等 = **31**（页面1 状态条 / 页面2 头部 / 页面2 卡片数），停用渠道在卡片、筛选下拉、配置抽屉三处**均被剔除**。
+
 ---
 
 ## 二、待优化（已实现但有偏差或技术债）
