@@ -1,0 +1,53 @@
+# mirror-data.yml — 把私有仓库的 deploy 数据分支镜像到公开数据仓库
+#
+# 为什么需要：站点是纯静态前端，浏览器端只能匿名读取数据；私有仓库的 raw 与
+#   jsDelivr 均返回 404（见 docs/DEPLOYMENT.md §3.1.5）。因此把「数据」单独镜像到
+#   一个 public 仓库，代码仍保持 private。前端通过 VITE_DATA_OWNER / VITE_DATA_REPO
+#   指向数据仓库（见 src/config/site.ts）。
+#
+# 触发：collect / notify / archive 任一 workflow 完成时——这三者是 deploy 分支的
+#   全部写入方。**不能用 on: push 触发**：deploy 分支的提交信息带 [skip ci]，
+#   GitHub 会据此跳过 push 触发的工作流。
+#
+# secrets：DATA_REPO_TOKEN —— 对公开数据仓库有 contents:write 权限的细粒度 PAT
+# vars：    DATA_REPO       —— 目标仓库 owner/name（默认 Shonee/rss-radar-data）
+name: mirror-data
+
+on:
+  workflow_run:
+    workflows: [collect, notify, archive]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mirror-data
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout deploy data branch
+        uses: actions/checkout@v4
+        with:
+          ref: deploy
+          fetch-depth: 0
+
+      - name: Push to public data repo
+        env:
+          DATA_REPO_TOKEN: ${{ secrets.DATA_REPO_TOKEN }}
+          DATA_REPO: ${{ vars.DATA_REPO || 'Shonee/rss-radar-data' }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DATA_REPO_TOKEN:-}" ]; then
+            echo "::warning::DATA_REPO_TOKEN 未配置，跳过镜像（配置步骤见 docs/DEPLOYMENT.md §3.1.5）"
+            exit 0
+          fi
+          git remote add public "https://x-access-token:${DATA_REPO_TOKEN}@github.com/${DATA_REPO}.git"
+          git push --force public HEAD:deploy
+          echo "mirror-data: 已镜像 ${DATA_REPO}@deploy"

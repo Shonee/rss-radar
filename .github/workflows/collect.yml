@@ -74,11 +74,15 @@ jobs:
           # 用 master 采集产物并入 deploy（仅数据路径）
           rm -rf today
           cp -R /tmp/deploy-data/today ./today
-          [ -f /tmp/deploy-data/latest.json ] && cp /tmp/deploy-data/latest.json ./latest.json || true
+          mkdir -p today
+          [ -f /tmp/deploy-data/latest.json ] && cp /tmp/deploy-data/latest.json ./today/latest.json || true
           mkdir -p stats history
           [ -d /tmp/deploy-data/stats ]   && cp -R /tmp/deploy-data/stats/.   ./stats/   || true
           [ -d /tmp/deploy-data/history ] && cp -R /tmp/deploy-data/history/. ./history/ || true
-          git add today latest.json stats history
+
+          # 清掉历史遗留的根 latest.json（指针现已移到 today/ 子目录）
+          git rm -f --ignore-unmatch latest.json >/dev/null 2>&1 || true
+          git add today stats history
 
           if git diff --cached --quiet; then
             echo "collect: 无数据变更，跳过提交"
