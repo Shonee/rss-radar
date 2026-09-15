@@ -18,6 +18,7 @@
     "test:regression": "bash tests/regression/run.sh",
     "smoke": "bash scripts/smoke/run.sh",
     "validate": "node scripts/validate-schema.mjs",
+    "sync:sources": "node scripts/sync-sources.mjs",
     "collect": "node scripts/collect/index.mjs",
     "collect:once": "node scripts/collect/index.mjs --once",
     "seed:history": "node scripts/dev/seed-history.mjs"
