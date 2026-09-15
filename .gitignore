@@ -19,6 +19,9 @@ tmp/
 .env.local
 .env.*.local
 
+# WorkBuddy 本地工具目录（项目记忆与工作日志，不入库）
+.workbuddy/
+
 # IDE
 .vscode/
 .idea/
