@@ -105,6 +105,45 @@
       "weight": 0.7,
       "createdAt": "2026-09-01T00:00:00Z",
       "updatedAt": "2026-09-01T00:00:00Z"
+    },
+    {
+      "id": "solidot",
+      "name": "奇客Solidot",
+      "homepage": "https://www.solidot.org/",
+      "category": ["news"],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "奇",
+      "language": "zh-CN",
+      "weight": 0.8,
+      "createdAt": "2026-09-01T00:00:00Z",
+      "updatedAt": "2026-09-01T00:00:00Z"
+    },
+    {
+      "id": "ifanr",
+      "name": "爱范儿",
+      "homepage": "https://www.ifanr.com/",
+      "category": ["news"],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "范",
+      "language": "zh-CN",
+      "weight": 0.75,
+      "createdAt": "2026-09-01T00:00:00Z",
+      "updatedAt": "2026-09-01T00:00:00Z"
+    },
+    {
+      "id": "gcores",
+      "name": "机核",
+      "homepage": "https://www.gcores.com/",
+      "category": ["podcast"],
+      "enabled": true,
+      "displayLimit": 10,
+      "icon": "核",
+      "language": "zh-CN",
+      "weight": 0.7,
+      "createdAt": "2026-09-01T00:00:00Z",
+      "updatedAt": "2026-09-01T00:00:00Z"
     }
   ],
   "sources": [
@@ -201,6 +240,42 @@
       "enabled": true,
       "language": "zh-CN",
       "interval": 120,
+      "createdAt": "2026-09-01T00:00:00Z",
+      "updatedAt": "2026-09-01T00:00:00Z"
+    },
+    {
+      "id": "solidot-rss",
+      "channelId": "solidot",
+      "name": "奇客Solidot",
+      "type": "rss",
+      "url": "https://www.solidot.org/index.rss",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-01T00:00:00Z",
+      "updatedAt": "2026-09-01T00:00:00Z"
+    },
+    {
+      "id": "ifanr-feed",
+      "channelId": "ifanr",
+      "name": "爱范儿",
+      "type": "rss",
+      "url": "https://www.ifanr.com/feed",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
+      "createdAt": "2026-09-01T00:00:00Z",
+      "updatedAt": "2026-09-01T00:00:00Z"
+    },
+    {
+      "id": "gcores-rss",
+      "channelId": "gcores",
+      "name": "机核",
+      "type": "rss",
+      "url": "https://www.gcores.com/rss",
+      "enabled": true,
+      "language": "zh-CN",
+      "interval": 30,
       "createdAt": "2026-09-01T00:00:00Z",
       "updatedAt": "2026-09-01T00:00:00Z"
     }
