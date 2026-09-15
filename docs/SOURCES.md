@@ -14,7 +14,7 @@
 | 加一个**具体源**（已支持的类型） | 只改 `config/sources.json` | §4 |
 | 加一种**来源类型**（新数据形态） | 写 connector 文件 + 注册一行（+ 可选扩 schema） | §5 |
 
-权威配置样本：`config/sources.json`（当前 8 个渠道 / 8 个源，全部是 `rss` / `atom`）。字段定义参考 `docs/data-model/schema/sources.schema.json`。
+权威配置样本：`config/sources.json`（当前 11 个渠道 / 11 个源，全部是 `rss` / `atom`）。字段定义参考 `docs/data-model/schema/sources.schema.json`。
 
 ---
 
@@ -465,6 +465,9 @@ schema 形状 fieldMapping: { "mode":"table", "map":{"title":"MyTitle"} } → ti
 | Hugging Face Blog | `rss` | `https://huggingface.co/blog/feed.xml` | en |
 | GitHub Blog | `rss` | `https://github.blog/feed/` | en |
 | 内核恐慌播客 | `rss` | `https://kernelpanic.fm/feed.xml` | zh-CN |
+| 奇客Solidot | `rss` | `https://www.solidot.org/index.rss` | zh-CN |
+| 爱范儿 | `rss` | `https://www.ifanr.com/feed` | zh-CN |
+| 机核 | `rss` | `https://www.gcores.com/rss` | zh-CN |
 
 ```jsonc
 // 模板：复制后改 id / channelId / name / url

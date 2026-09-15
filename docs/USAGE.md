@@ -44,7 +44,7 @@ npm run validate
 
 一个 `Channel` 可挂多个 `Source`（多渠道备份）。**一个源能不能被采集，取决于 `source.enabled` 与 `channel.enabled` 两者都开启**。
 
-> 现有 8 个渠道、8 个源（全部是 `rss` / `atom`）。字段完整说明见 [`SOURCES.md`](./SOURCES.md)。
+> 现有 11 个渠道、11 个源（全部是 `rss` / `atom`）。字段完整说明见 [`SOURCES.md`](./SOURCES.md)。
 
 ### 1.3 改一个源 / 启停一个源
 
