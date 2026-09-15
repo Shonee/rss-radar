@@ -113,11 +113,11 @@ describe('loadLatest — 三层降级', () => {
     expect(res.data.snap.date).toBe('2026-09-14');
   });
 
-  it('⑤ generatedAt 超 60 分钟 → stale=true；缺失/非法亦为 true', async () => {
+  it('⑤ generatedAt 超 120 分钟（两个采集周期）→ stale=true；缺失/非法亦为 true', async () => {
     const now = Date.parse('2026-09-14T10:00:00Z');
     const fetchImpl: FetchLike = async (url) => {
-      if (url === `${RAW}today/latest.json`) return json(makePointer('2026-09-14', '2026-09-14T08:00:00Z'));
-      if (url === `${RAW}today/snapshot-2026-09-14.json`) return json(makeSnapshot('2026-09-14', '2026-09-14T08:00:00Z'));
+      if (url === `${RAW}today/latest.json`) return json(makePointer('2026-09-14', '2026-09-14T07:00:00Z'));
+      if (url === `${RAW}today/snapshot-2026-09-14.json`) return json(makeSnapshot('2026-09-14', '2026-09-14T07:00:00Z'));
       return notFound();
     };
 
@@ -126,7 +126,15 @@ describe('loadLatest — 三层降级', () => {
 
     expect(isStale(undefined, now)).toBe(true);
     expect(isStale('not-a-date', now)).toBe(true);
+    // 每小时采集下的典型年龄（30 分钟 / 60 分钟 / 90 分钟）必须都判 fresh，
+    // 否则「数据可能非最新」黄条会在正常运行时持续误报。
     expect(isStale('2026-09-14T09:30:00Z', now)).toBe(false);
+    expect(isStale('2026-09-14T09:00:00Z', now)).toBe(false);
+    expect(isStale('2026-09-14T08:30:00Z', now)).toBe(false);
+    // 边界：恰好 120 分钟不算过期（判定用 `>`）
+    expect(isStale('2026-09-14T08:00:00Z', now)).toBe(false);
+    // 超出一个采集周期才判 stale
+    expect(isStale('2026-09-14T07:59:00Z', now)).toBe(true);
   });
 
   it('⑥ 全部来源失败时抛出错误', async () => {

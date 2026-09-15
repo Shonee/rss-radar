@@ -16,8 +16,15 @@ import type { DataSource, LatestBundle, LatestPointer, LoadResult } from '../typ
 import { SITE, jsdelivrBase, localBase, rawBase } from '../config/site';
 
 export const DEFAULT_TIMEOUT_MS = 8000;
-/** generatedAt 超过 60 分钟判定 stale（ARCH §6.3.3） */
-export const STALE_THRESHOLD_MS = 60 * 60 * 1000;
+/**
+ * generatedAt 超过 **120 分钟**判定 stale（ARCH §6.3.3）。
+ *
+ * 阈值语义 =「**两个采集周期未更新**」。采集为每小时一次（cron `7 * * * *`），
+ * 正常运行时数据年龄本就会走到 60~90 分钟（轮询等待最多 60 分钟 + GitHub
+ * Actions 调度延迟 5~30 分钟），原 60 分钟阈值在每小时采集下会**持续误报**
+ * 「数据可能非最新」黄条。故随采集周期等比改为 2 × 60 = 120 分钟。
+ */
+export const STALE_THRESHOLD_MS = 120 * 60 * 1000;
 
 export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
 
