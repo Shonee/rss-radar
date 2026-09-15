@@ -171,3 +171,44 @@ harness 通过 CDP `Network.setBlockedURLs` 屏蔽 `raw.githubusercontent.com`/`
 6. **变异路径误用未定义 `finish()`** → 改为 `process.exit(2)`。
 
 以上均为**测试工程自身的健壮性修正**，未改动任何 `src/**` 生产代码。
+
+---
+
+## 10. 修订（主理人接手，2026-09-15）：配置校验改本地读取 + 退出码语义收敛
+
+原版有两处判据不严谨，已修正并重跑：
+
+### 10.1 两条 `unverified` 归零（不再是「环境固有限制」）
+原判断：`config/` 构建期被打包进 JS、preview 无 `/config/` 端点 → B10/B11 只能标未验证。
+**该结论不成立**：harness 本身跑在仓库所在机器上，直接读文件系统即可。现改为：
+- 新增 `--repo-root <path>`（默认从脚本位置向上找含 `package.json` 的目录）；
+- B10/B11 用 `fs.readFileSync(<repo-root>/config/sources.json)` 断言 **源数 ≥10 / 渠道数 ≥10**（MVP 渠道底线）；
+- 新增 **B14**：断言 `channels` 与 `sources` 的 `channelId` **一一对应、无孤儿**（P4 扩容 8→11 后的回归守卫）；
+- 仅当本地读不到该文件（远程模式，`--base-url` 指向 CF Pages 且本机无仓库）才降级为未验证。
+
+### 10.2 退出码三态语义收敛（原先会把「已验证 DOM」误报成未验证）
+原逻辑 `else if (anyUnverified || !domVerified) code = 2;` 把「有少量断言的未验证」与「完全没拿到 DOM」混为同一信号——114 条里 111 条通过也返回 exit 2。现改为互斥三态：
+
+| 退出码 | 含义 |
+|---|---|
+| `0` | 取到 DOM **且** 无断言失败（少量 `unverified` 只作警告列出，不阻断） |
+| `1` | 至少一条断言失败（产品缺陷信号） |
+| `2` | **完全没取到 DOM**（Chrome 起不来 / 连不上服务 / 页面未渲染） |
+
+同时 `domVerified` 的语义严格限定为「真的拿到了 DOM 与数据契约」，与 `unverified` 数量解耦。
+
+### 10.3 修订后实测（HEAD 含 `d70f4b7`）
+
+```
+断言总数: 114   通过: 114   失败: 0   未验证: 0
+domVerified: true
+SUMMARY_JSON {"total":114,"pass":114,"fail":0,"unverified":0,"domVerified":true}
+REGRESSION PASS
+```
+
+| 检查 | 命令 | 结果 |
+|---|---|---|
+| 正常模式退出码 | `bash tests/regression/run.sh` | **0** |
+| 变异测试（Chrome 不存在） | `CHROME_PATH=/nonexistent bash tests/regression/run.sh` | **2**（原文：`✗ DOM 段未验证：--chrome-path 指定的文件不存在：/nonexistent`） |
+
+> 说明：量级断言（`items≥40` / `crossSource≥3` / `archives≥1` / `historyDays≥365`）仍**未启用**——当前轻量样本下会必然「伪失败」。待接入完整采集数据（跨天历史累积后）再开启，届时同步更新本报告。

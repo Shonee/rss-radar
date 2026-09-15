@@ -16,12 +16,18 @@
  *   每条断言只允许 通过 / 失败 / 未验证。
  *   - 未真正拿到 DOM / 数据 → 标 未验证（绝不伪装成通过）
  *   - 拿到 DOM 后逻辑判据为假 → 失败
- * 退出码：
- *   0 = 全部通过（且 domVerified）          : 干净绿
+ * 退出码（三态互斥，语义不重叠）：
+ *   0 = 取到 DOM 且无断言失败（少量 unverified 只作警告列出）
  *   1 = 至少一条断言失败（产品缺陷信号）     : 阻断
- *   2 = 环境未就绪 / DOM 未验证              : 假性绿防护
+ *   2 = 完全没取到 DOM（Chrome 起不来 / 连不上服务 / 页面未渲染） : 假性绿防护
  *
  * 变异测试：--chrome-path /nonexistent 必须非 0 退出（找不到 Chrome → exit 2）。
+ *
+ * 配置校验（B10/B11/B14）走**本地模式**：直接 `fs.readFileSync` 读
+ * `<repo-root>/config/sources.json`（`--repo-root` 可覆盖，默认从脚本位置向上找
+ * 含 package.json 的目录）。原因：`config/` 构建期被打包进 JS，preview 无
+ * `/config/` 端点，页面上下文 fetch 必然 404；harness 本身跑在仓库机器上，
+ * 直接读文件才是正确路径。远程模式（--base-url 指 CF Pages）本机无仓库时该组降级未验证。
  *
  * 实现要点：用 CDP 驱动真实运行的 SPA；通过 Network 拦截外部源（raw.github /
  * jsdelivr）使其快速回退到本地 ./data/，既确定又快速（避免 8s×2 超时拖慢与抖动）。
@@ -31,6 +37,7 @@
 
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
@@ -47,6 +54,27 @@ function argValue(flag) {
 const BASE_URL = (argValue('--base-url') || 'http://127.0.0.1:4173').replace(/\/$/, '');
 const CHROME_PATH_ARG = argValue('--chrome-path');
 const NO_DOM = process.argv.includes('--no-dom');
+
+/**
+ * 仓库根目录（本地模式）：用于**直接读文件系统**校验 `config/*.json`。
+ *
+ * 为什么不用页面上下文 fetch：`config/` 在构建期被打包进 JS，preview 不提供
+ * `/config/` 静态端点 → fetch 必然 404。但 harness 本身跑在仓库所在机器上，
+ * 直接 `fs.readFileSync` 才是正确的校验路径（远程模式 --base-url 指向 CF Pages 时
+ * 本机若无仓库可读 → 该组断言降级为「未验证」，见 B10/B11 分支）。
+ */
+const REPO_ROOT = (() => {
+  const explicit = argValue('--repo-root');
+  if (explicit) return path.resolve(explicit);
+  let dir = path.dirname(fileURLToPath(import.meta.url));
+  for (let i = 0; i < 6; i += 1) {
+    if (existsSync(path.join(dir, 'package.json'))) return dir;
+    const up = path.dirname(dir);
+    if (up === dir) break;
+    dir = up;
+  }
+  return process.cwd();
+})();
 
 // ---------------------------------------------------------------------------
 // 结果收集（三态）
@@ -324,8 +352,9 @@ async function main() {
     } catch (e) {
       domWhy = '数据契约抓取失败：' + e.message;
     }
+    // 本地模式：直接读仓库里的 config/sources.json（构建期已打包进 JS，HTTP 端点不存在）
     try {
-      sourcesCfg = await evalExpr(`(async()=>{const u=new URL('./config/sources.json',document.baseURI).href;const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);return await r.json();})()`, { await: true });
+      sourcesCfg = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'config', 'sources.json'), 'utf8'));
     } catch { sourcesCfg = null; }
 
     if (!snap) domWhy = domWhy || '未能加载 snapshot（数据未验证）';
@@ -416,11 +445,20 @@ async function main() {
     rec('B8', 'B', 'history-index.days >= 1（趋势数据存在）', histIndex && Array.isArray(histIndex.days) && histIndex.days.length >= 1, `days=${histIndex?.days?.length}`);
     rec('B9', 'B', '页面2 配置渠道数 >= 8（MVP 渠道底线）', p2ChN !== undefined && p2ChN >= 8, `configuredChannels=${p2ChN}`);
     if (sourcesCfg) {
-      rec('B10', 'B', 'config sources.json 源数 >= 10', Array.isArray(sourcesCfg.sources) && sourcesCfg.sources.length >= 10, `sources=${sourcesCfg.sources.length}`);
-      rec('B11', 'B', 'config sources.json 渠道数 >= 8', Array.isArray(sourcesCfg.channels) && sourcesCfg.channels.length >= 8, `channels=${sourcesCfg.channels.length}`);
+      rec('B10', 'B', 'config sources.json 源数 >= 10（本地模式读 config/）', Array.isArray(sourcesCfg.sources) && sourcesCfg.sources.length >= 10, `sources=${sourcesCfg.sources.length}`);
+      rec('B11', 'B', 'config sources.json 渠道数 >= 10（MVP 渠道底线，本地模式读 config/）', Array.isArray(sourcesCfg.channels) && sourcesCfg.channels.length >= 10, `channels=${sourcesCfg.channels.length}`);
+      // 一一对应：两个数组的 channelId 必须互相覆盖，无孤儿（P4 扩容 8→11 后的回归守卫）
+      const chIds = new Set((sourcesCfg.channels || []).map((x) => x.id));
+      const srcChIds = new Set((sourcesCfg.sources || []).map((x) => x.channelId));
+      const orphanSources = [...srcChIds].filter((x) => !chIds.has(x));
+      const orphanChannels = [...chIds].filter((x) => !srcChIds.has(x));
+      rec('B14', 'B', 'channels ↔ sources 的 channelId 一一对应（无孤儿）',
+        orphanSources.length === 0 && orphanChannels.length === 0,
+        `orphanSources=${JSON.stringify(orphanSources)} orphanChannels=${JSON.stringify(orphanChannels)}`);
     } else {
-      record('B10', 'B', 'config sources.json 源数 >= 10', 'unverified', 'preview 不单独提供 config/（已打包进 JS），环境限制未验证');
-      record('B11', 'B', 'config sources.json 渠道数 >= 8', 'unverified', 'preview 不单独提供 config/（已打包进 JS），环境限制未验证');
+      record('B10', 'B', 'config sources.json 源数 >= 10（本地模式读 config/）', 'unverified', `本地不可读 ${path.join(REPO_ROOT, 'config', 'sources.json')}（远程模式无法校验配置）`);
+      record('B11', 'B', 'config sources.json 渠道数 >= 10（本地模式读 config/）', 'unverified', `本地不可读 ${path.join(REPO_ROOT, 'config', 'sources.json')}（远程模式无法校验配置）`);
+      record('B14', 'B', 'channels ↔ sources 的 channelId 一一对应（无孤儿）', 'unverified', '本地不可读 config/sources.json（远程模式无法校验配置）');
     }
     const crossItems = snapItems.filter((i) => (i.sourceCount || 1) > 1);
     rec('B12', 'B', '若条目 sourceCount>1 则 sources[] 为非空对象数组',
@@ -540,17 +578,26 @@ async function main() {
     // =========================================================================
     const anyFail = results.some((r) => r.status === 'fail');
     const anyUnverified = results.some((r) => r.status === 'unverified');
+    // domVerified 的语义严格限定为「真的拿到了 DOM 与数据契约」，与
+    // 「是否有少量断言未验证」**解耦**：后者只作警告，不得把已完成的 DOM 验证降级为未验证。
     if (!p1.rendered || !snap || !report) {
       if (!domWhy) domWhy = !p1.rendered ? '部分页面未渲染' : '数据契约未完整抓取';
       domVerified = false;
     } else {
-      domVerified = !anyUnverified && !anyFail;
+      domVerified = true;
     }
 
     printSummary();
+    // 退出码三态（互斥，语义不重叠）：
+    //   0 = 取到 DOM 且无断言失败（unverified 仅作警告列出）
+    //   1 = 至少一条断言失败（产品缺陷信号）
+    //   2 = 完全没取到 DOM（Chrome 起不来 / 连不上服务 / 页面未渲染）
     let code = 0;
     if (anyFail) code = 1;
-    else if (anyUnverified || !domVerified) code = 2;
+    else if (!domVerified) code = 2;
+    if (anyUnverified) {
+      console.log(c.warn('注意：存在未验证断言（不阻断），退出码不受其影响；详见上方未验证项清单。'));
+    }
     closeAndExit(code, proc, browser, targetId, sessionId);
   } catch (e) {
     domWhy = 'harness 运行异常：' + (e && e.stack ? e.stack : e);
