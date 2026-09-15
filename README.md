@@ -23,7 +23,7 @@ RSS Radar = **多源 RSS 采集 → 去重聚合 → 当天报告**，纯静态�
 ## 5 分钟快速开始
 
 ```bash
-# 1. 克隆与安装（内网默认镜像不可用，必须指定 registry，见下）
+# 1. 克隆与安装
 git clone <your-fork>/rss-radar && cd rss-radar
 npm install --registry=https://registry.npmmirror.com
 
@@ -41,13 +41,10 @@ npm run dev
 
 > 路由用 `HashRouter`，所以地址带 `#/`：`http://localhost:5173/#/`（页面1）、`#/channels`、`#/report`、`#/history`、`#/about`。
 
-### ⚠️ 安装依赖必须指定 registry（内网默认镜像已挂）
-
-本机 npm 默认源是内网镜像 `npmmirror.leoao-inc.com`，**该源已 502 不可用**，直接 `npm install` 会失败，看上去像「装不了依赖」。实际官方源和淘宝源都通：
+### ⚠️ 安装依赖必须指定 registry
 
 | 源 | 状态 |
 |---|---|
-| `npmmirror.leoao-inc.com`（默认内网镜像） | ❌ 502 Bad Gateway |
 | `registry.npmjs.org`（官方） | ✅ 通（约 859ms） |
 | `registry.npmmirror.com`（淘宝） | ✅ 通（约 0.3s，更快，推荐） |
 
