@@ -25,6 +25,7 @@ import { categoryLabel } from '../config/categories';
 import { useSnapshot } from '../hooks';
 import { resolveBoardState } from '../services/boardState';
 import { categoryColor, tokens } from '../theme/tokens';
+import { ALL_CHANNELS, ENABLED_CHANNELS, ENABLED_CHANNEL_IDS } from '../services/channels';
 import {
   ChannelCard,
   ConfigDrawer,
@@ -35,21 +36,12 @@ import {
   type ConfigDrawerValue,
 } from '../components';
 
-interface RawChannel {
-  id: string;
-  name: string;
-  homepage: string;
-  category: string[];
-  enabled?: boolean;
-  icon?: string;
-}
-
 interface RawSource {
   channelId: string;
   url: string;
 }
 
-const CHANNELS = sourcesConfig.channels as unknown as RawChannel[];
+const CHANNELS = ALL_CHANNELS;
 const SOURCES = sourcesConfig.sources as unknown as RawSource[];
 const FEED_BY_CHANNEL = new Map<string, string>();
 for (const s of SOURCES) if (!FEED_BY_CHANNEL.has(s.channelId)) FEED_BY_CHANNEL.set(s.channelId, s.url);
@@ -175,7 +167,9 @@ export default function Page2Channels() {
     if (selected === null) {
       base = base.filter((c) => c.enabled !== false);
     } else {
-      base = base.filter((c) => selected.includes(c.id));
+      // 用户已存选择：仍需剔除停用渠道——localStorage 可能残留「渠道被停用前」的选择，
+      // 否则用户可勾出停用渠道卡片，破坏「渠道数 = 启用渠道数」恒等。
+      base = base.filter((c) => selected.includes(c.id) && ENABLED_CHANNEL_IDS.has(c.id));
     }
     if (catFilter) {
       base = base.filter((c) => ((c.category ?? []) as CategoryKey[]).includes(catFilter));
@@ -256,7 +250,7 @@ export default function Page2Channels() {
           渠道看板
         </Box>
         <Box sx={{ color: tokens.surface.text2, fontSize: tokens.fs.sm, mt: 0.5 }}>
-          每个渠道一张卡片，专注看单渠道动态。共 <strong>{CHANNELS.length}</strong> 个渠道，当前展示{' '}
+          每个渠道一张卡片，专注看单渠道动态。共 <strong>{ENABLED_CHANNELS.length}</strong> 个渠道，当前展示{' '}
           <strong data-testid="p2-shown-count">{cards.length}</strong> 个。
         </Box>
       </Box>
@@ -392,7 +386,7 @@ export default function Page2Channels() {
       <ConfigDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        channels={CHANNELS.map((c) => ({
+        channels={ENABLED_CHANNELS.map((c) => ({
           id: c.id,
           name: c.name,
           category: (c.category ?? []) as CategoryKey[],

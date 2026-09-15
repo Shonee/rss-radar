@@ -23,10 +23,10 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 import type { CategoryKey, Item } from '../types';
 import { toItemCardData } from '../types/api';
-import sourcesConfig from '../../config/sources.json';
 import { DEFAULT_PAGE1_BATCH_SIZE } from '../config/site';
 import { useNotifyStats, useSnapshot } from '../hooks';
 import { countByShanghaiDay, formatRelative, passesTimeRange } from '../services/time';
+import { ALL_CHANNELS, ENABLED_CHANNELS } from '../services/channels';
 import { tokens } from '../theme/tokens';
 import {
   AlertBar,
@@ -41,23 +41,13 @@ import {
   type FilterValue,
 } from '../components';
 
-interface RawChannel {
-  id: string;
-  name: string;
-  homepage: string;
-  category: string[];
-  enabled?: boolean;
-}
-
-const CHANNELS = sourcesConfig.channels as unknown as RawChannel[];
-
-const CHANNEL_OPTIONS: ChannelOption[] = CHANNELS.filter((c) => c.enabled !== false).map((c) => ({
+const CHANNEL_OPTIONS: ChannelOption[] = ENABLED_CHANNELS.filter((c) => c.enabled !== false).map((c) => ({
   id: c.id,
   name: c.name,
   category: (c.category ?? []) as CategoryKey[],
 }));
 
-const HOMEPAGE_BY_CHANNEL = new Map<string, string>(CHANNELS.map((c) => [c.id, c.homepage]));
+const HOMEPAGE_BY_CHANNEL = new Map<string, string>(ALL_CHANNELS.map((c) => [c.id, c.homepage]));
 
 const SOURCE_LABEL: Record<string, string> = {
   raw: '源站',
