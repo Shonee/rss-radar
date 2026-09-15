@@ -19,7 +19,7 @@
   },
   "filters": {
     "enabledCategories": [],
-    "timeRanges": ["today", "2h", "6h"]
+    "timeRanges": ["today", "all"]
   },
   "analysis": {
     "hotListSize": 10,

@@ -78,13 +78,13 @@ export const DEFAULT_PAGE1_BATCH_SIZE: number = siteConfigJson.display?.page1Bat
 export const ENABLED_CATEGORIES: CategoryKey[] =
   (siteConfigJson.filters?.enabledCategories as CategoryKey[] | undefined) ?? [];
 
-/** 时间范围档位的固定渲染顺序（主理人 2026-09 拍板：近6小时 → 今天 → 全部）。 */
-const TIME_RANGE_ORDER: TimeRangeKey[] = ['6h', 'today', 'all'];
+/** 时间范围档位的固定渲染顺序（主理人 2026-09-15 再次收敛：今天 → 全部）。 */
+const TIME_RANGE_ORDER: TimeRangeKey[] = ['today', 'all'];
 
-/** 时间范围选项（主理人 2026-09 拍板：近6小时 / 今天 / 全部）。
+/** 时间范围选项（主理人 2026-09-15 再次收敛：今天 / 全部）。
  *
  * 顺序**恒按 `TIME_RANGE_ORDER` 输出**，不受 `config/site-config.json` 声明次序影响
- * （该配置仍可能残留已废弃的 `'3h'` 等档位，一律在此处被过滤掉）。
+ * （该配置仍可能残留已废弃的 `'3h'` / `'6h'` 等档位，一律在此处被过滤掉）。
  * `'all'` 档恒保在列，作为「今天为 0」时的逃生出口：采集端无条目时间窗过滤，
  * 快照条目天然跨日期，默认「今天」在数据陈旧时可能恒为 0。
  * 默认选中档位仍为 `'today'`（见 `FilterBar` 的 `EMPTY_FILTER`，不受本顺序影响）。 */
@@ -92,7 +92,7 @@ export const TIME_RANGES: TimeRangeKey[] = (() => {
   const configured =
     (siteConfigJson.filters?.timeRanges as TimeRangeKey[] | undefined) ?? TIME_RANGE_ORDER;
   const picked = new Set<TimeRangeKey>(
-    configured.filter((r): r is TimeRangeKey => r === 'today' || r === '6h' || r === 'all'),
+    configured.filter((r): r is TimeRangeKey => r === 'today' || r === 'all'),
   );
   picked.add('all');
   return TIME_RANGE_ORDER.filter((r) => picked.has(r));

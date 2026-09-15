@@ -11,7 +11,7 @@ const DAY_MS = 86_400_000;
 type TimeInput = string | number | Date;
 
 /** 页面1 时间范围档位（与 `config/site.ts` 的 `TIME_RANGES` 同源；`'all'` 为「今天为 0」时的逃生出口） */
-export type TimeRangeKey = 'today' | '6h' | 'all';
+export type TimeRangeKey = 'today' | 'all';
 
 function toDate(input: TimeInput): Date {
   return input instanceof Date ? input : new Date(input);
@@ -111,7 +111,6 @@ export function countByShanghaiDay(
  *
  * 档位语义（与页面1 列表及状态条口径一致）：
  *   - `'today'`：条目时间落在 `ctx.snapDate` 对应的上海自然日内；
- *   - `'6h'`：条目时间距今不超过 6 小时；
  *   - `'all'`：恒通过（不按时间过滤，作为「今天为 0」时的逃生出口）。
  *
  * 谓词与页面原文一致：取 `updatedAt 优先、回落 publishedAt`；时间缺失 / 非法一律不通过
@@ -130,11 +129,7 @@ export function passesTimeRange(
   if (timeRange === 'all') return true;
   const t = item.updatedAt || item.publishedAt;
   if (timeRange === 'today') return isSameShanghaiDay(t ?? '', ctx.snapDate);
-  const hours = 6;
-  if (!t) return false;
-  const ms = new Date(t).getTime();
-  if (Number.isNaN(ms)) return false;
-  return ctx.now - ms <= hours * HOUR_MS;
+  return false;
 }
 
 /** 相对时间（中文） */

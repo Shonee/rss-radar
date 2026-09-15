@@ -44,7 +44,7 @@
       "additionalProperties": false,
       "properties": {
         "enabledCategories": { "type": "array", "items": { "type": "string" }, "description": "允许筛选的分类；空=全部" },
-        "timeRanges": { "type": "array", "items": { "type": "string", "enum": ["today", "6h", "all"] }, "default": ["6h", "today"], "description": "时间档位；渲染顺序恒为 近6小时/今天/全部（'all' 恒在列），旧档位 '3h'/'24h' 已废弃" }
+        "timeRanges": { "type": "array", "items": { "type": "string", "enum": ["today", "all"] }, "default": ["today", "all"], "description": "时间档位；渲染顺序恒为 今天/全部（'all' 恒在列），旧档位 '3h'/'24h'/'6h' 均已废弃" }
       }
     },
     "analysis": {

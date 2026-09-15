@@ -378,7 +378,7 @@ export interface SiteConfig {
   };
   filters?: {
     enabledCategories?: CategoryKey[];
-    timeRanges?: Array<'today' | '6h' | 'all'>;
+    timeRanges?: Array<'today' | 'all'>;
   };
   analysis?: {
     hotListSize?: number;
