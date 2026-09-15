@@ -40,7 +40,7 @@
 
 ## 🔒 安全提示（脱敏）
 
-原 `feishu_bitable_utils.py` **曾硬编码明文凭证**（飞书 app_id / app_secret，形如 `cli_a****100d` / `IgDK****U1FF`）：
+原 `feishu_bitable_utils.py` **曾硬编码明文凭证**（飞书 app_id / app_secret 的字面值）：
 
 归档版本已将其改为从环境变量读取：
 
