@@ -574,6 +574,29 @@ async function main() {
     rec('E-toggle-1280', 'E', '宽度 1280 · 页面1 筛选折叠按钮隐藏', toggle1280 === 0, `count=${toggle1280}`);
 
     // =========================================================================
+    // F. 主理人 2026-09 交互口径（时间档「今天/全部」+ 排序整合无切换）
+    //    来源：用户 2026-09-15 拍板（先删「近3小时」、再删「近6小时」；排序不再区分更新/创建时间）
+    // =========================================================================
+    console.log('\n' + c.warn('F. 页面1 时间档与排序口径（主理人 2026-09-15 拍板）'));
+    await setVP(1280);
+    await goto(routes.p1.path, 'p1-root');
+    await waitReady('p1');
+    await sleep(300);
+    const timeBtns = (await safeEval(`Array.from(document.querySelectorAll('[data-testid="filter-time-range"] button')).map(b=>b.textContent.trim())`)) || [];
+    const timeSelected = (await safeEval(`Array.from(document.querySelectorAll('[data-testid="filter-time-range"] button')).filter(b=>b.getAttribute('aria-pressed')==='true'||b.className.indexOf('Mui-selected')>=0).map(b=>b.textContent.trim())`)) || [];
+    const sortUiCount = (await safeEval(`document.querySelectorAll('[data-testid="p1-sort"],[data-testid="p1-sort-updated"],[data-testid="p1-sort-published"]').length`)) || 0;
+    const bodyText = (await safeEval(`document.body.innerText`)) || '';
+    rec('F1', 'F', '时间档按钮恰为 [今天, 全部]（无近3小时/近6小时）',
+      JSON.stringify(timeBtns) === JSON.stringify(['今天', '全部']), `buttons=${JSON.stringify(timeBtns)}`);
+    rec('F2', 'F', '时间档默认选中「今天」',
+      timeSelected.length === 1 && timeSelected[0] === '今天', `selected=${JSON.stringify(timeSelected)}`);
+    rec('F3', 'F', '页面1 无排序切换 UI（排序整合口径，p1-sort* 全部不存在）',
+      sortUiCount === 0, `count=${sortUiCount}`);
+    rec('F4', 'F', '页面文案无「近3小时」「近6小时」残留（含已废弃档位）',
+      bodyText.indexOf('近3小时') < 0 && bodyText.indexOf('近6小时') < 0,
+      `has3h=${bodyText.indexOf('近3小时') >= 0} has6h=${bodyText.indexOf('近6小时') >= 0}`);
+
+    // =========================================================================
     // 汇总
     // =========================================================================
     const anyFail = results.some((r) => r.status === 'fail');

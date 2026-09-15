@@ -212,3 +212,33 @@ REGRESSION PASS
 | 变异测试（Chrome 不存在） | `CHROME_PATH=/nonexistent bash tests/regression/run.sh` | **2**（原文：`✗ DOM 段未验证：--chrome-path 指定的文件不存在：/nonexistent`） |
 
 > 说明：量级断言（`items≥40` / `crossSource≥3` / `archives≥1` / `historyDays≥365`）仍**未启用**——当前轻量样本下会必然「伪失败」。待接入完整采集数据（跨天历史累积后）再开启，届时同步更新本报告。
+
+### 10.4 新增 F 组：主理人 2026-09 交互口径断言（4 条）
+
+原套件只覆盖 prototype 的 A~E 五类，**未覆盖本轮用户拍板的交互口径**（时间档收敛 + 排序整合）。已新增 F 组 4 条：
+
+| 断言 | 判据 | 结果 |
+|---|---|---|
+| F1 | 时间档按钮恰为 `["今天","全部"]`（无近3小时/近6小时） | 通过 |
+| F2 | 时间档默认选中「今天」 | 通过 |
+| F3 | 页面1 无排序切换 UI（`p1-sort*` 全部不存在，排序为整合口径） | 通过 |
+| F4 | 页面文案无「近3小时」「近6小时」残留 | 通过 |
+
+**F 组变异测试（证明断言非空转）**：临时把 `FilterBar.tsx` 的 `all: '全部'` 改成 `all: '全部时段'` → 复跑得：
+
+```
+断言总数: 118   通过: 117   失败: 1   未验证: 0
+失败项（1）：
+  ✗ [F] 时间档按钮恰为 [今天, 全部]（无近3小时/近6小时）  buttons=["今天","全部时段"]
+```
+
+退出码 **1**（断言失败）。随后 `git checkout -- src/components/FilterBar.tsx` 回滚，复跑恢复 **118/118、退出码 0**。
+
+### 10.5 最终实测（HEAD 含 `ba1e487`）
+
+```
+断言总数: 118   通过: 118   失败: 0   未验证: 0
+domVerified: true
+SUMMARY_JSON {"total":118,"pass":118,"fail":0,"unverified":0,"domVerified":true}
+REGRESSION PASS
+```
