@@ -12,17 +12,17 @@
 | 项 | 状态 |
 |---|---|
 | 本地 `dev` / `build` / `preview` | ✅ **可用**（已实跑验证） |
-| 代码推送远程仓库 `Shonee/rss-radar` | 🟡 **已推送但本地领先**：`master` 已推送（私有仓库，SSH 可用）；本地存在未推送提交（数量随每次提交变化，用 `git rev-list --left-right --count origin/master...master` 自查），**推之前请先核对** |
+| 代码推送远程仓库 `Shonee/rss-radar` | ✅ **公开仓库 + 已同步**：`master` 与 `origin/master` 一致（`git rev-list --left-right --count origin/master...master` → `0 0`，2026-09-15 实测）。**可见性 = public** → `raw.githubusercontent.com` / jsDelivr 对浏览器均可达（见 §3.1.5），前端**零配置**即可取数 |
 | `deploy` 数据分支（orphan，仅数据） | ✅ **已存在**（`collect.yml` 首次运行建立） |
 | 7 个 workflow（collect / notify / archive / mirror-data（数据仓库保险层）/ deploy-gh-pages / deploy-cf-pages / keepalive） | 🟡 **文件已创建；`collect` 已按每小时（cron `7 * * * *`，第 7 分）周期真实运行，其余尚未逐一验证** |
 | Cloudflare Pages 项目 | 🟡 **已创建（路径 A：Git 集成）** —— 依据 2026-09-15 构建日志推断（分支 A 之外的两条路径均未走） |
-| 首次 CF 构建 | ❌ **失败**：`Cannot find module @rollup/rollup-linux-x64-gnu`。根因已定位、lock 已修复，**待重新部署验证（§3.1.7）** |
-| `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` | ❌ **尚未准备**（仅 Direct Upload 路径需要） |
-| 部署端到端 | ❌ **未成功**（首次构建已完成克隆 / `npm ci` / `tsc -b`，止步于 `vite build`） |
+| CF 构建 | 🟡 **首次失败已定位并修复（§3.1.7）**：`Cannot find module @rollup/rollup-linux-x64-gnu` → lock 补齐跨平台可选依赖。**老登实测 CF 站点已能渲染出渠道列表**，故构建侧已通（**该结论由页面已渲染反推，未能从 CF 构建日志独立复核**） |
+| `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` | ❌ **尚未准备**（仅 Direct Upload 路径需要；Git 集成路径不需要） |
+| 部署 → 取数 端到端 | ✅ **已闭合（2026-09-15）**。此前「页面无数据」是两个独立故障叠加：① **指针落点错**（`collect.yml` 把 `latest.json` 发到**分支根**，前端却按 `deploy.pointerPath` 请求 `today/latest.json`）② 主仓库当时为 **private** → raw/jsDelivr 双 404 → 降级到只有 3 条 P1 fixture 的 `./data/`。现 ① 已修（`9f73fae`）、② 随仓库公开自动消除；实测 `raw` 读 `deploy/today/latest.json` → **200**（`generatedAt` 当日、**1792 条**）。详见 §3.1.5 |
 
 > **本地侧与构建链路已实测**：lock 与 `package.json` 一致性、`npm run build`、**跨平台（Linux）安装**三项均已实跑验证（详见 §3.1.2 与 §3.1.7）。
 >
-> **Cloudflare Pages 的页面渲染结果尚未在 CF 上实测**——§3 标注了哪些是官方文档结论、哪些是本地等价推导。**不要把未验证的步骤当作已验证。**
+> **Cloudflare Pages 的页面渲染结果已由老登目视确认**（渠道列表等 UI 在 CF 站点上正常渲染），但**未从 CF 侧构建日志独立复核**；§3 标注了哪些是官方文档结论、哪些是本地等价推导。**不要把未验证的步骤当作已验证。**
 
 ---
 
