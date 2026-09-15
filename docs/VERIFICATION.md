@@ -43,11 +43,21 @@ npm run test:e2e       # = node scripts/smoke/e2e-pipeline.mjs
 ```
 
 > ### ⚠️ 回写纪律（血泪教训，必须）
-> `npm run collect:once` 与 `npm run smoke` 会**回写 `config/sources.json` 的 `lastStatus` / `lastFetchAt`**。
-> 验证完成后**必须**：
-> ```bash
-> git checkout -- config/sources.json
-> ```
+> `npm run collect:once` 会**回写被 git 跟踪的 `config/sources.json`**（`lastStatus` / `lastFetchAt` / `lastError`
+> + JSON 重排）；同一轮采集的 dev-bridge 还会刷新 `public/data/today/*.json`。
+> 即：**`--out` 改不了这件事**，只有 `--skip-health` 能阻止 config 回写。
+>
+> - **`npm run smoke` 已自动善后**：脚本跑前备份、退出时（含失败）原样还原被跟踪文件，跑完工作区保持干净。
+>   想保留本次采集结果：`SMOKE_KEEP_STATE=1 npm run smoke`。
+> - 手动跑采集验证时，请**加 `--skip-health`**：
+>   ```bash
+>   node scripts/collect/index.mjs --once --skip-health
+>   ```
+>   若已经跑了带 health 的采集，用**备份还原**（比 `git checkout --` 安全，不会抹掉你本地未提交的源改动）：
+>   ```bash
+>   cp config/sources.json /tmp/sources.bak   # ← 开跑前就该做的事
+>   cp /tmp/sources.bak config/sources.json   # ← 跑完还原
+>   ```
 > 否则运行时回写会混进提交，污染 master。**验证产物（tmp/、public/data/today/）不进 master。**
 
 ---

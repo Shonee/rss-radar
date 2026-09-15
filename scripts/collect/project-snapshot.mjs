@@ -53,7 +53,9 @@ export async function projectSnapshot(opts) {
   const merged = stats.totalMerged;
 
   // 3) 构造 snapshot
-  const allChannels = uniq(groups.flatMap((it) => it.category || []));
+  // 注：此处曾算 `allChannels = uniq(items[].category)` 并写成 `snapshot.channels`。
+  // 该字段不在 snapshot.schema.json 白名单内（additionalProperties:false）、前端零消费，
+  // 且名字（channels）与内容（分类）语义不符 —— 已移除，勿再加回。
   const sources = computeSources(groups);
   // T-P3-fix：逐源健康度（可选）。缺 fetchResults 时 health=null → 回落历史行为。
   const health = computeSourceHealth(fetchResults);
@@ -82,7 +84,6 @@ export async function projectSnapshot(opts) {
     },
     items: groups,
   };
-  if (allChannels.length > 0) snapshot.channels = allChannels;
 
   // 4) 覆盖写快照（前端一次 JSON.parse）
   writeJsonCompact(snapshotPath, snapshot);
@@ -132,10 +133,6 @@ function computeSources(groups) {
     }
   }
   return Array.from(map.values()).sort((a, b) => b.itemCount - a.itemCount);
-}
-
-function uniq(arr) {
-  return Array.from(new Set(arr));
 }
 
 /**

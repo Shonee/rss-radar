@@ -358,6 +358,21 @@ test('persistSourceHealth：回写 lastFetchAt/lastStatus/lastError 到 sources.
     assert.strictEqual(updated.sources[0].lastStatus, 'ok');
     assert.ok(updated.sources[0].lastFetchAt);
     assert.strictEqual(updated.sources[1].lastStatus, 'blocked');
+
+    // lastError 只在真有错误时写入 —— 必须是「键不存在」而非 `null`。
+    // 写 null 会让采集产物过不了 sources.schema.json（lastError: string），
+    // 而 collect 之后紧跟 validate，会形成「采集→校验必挂」的假绿链（真实发生过）。
+    assert.ok(
+      !('lastError' in updated.sources[0]),
+      'ok 源不得写 lastError（应为「不存在」，而不是 null）',
+    );
+
+    // 从错误恢复的源：旧的 lastError 必须被清掉，不能留残值
+    const recovered = [{ id: 'src-c', channelId: 'ch-c', url: 'https://c.com/z', lastError: '旧错误' }];
+    await wf(sourcesPath, JSON.stringify({ channels: [], sources: recovered }, null, 2), 'utf8');
+    await persistSourceHealth(sourcesPath, recovered, [{ url: 'https://c.com/z', status: 'ok' }]);
+    const after = JSON.parse(await readFile(sourcesPath, 'utf8'));
+    assert.ok(!('lastError' in after.sources[0]), '恢复健康后必须删除残留的 lastError');
   } finally {
     await rm(root, { recursive: true });
   }

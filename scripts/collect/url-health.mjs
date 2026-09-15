@@ -250,12 +250,14 @@ export async function persistSourceHealth(sourcesJsonPath, sources, records) {
     const rec = byUrl.get(src.url);
     if (!rec) return src;
     mutated = true;
-    return {
-      ...src,
-      lastFetchAt: now,
-      lastStatus: rec.status,
-      lastError: rec.error ?? null,
-    };
+    const next = { ...src, lastFetchAt: now, lastStatus: rec.status };
+    // lastError 只在**真有错误**时写入，无错误时必须删除旧值。
+    // ⚠️ 不能写 `null`：sources.schema.json 把 lastError 声明为 string，
+    //    写 null 会让采集产物过不了紧随其后的 `npm run validate`
+    //    （config/sources.json：`/sources/N/lastError must be string`）。
+    if (rec.error) next.lastError = rec.error;
+    else delete next.lastError;
+    return next;
   });
   if (mutated) {
     const raw = await readFile(sourcesJsonPath, 'utf8').catch(() => null);

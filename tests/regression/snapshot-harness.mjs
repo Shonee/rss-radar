@@ -463,7 +463,14 @@ async function main() {
     const crossItems = snapItems.filter((i) => (i.sourceCount || 1) > 1);
     rec('B12', 'B', '若条目 sourceCount>1 则 sources[] 为非空对象数组',
       crossItems.every((i) => Array.isArray(i.sources) && i.sources.length > 0 && i.sources.every((s) => typeof s === 'object')), `crossItems=${crossItems.length}`);
-    rec('B13', 'B', 'snapshot.channels 为数组且 >=1', Array.isArray(snap?.channels) && snap.channels.length >= 1, `channels=${(snap?.channels || []).length}`);
+    // 原断言要求 `snapshot.channels` 存在 —— 那是把实现里的漂移字段当成了契约
+    // （其内容其实是分类，且不在 snapshot.schema.json 白名单内）。改为守住真正的契约：
+    // 顶层键必须全部落在白名单里，多一个未契约字段即失败。
+    const SNAP_ALLOWED_KEYS = ['schemaVersion', 'date', 'timezone', 'generatedAt', 'stats', 'items'];
+    const snapKeys = Object.keys(snap || {});
+    rec('B13', 'B', 'snapshot 顶层键全部属于契约白名单',
+      snapKeys.length > 0 && snapKeys.every((k) => SNAP_ALLOWED_KEYS.includes(k)),
+      `keys=${snapKeys.join(',')}`);
 
     // =========================================================================
     // C. 字段类型

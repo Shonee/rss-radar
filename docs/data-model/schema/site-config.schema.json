@@ -55,7 +55,7 @@
         "hotListSize": { "type": "integer", "default": 10 },
         "keywordTopN": { "type": "integer", "default": 50 },
         "titleSimilarityThreshold": { "type": "number", "minimum": 0.5, "maximum": 1, "default": 0.9, "description": "L3 标题相似度阈值" },
-        "summaryMaxChars": { "type": "integer", "default": 200, "description": "摘要截断长度(合规)" },
+        "summaryMaxChars": { "type": "integer", "minimum": 1, "maximum": 300, "default": 200, "description": "摘要截断长度(合规)。上限 300 与 snapshot.schema.json 的 items[].summary.maxLength 对齐——配成更大值会让采集产物过不了 npm run validate" },
         "halfLifeHours": { "type": "number", "default": 6, "description": "时间衰减半衰期(小时)" },
         "weights": { "$ref": "#/definitions/weights" },
         "useLLM": { "type": "boolean", "default": false, "description": "是否启用 LLM 摘要/打标(P2)" }

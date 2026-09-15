@@ -65,8 +65,11 @@ export async function main() {
   const date = todayLocal();
   const fetchedAt = nowIso();
 
+  // 摘要截断长度取自 config（analysis.summaryMaxChars），透传给归一化层。
+  // 此前该配置项在采集侧零引用 → 长摘要原样入库 → 违反 snapshot schema 的 300 字上限。
+  const summaryMaxChars = siteConfig?.analysis?.summaryMaxChars;
   const results = await runPool(dueSources, concurrency, async (source) => {
-    return collectOne(source, channelMap, ruleMap, excludes);
+    return collectOne(source, channelMap, ruleMap, excludes, summaryMaxChars);
   });
 
   // 统计
@@ -338,7 +341,7 @@ async function runPool(items, concurrency, worker) {
  *   成功 → { sourceId, channelId, channelName, ok:true, items, rawItemCount, httpStatus, hitCount }
  *   失败 → { sourceId, channelId, channelName, ok:false, error }
  */
-async function collectOne(source, channelMap, ruleMap, excludes) {
+async function collectOne(source, channelMap, ruleMap, excludes, summaryMaxChars) {
   const channel = channelMap.get(source.channelId);
   if (!channel) {
     return { sourceId: source.id, channelId: source.channelId, channelName: '(missing)', ok: false, error: new Error(`channel ${source.channelId} not found`) };
@@ -363,7 +366,7 @@ async function collectOne(source, channelMap, ruleMap, excludes) {
   const out = [];
   let hitCount = 0;
   for (const raw of rawItems) {
-    const item = normalizeItem(raw, source, channel);
+    const item = normalizeItem(raw, source, channel, { summaryMaxChars });
     item.category = classifyItem(item, ruleMap);
     const ev = evaluateItem(item, excludes);
     if (ev.excluded) {
