@@ -329,7 +329,7 @@
     if (!list.length) {
       listEl.innerHTML = RR.emptyState({
         title: '暂无数据',
-        desc: '当前筛选条件下没有条目。请检查源配置、放宽筛选条件，或等待下一次采集（每 30 分钟一次）。',
+        desc: '当前筛选条件下没有条目。请检查源配置、放宽筛选条件，或等待下一次采集（每小时一次）。',
         action: '<a class="btn btn-primary" href="page2-channels.html">前往渠道看板</a>'
       });
       pagerEl.innerHTML = '';
