@@ -131,16 +131,39 @@ function originOf(u) {
   }
 }
 
+/** 取 URL 的 path 段（按 / 切分，去掉空段）；失败则空数组 */
+function pathSegmentsOf(u) {
+  try {
+    return new URL(u).pathname.split('/').filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
 // ----------------------------------------------------------------------------
 // channel id 派生
 // ----------------------------------------------------------------------------
 
+/** 通用 feed 词停用表：path 段若是这些（或其本身就无区分度）则不参与 channel id 派生 */
+const FEED_STOPWORDS = new Set([
+  'feed',
+  'rss',
+  'atom',
+  'index',
+  'feeds',
+  'feed.xml',
+  'rss.xml',
+  'atom.xml',
+  'index.html',
+]);
+
 /**
  * 由 homepage（网站地址）派生 channel id：
- *   - 去 www. 前缀
- *   - 去掉 TLD（最后一个 . 之后的段），这是 rss-radar 现有约定（如 appinn.com → appinn）
- *   - 非字母数字 → '-'，转小写，收尾去 '-'
- *   - 必须匹配 ^[a-z0-9][a-z0-9-]{1,63}$（长度至少 2）
+ *   - 取 host：小写、去 www. 前缀、剥掉最后一个 label（TLD），这是 rss-radar 现有约定（appinn.com → appinn）
+ *   - 取 path 中**第一个有区分度的段**拼到 host 之后（区分「同域挂多博主」场景，如 blog.csdn.net/ByteDanceTech）
+ *     「有区分度」= 非空、不在 FEED_STOPWORDS、且非纯数字/纯符号段
+ *   - 非字母数字 → '-'，折叠连续 '-'，转小写，去首尾 '-'，长度兜底 ≥2
+ *   - 必须匹配 ^[a-z0-9][a-z0-9-]{1,63}$（长度至少 2）；不合法直接抛错（防回归护栏）
  * @param {string} homepage
  * @returns {string}
  */
@@ -151,10 +174,27 @@ export function deriveChannelId(homepage) {
   // 去掉 TLD（最后一个 '.' 之后的段）
   const lastDot = host.lastIndexOf('.');
   if (lastDot > 0) host = host.slice(0, lastDot);
-  let id = host.replace(/[^a-z0-9]+/g, '-');
-  id = id.replace(/^-+|-+$/g, ''); // 收尾去 '-'（含前置，确保首字符为字母数字以满足正则）
-  // 长度兜底：至少 2 字符
+  let base = host.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+  // 拼接 path 中第一个有区分度的段（同域多博主场景的区分度在 path）
+  for (const seg of pathSegmentsOf(homepage)) {
+    const raw = String(seg).toLowerCase();
+    if (!raw || FEED_STOPWORDS.has(raw)) continue;
+    const cleaned = raw.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    if (!cleaned) continue;
+    if (/^[0-9-]+$/.test(cleaned)) continue; // 纯数字 / 纯符号段不参与
+    base = `${base}-${cleaned}`;
+    break;
+  }
+
+  // 统一收尾：折叠连续 '-'、去首尾 '-'、小写、长度兜底 ≥2
+  let id = base.toLowerCase().replace(/-+/g, '-').replace(/^-+|-+$/g, '');
   if (id.length < 2) id = (id + 'xx').slice(0, Math.max(id.length, 2));
+
+  // 防回归护栏：派生结果必须满足 channel id 正则
+  if (!CHANNEL_ID_RE.test(id)) {
+    throw new Error(`deriveChannelId: 派生 id 非法 "${id}"（来自 homepage=${homepage}）`);
+  }
   return id;
 }
 
@@ -305,6 +345,11 @@ export function mapRecordsToConfig(records, existingConfig = { channels: [], sou
       if (description) channel.description = description;
       channels.push(channel);
       newChannelIds.push(channelId);
+    } else {
+      // 复用既有 channel：仅在既有字段缺失时补上 tags / description，不覆盖既有值（保真度）
+      const tags = parseTags(tagsRaw);
+      if (tags && tags.length && !channel.tags) channel.tags = tags;
+      if (description && !channel.description) channel.description = description;
     }
 
     if (!enabled) disabled += 1;

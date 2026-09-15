@@ -67,6 +67,39 @@ describe('deriveChannelId', () => {
     const id = deriveChannelId('https://www.example.org/');
     assert.equal(id, 'example');
   });
+
+  test('同域多博主：path 段参与派生，结果互不相等（T-P6-03 核心回归护栏）', () => {
+    const a = deriveChannelId('https://blog.csdn.net/ByteDanceTech');
+    const b = deriveChannelId('https://blog.csdn.net/ctrip_tech');
+    assert.notEqual(a, b, '同一 host 不同 path 必须派生出不同 id');
+    assert.match(a, /^[a-z0-9][a-z0-9-]{1,63}$/);
+    assert.match(b, /^[a-z0-9][a-z0-9-]{1,63}$/);
+  });
+
+  test('通用 feed 段不参与派生（/feed、/feed.xml、/rss → 仅 host）', () => {
+    assert.equal(deriveChannelId('https://xclient.info/feed'), 'xclient');
+    assert.equal(deriveChannelId('https://xclient.info/feed.xml'), 'xclient');
+    assert.equal(deriveChannelId('https://xclient.info/rss'), 'xclient');
+  });
+
+  test('全部样本均满足 channel id 正则 ^[a-z0-9][a-z0-9-]{1,63}$', () => {
+    const samples = [
+      'https://www.appinn.com/',
+      'https://blog.daliansky.net/',
+      'https://tech.meituan.com/',
+      'https://weekly.pychina.org/',
+      'https://iui.su/',
+      'https://blog.csdn.net/ByteDanceTech',
+      'https://blog.csdn.net/ctrip_tech',
+      'https://xclient.info/feed',
+      'https://exa mple!.com/',
+      'https://ab.com/',
+    ];
+    for (const s of samples) {
+      const id = deriveChannelId(s);
+      assert.match(id, /^[a-z0-9][a-z0-9-]{1,63}$/, `样本 ${s} → "${id}" 不合法`);
+    }
+  });
 });
 
 // ----------------------------------------------------------------------------
@@ -219,6 +252,71 @@ describe('mapRecordsToConfig', () => {
     assert.equal(report.newChannels, 0, '应复用既有 channel，不新建');
     assert.equal(config.channels.length, 1);
     assert.equal(config.sources[0].channelId, 'appinn');
+  });
+
+  test('复用分支保真度：第二条记录带 标签 时，复用出的 channel 补齐 tags（不覆盖既有）', () => {
+    const existing = {
+      schemaVersion: '1.0',
+      generatedAt: '2026-01-01T00:00:00Z',
+      channels: [
+        {
+          id: 'appinn',
+          name: '小众软件',
+          homepage: 'https://www.appinn.com/',
+          category: ['other'],
+          enabled: true,
+          createdAt: '2026-01-01T00:00:00Z',
+          updatedAt: '2026-01-01T00:00:00Z',
+        },
+      ],
+      sources: [],
+    };
+    const rec = {
+      record_id: 'r1',
+      fields: {
+        RSS地址: 'https://www.appinn.com/newfeed',
+        标题: '小众软件新源',
+        网站地址: 'https://www.appinn.com/',
+        标签: '["Mac","软件下载"]',
+        描述: '一个补充说明',
+      },
+    };
+    const { config, report } = mapRecordsToConfig([rec], existing);
+    assert.equal(report.newChannels, 0, '应复用既有 channel');
+    const ch = config.channels[0];
+    assert.deepEqual(ch.tags, ['Mac', '软件下载'], '复用分支应补齐 tags');
+    assert.equal(ch.description, '一个补充说明', '复用分支应补齐 description');
+  });
+
+  test('复用分支保真度：既有 channel 已有 tags 时不被覆盖', () => {
+    const existing = {
+      schemaVersion: '1.0',
+      generatedAt: '2026-01-01T00:00:00Z',
+      channels: [
+        {
+          id: 'appinn',
+          name: '小众软件',
+          homepage: 'https://www.appinn.com/',
+          category: ['other'],
+          tags: ['既有标签'],
+          enabled: true,
+          createdAt: '2026-01-01T00:00:00Z',
+          updatedAt: '2026-01-01T00:00:00Z',
+        },
+      ],
+      sources: [],
+    };
+    const rec = {
+      record_id: 'r1',
+      fields: {
+        RSS地址: 'https://www.appinn.com/newfeed',
+        标题: '小众软件新源',
+        网站地址: 'https://www.appinn.com/',
+        标签: '["新标签"]',
+      },
+    };
+    const { config } = mapRecordsToConfig([rec], existing);
+    assert.deepEqual(config.channels[0].tags, ['既有标签'], '既有 tags 不应被新记录覆盖');
   });
 
   test('channel id 冲突且 homepage 不同 → 追加 -2', () => {
