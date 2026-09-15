@@ -206,7 +206,7 @@ export async function main() {
  * 它内部默认从 `roundRoot/latest.json` 推断 previousDate，而本函数**必须在
  * projectSnapshot 写今日 latest.json 之前**调用——一旦顺序反了，prevDate 会被
  * 写成今天、`prev === currentDate` 恒成立，rollover 永远 no-op（这正是
- * 「Actions 每 30 分钟采集 + 次日转历史」长期不生效、只能靠 seed:history 补的真实根因）。
+ * 「Actions 每小时采集 + 次日转历史」长期不生效、只能靠 seed:history 补的真实根因）。
  *
  * 幂等：同日重复调用时 latest.json 已是今天 → 直接返回 skipped，不产生任何写入。
  * 容错：readLatestDate 对非法 JSON 会抛错，统一在此兜住（warn-not-throw，ARCH §12 精神），

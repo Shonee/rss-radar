@@ -11,7 +11,7 @@
 | # | 验收项 | 状态 |
 |---|---|---|
 | ① | ≥10 渠道 | ✅ 已满足（32 渠道 / 34 源，启用 31 / 32） |
-| ② | Actions 每 30 分钟采集 + 次日转历史 | ⚠️ 部分满足（代码侧已完整接入并经真实管线验证；**远程 Actions 真实触发未验证**） |
+| ② | Actions 每小时采集 + 次日转历史 | ⚠️ 部分满足（代码侧已完整接入并经真实管线验证；**远程 Actions 真实触发未验证**） |
 | ③ | 四页面 + 趋势图 | ✅ 已满足 |
 | ④ | GH Pages 手动 + CF Pages 直传 | ⚠️ 部分满足（脚本与文档已就绪，真实部署未验证） |
 | ⑤ | 页面3 分类分布 + 通知日报 | ⚠️ 部分满足（分类分布 ✅，通知日报 ⛔ 未验证） |
@@ -29,16 +29,16 @@
 
 ---
 
-## ② Actions 每 30 分钟采集 + 次日转历史
+## ② Actions 每小时采集 + 次日转历史
 
 - **判据**：
-  - (a) GitHub Actions 按 ~30 分钟周期真实触发 `collect`；
+  - (a) GitHub Actions 按 ~60 分钟周期（每小时，第 7 分）真实触发 `collect`；
   - (b) 跨天自动把当日快照转入 `history/`（月度 NDJSON + `history-index.json`），即「次日转历史」。
 - **当前证据**：
   - **代码侧 (b) 已实现并经 e2e 验证**：`scripts/collect/history.mjs:45` 的 `rolloverIfNewDay` 产出月度 NDJSON + `history-index.json` 追加日聚合 + 月末 `SEALED`；该逻辑在本 e2e（`tests/e2e/full-pipeline.mjs` S6/S8）中以两天数据实测通过，并 `listBundlable/listCandidatesForArchival` 验证了归档候选。
   - **代码侧缺口已修复（`d70f4b7`）**：`scripts/collect/main.mjs` 新增 `rolloverPrevDay()` 并在主流程**于 `projectSnapshot` 覆盖 `latest.json` 之前**调用（顺序是关键：晚于它则 `readLatestDate` 恒返回今天、rollover 永远 no-op）。同时具备 ① 同日幂等（`latest.json.date === currentDate` → skipped）② 崩溃重试保护（`history-index.days[]` 已含该日 → skipped）③ warn-not-throw 容错。守卫测试 `scripts/collect/__tests__/rollover-wiring.test.mjs`（4 条：同日幂等 / 跨天封口 / 无 latest.json / 非法 JSON 容错）。
   - **真实管线实测证据**：以 `node scripts/collect/index.mjs --once --skip-health --out /tmp/rr-roll` 跑两轮模拟跨天，第二轮输出 `[collect] rollover prev=2026-09-14 monthlyAppended=79 daysAppended=1`，并在 `/tmp/rr-roll/history/` 得到 `history-index.json`（`days[0] = (2026-09-14, 79)`）、月度 `2026/09/items.ndjson`（79 行）与按天归档快照。
-  - **调度侧 (a)**：`.github/workflows/collect.yml` 已存在，调度 `cron: '7,37 * * * *'`（约每 30 分钟）。其真实触发需推送至 GitHub 远程仓库。
+  - **调度侧 (a)**：`.github/workflows/collect.yml` 已存在，调度 `cron: '7 * * * *'`（每小时第 7 分）。其真实触发需推送至 GitHub 远程仓库。
 - **状态**：⚠️ 部分满足 —— 代码侧 (b) 已闭环并有真实管线证据；**(a) 远程调度真实触发仍未验证**。
   - **需老登提供**：① 把仓库 push 到 GitHub 远程仓库；② 配置 Actions 运行权限与所需 Secrets（如源鉴权）。
   - 本地可由 `node tests/e2e/full-pipeline.mjs` 与上述两轮真实采集证明「采集→跨天转历史→归档→读回」逻辑正确，但无法代替远程 Actions 真实调度验证。
@@ -86,7 +86,7 @@
 
 | 项 | 依赖 |
 |---|---|
-| ② Actions 真实触发（`collect.yml` ~30 分钟调度） | 远程 GitHub 仓库 + Actions 权限/Secrets（**代码侧 rollover 已接入，不再是前置条件**） |
+| ② Actions 真实触发（`collect.yml` 每小时调度） | 远程 GitHub 仓库 + Actions 权限/Secrets（**代码侧 rollover 已接入，不再是前置条件**） |
 | ④ CF Pages 实际部署 | Cloudflare 账号 + `CF_API_TOKEN` / `CF_ACCOUNT_ID` Secrets；GH Pages 仓库设置 |
 | ⑤ 通知真实发送 | `config/notify.json` 真实凭据 + 各渠道 `enabled:true` + `notify.yml` 所需 Secrets |
 

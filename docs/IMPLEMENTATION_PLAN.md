@@ -595,7 +595,7 @@
 #### T-P4-01 【M8 + M9】6 个 workflow 编写（collect / notify / archive / deploy-gh-pages / deploy-cf-pages / keepalive）
 - **来源**：ARCHITECTURE §6.1 / §6.1.1 / §7.5 / §7.6
 - **文件**：
-  - `.github/workflows/collect.yml`（cron `7,37 * * * *` + workflow_dispatch；提交带 `[skip ci]`；当天 amend / 跨天新建）
+  - `.github/workflows/collect.yml`（cron `7 * * * *`（每小时，第 7 分）+ workflow_dispatch；提交带 `[skip ci]`；当天 amend / 跨天新建）
   - `.github/workflows/notify.yml`（cron `3 0 * * *` ≈ 08:03 Asia/Shanghai + workflow_dispatch）
   - `.github/workflows/archive.yml`（cron `23 0 1 1 *` = 每年 1/1 + workflow_dispatch）
   - `.github/workflows/deploy-gh-pages.yml`（**`push` 默认注释** + workflow_dispatch）
@@ -810,7 +810,7 @@
 - **来源**：MVP 验收标准（README §六）
 - **文件**：
   - `tests/e2e/full-pipeline.mjs`（本地：mock 6 个源 → 完整 ingestRound → 折叠 → 去重 → 报告 → 模拟跨天 rollover → 模拟归档 → 读 history-index）
-  - `docs/qa/release-checklist.md`（MVP 验收 5 条对照 README §六：① ≥10 渠道；② Actions 每 30 分钟采集 + 次日转历史；③ 四页面 + 趋势图；④ GH Pages 手动 + CF Pages 直传；⑤ 页面3 分类分布 + 通知日报）
+  - `docs/qa/release-checklist.md`（MVP 验收 5 条对照 README §六：① ≥10 渠道；② Actions 每小时采集 + 次日转历史；③ 四页面 + 趋势图；④ GH Pages 手动 + CF Pages 直传；⑤ 页面3 分类分布 + 通知日报）
 - **依赖**：T-P5-01、T-P5-02
 - **工作量**：M
 - **技术决策点**：
@@ -929,7 +929,7 @@
 |---|---|---|---|---|---|
 | 1 | **CF Pages Direct Upload 不可逆**（用户拍板后无法切回 Git 集成） | 高 | 高 | 主理人**必须**在 T-P4-01 前确认方案 A（ARCHITECTURE §7.6.6）；先在 fork 仓库验证 | T-P4-01、T-P5-01 |
 | 2 | **wrangler-action 供应链风险**（CVE-2026-11325 / 仓库 2026-09-18 删除） | 中 | 极高 | **禁用 pages-action**；**固定到 commit SHA**（ARCHITECTURE §7.6.3 硬结论） | T-P4-01、T-P4-03 |
-| 3 | **GitHub Actions cron 延迟**（整点高峰 5~30 分钟） | 高 | 中 | 接受；文案诚实标注"准实时 ≤35 分钟"；避整点（`7,37` 分） | T-P4-01、T-P4-02 |
+| 3 | **GitHub Actions cron 延迟**（整点高峰 5~30 分钟） | 高 | 中 | 接受；文案诚实标注"准实时：典型 ≈50 分钟、最坏 ≈96 分钟"；避整点（第 7 分） | T-P4-01、T-P4-02 |
 | 4 | **采集源 IP 被 RSSHub / 站点限流** | 中 | 中 | 串行同域 + UA + 指数退避；尊重 Retry-After | T-P1-04、T-P1-06 |
 | 5 | **真实 RSS 源 URL 漂移**（mock 通真实不一定通） | 高 | 中 | T-P2-10 用真实 fixture + T-P5-01 实际验证；T-P2-08 URL 健康检查兜底 | T-P2-10、T-P5-01 |
 | 6 | **MUI 与 Tailwind preflight 冲突** | 高 | 低 | `tailwind.config.ts` 关 preflight 或 `important: true`；已记录于 T-P1-01 | T-P1-01 |
@@ -1026,7 +1026,7 @@
 | 项 | 说明 | 备注 |
 |---|---|---|
 | **微信公众号源** | PRD 已默认不内置（合规风险） | docs/SOURCES.md 提供接入说明 |
-| **WebSub 实时订阅推送** | PRD 已排除（30 分钟轮询为准） | — |
+| **WebSub 实时订阅推送** | PRD 已排除（每小时轮询为准） | — |
 | **服务端 / 用户账号 / 云端同步** | PRD 已排除（纯静态） | — |
 | **LLM 打标 / 摘要** | MVP 不做（PRD G5） | V2 可选 |
 | **RSSHub 公共实例内置源** | PRD 不内置（G6） | docs/SOURCES.md 说明自建 |

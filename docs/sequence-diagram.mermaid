@@ -2,7 +2,7 @@
 %% v1.1：当天数据改为「追加事件流 + 折叠 + 投影快照」（方案 C 双写）；落盘到 deploy 部署分支。
 
 sequenceDiagram
-    participant Cron as GitHub Actions(collect.yml, cron 7,37)
+    participant Cron as GitHub Actions(collect.yml, cron 7)
     participant Coll as Collector(scripts/collect)
     participant Store as DataStore(deploy 分支)
     participant Conn as Connector(某一源)

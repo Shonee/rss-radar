@@ -1,10 +1,10 @@
 // scripts/collect/__tests__/rollover-wiring.test.mjs
 // T-P4-fix：采集主链路 rollover 接线（`rolloverPrevDay`）单测
 //
-// 背景：`rolloverIfNewDay` 一直只有单测、生产零调用方 → 「Actions 每 30 分钟采集 +
+// 背景：`rolloverIfNewDay` 一直只有单测、生产零调用方 → 「Actions 每小时采集 +
 // 次日转历史」实际不生效（只能靠 `npm run seed:history` 手工补）。
 // 接线到 `main.mjs` 后，必须守住三条硬约束：
-//   ① 同日重复调用**幂等**（collect 每 30 分钟一次，绝不能重复封口）
+//   ① 同日重复调用**幂等**（collect 每小时一次，绝不能重复封口）
 //   ② 跨天调用正确封口（月度 NDJSON + history-index days[]）
 //   ③ 读取失败时 **warn-not-throw**，不得阻断当日采集落盘
 //
@@ -80,7 +80,7 @@ test('rolloverPrevDay 同日：no-op 且不产生 history 写入（幂等）', a
     assert.equal(r.monthlyAppended, 0);
     assert.equal(await exists(join(root, 'history')), false, '同日不得产生 history 目录');
 
-    // collect 每 30 分钟跑一次：重复调用必须仍然 no-op
+    // collect 每小时跑一次：重复调用必须仍然 no-op
     const r2 = await rolloverPrevDay({ roundRoot: root, currentDate: '2026-09-15' });
     assert.equal(r2.skipped, true);
   } finally {
