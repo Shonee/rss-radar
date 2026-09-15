@@ -1,0 +1,5 @@
+{ "items": [
+  { "guid": "n1", "title": "科技日报：AI 监管草案公布", "url": "https://example.test/ai-law", "publishedAt": "2026-09-12T14:00:00Z" },
+  { "guid": "n2", "title": "全球芯片供应趋紧", "url": "https://example.test/chips-news", "publishedAt": "2026-09-12T14:05:00Z" },
+  { "guid": "n3", "title": "本周科技要闻汇总", "url": "https://example.test/weekly", "publishedAt": "2026-09-13T15:00:00Z" }
+] }

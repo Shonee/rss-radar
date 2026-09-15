@@ -1,0 +1,4 @@
+{ "items": [
+  { "guid": "p1", "title": "内核恐慌第 120 期：聊聊调度器", "url": "https://example.test/kp120", "publishedAt": "2026-09-12T18:00:00Z" },
+  { "guid": "p2", "title": "硅谷101：AI 创业潮", "url": "https://example.test/sv101", "publishedAt": "2026-09-13T19:00:00Z" }
+] }

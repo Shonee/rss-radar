@@ -1,0 +1,4 @@
+{ "items": [
+  { "guid": "f1", "title": "全球芯片供应趋紧", "url": "https://example.test/chips-fin", "publishedAt": "2026-09-12T20:00:00Z" },
+  { "guid": "f2", "title": "美联储维持利率不变", "url": "https://example.test/fed", "publishedAt": "2026-09-13T21:00:00Z" }
+] }

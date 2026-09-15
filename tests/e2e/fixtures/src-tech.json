@@ -1,0 +1,5 @@
+{ "items": [
+  { "guid": "t1", "title": "Rust 1.80 稳定版发布，引入新 trait", "url": "https://example.test/rust-180", "publishedAt": "2026-09-12T08:00:00Z" },
+  { "guid": "t2", "title": "深入理解 Rust 异步编程模型", "url": "https://example.test/rust-async", "publishedAt": "2026-09-12T09:00:00Z" },
+  { "guid": "t3", "title": "TypeScript 5.6 新特性一览", "url": "https://example.test/ts-56", "publishedAt": "2026-09-13T10:00:00Z" }
+] }

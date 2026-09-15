@@ -1,0 +1,5 @@
+{ "items": [
+  { "guid": "a1", "title": "OpenAI 发布 GPT-5 多模态模型", "url": "https://example.test/gpt5", "publishedAt": "2026-09-12T11:00:00Z" },
+  { "guid": "a2", "title": "深入理解 Rust 异步编程模型！", "url": "https://example.test/rust-async-deep", "publishedAt": "2026-09-12T12:00:00Z" },
+  { "guid": "a3", "title": "Claude 4 发布，长上下文突破", "url": "https://example.test/claude4", "publishedAt": "2026-09-13T13:00:00Z" }
+] }
