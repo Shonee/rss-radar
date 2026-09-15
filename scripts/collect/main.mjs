@@ -17,6 +17,7 @@ import { makeRunId } from './lib/run-id.mjs';
 import { writeReport } from './report.mjs';
 import { checkUrls, persistSourceHealth } from './url-health.mjs';
 import { rolloverIfNewDay, readLatestDate } from './history.mjs';
+import { resolveCollectExitCode } from './exit-code.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..', '..');
@@ -27,12 +28,20 @@ function loadJson(rel) {
 
 export function parseArgs() {
   const args = process.argv.slice(2);
-  const out = { once: false, dryRun: false, only: null, out: null, skipHealth: false };
+  const out = {
+    once: false,
+    dryRun: false,
+    only: null,
+    out: null,
+    skipHealth: false,
+    allowPartialSuccess: false,
+  };
   for (let i = 0; i < args.length; i += 1) {
     const a = args[i];
     if (a === '--once') out.once = true;
     else if (a === '--dry-run') out.dryRun = true;
     else if (a === '--skip-health') out.skipHealth = true;
+    else if (a === '--allow-partial-success') out.allowPartialSuccess = true;
     else if (a === '--only') out.only = args[++i];
     else if (a === '--out') out.out = args[++i];
   }
@@ -187,9 +196,7 @@ export async function main() {
   console.log(`[collect] done in ${elapsed}ms`);
 
   // 退出码
-  if (err === 0) process.exit(0);
-  else if (ok === 0) process.exit(1);
-  else process.exit(2);
+  process.exit(resolveCollectExitCode({ ok, err, allowPartialSuccess: opts.allowPartialSuccess }));
 }
 
 /**
