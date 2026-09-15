@@ -16,7 +16,7 @@ name: collect
 on:
   schedule:
     # 每 30 分钟一轮，避开整点（7/37 分）降低 GitHub schedule 延迟（ARCHITECTURE §6.3.1）
-    - cron: '7,37 * * * *'
+    - cron: '7 * * * *'
   workflow_dispatch:
 
 # 最小权限：仅需向 deploy 分支推送内容
