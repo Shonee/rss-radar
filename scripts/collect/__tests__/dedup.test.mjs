@@ -111,6 +111,27 @@ describe('dedup / L2 标题完全一致', () => {
     assert.strictEqual(r.groups.length, 1);
     assert.strictEqual(r.groups[0].sourceCount, 3);
   });
+
+  // T-P2-fix：L2 计数口径回归守卫（原式 `g.length - uniqueKeys.size` 在
+  // 「2 条 item / 2 个不同 dedupKey」时恒为 0 → 真合并却计数为 0，
+  // 并经 project-snapshot.mjs 写进 snapshot.stats.mergedCount = 用户可见统计）
+  it('计数口径：跨源同标题 K=2 → l2Hits=1，l1Hits 不重复计数', () => {
+    const a = mkItem({ channelId: 'a', url: 'https://a.com/1', title: '同一篇新闻标题' });
+    const b = mkItem({ channelId: 'b', url: 'https://b.com/2', title: '同一篇新闻标题' });
+    const r = dedup([a, b]);
+    assert.strictEqual(r.groups.length, 1);
+    assert.strictEqual(r.stats.l1Hits, 0, 'dedupKey 不同，L1 不应计数');
+    assert.strictEqual(r.stats.l2Hits, 1, '2 个逻辑组塌缩为 1 → 1 次合并');
+    assert.strictEqual(r.stats.totalMerged, 1);
+  });
+
+  it('计数口径：跨源同标题 K=3 → l2Hits=2', () => {
+    const mk = (i) => mkItem({ channelId: `c${i}`, url: `https://c${i}.com/p`, title: '三源同题新闻' });
+    const r = dedup([mk(1), mk(2), mk(3)]);
+    assert.strictEqual(r.groups.length, 1);
+    assert.strictEqual(r.stats.l2Hits, 2, '3 个逻辑组塌缩为 1 → 2 次合并');
+    assert.strictEqual(r.stats.totalMerged, 2);
+  });
 });
 
 describe('dedup / L3 SimHash + Dice', () => {

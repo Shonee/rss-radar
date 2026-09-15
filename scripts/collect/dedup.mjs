@@ -69,11 +69,18 @@ export function dedup(items, opts = {}) {
     }
     g2.push(...g);
   }
-  // 计算 L2 hits：跨 L1 group 但标题完全一致合并的差额
+  // 计算 L2 hits：将「K 个不同 dedupKey 的逻辑组」合并成 1 组，需要 K-1 次合并。
+  //
+  // 口径修复（T-P2-fix）：原式 `g.length - uniqueKeys.size` 统计的是「组内被 L1 吸收的
+  // 重复条目数」——那部分 L1 已经计过（`l1Hits += g.length - 1`），导致：
+  //   跨源同标题（2 条 item、2 个不同 dedupKey）时 `2 - 2 = 0`，
+  //   即**真发生了合并却计数为 0**；`totalMerged` 因此恒偏小，
+  //   并经由 `project-snapshot.mjs` 写进 `snapshot.stats.mergedCount`（用户可见统计）。
+  // 单位与 L1/L3 统一为「合并次数」：K 个逻辑节点塌缩为 1 → K-1 次。
   let l2Hits = 0;
   for (const g of l2Groups.values()) {
     const uniqueKeys = new Set(g.map((it) => it.dedupKey));
-    if (uniqueKeys.size > 1) l2Hits += g.length - uniqueKeys.size;
+    if (uniqueKeys.size > 1) l2Hits += uniqueKeys.size - 1;
   }
 
   // ===== L3：SimHash 预筛 + Dice 精算 =====
