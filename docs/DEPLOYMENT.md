@@ -114,7 +114,7 @@ Cloudflare Pages 项目分两类，**项目类型在创建时确定，之后无�
 
 ### 3.1 路径 A：Git 集成（控制台导入仓库）
 
-> 适用场景：不想配置 `CLOUDFLARE_API_TOKEN`、希望「push 即部署」，且接受 §3.1.3 的分支控制配置与 §3.1.5 的数据可达性限制。
+> 适用场景：不想配置 `CLOUDFLARE_API_TOKEN`、希望「push 即部署」，且接受 §3.1.3 的分支控制配置与 §3.1.5 的数据可达性方案（独立公开数据仓库）。
 
 #### 3.1.1 前置条件
 
@@ -143,8 +143,11 @@ Cloudflare Pages 项目分两类，**项目类型在创建时确定，之后无�
    | **Build output directory** | `dist` | 与 `vite.config.ts` 的 `build.outDir` 一致 |
    | **Root directory** | **留空** | 仓库根即项目根；仅 monorepo 才填 |
 
-5. **Environment variables** 增加一条：`NODE_VERSION` = `20`
-   （`package.json` 的 `engines.node` 要求 `>=20`，显式钉住而非赌 CF 默认镜像版本）
+5. **Environment variables** 增加三条（**Production 环境，构建期生效**）：
+   - `NODE_VERSION` = `20`（`package.json` 的 `engines.node` 要求 `>=20`，显式钉住而非赌 CF 默认镜像版本）
+   - `VITE_DATA_OWNER` = `Shonee`
+   - `VITE_DATA_REPO` = `rss-radar-data`
+   > 后两条指向**独立公开数据仓库**（见 §3.1.5）。**必须先配好**，否则站点只会读到空 / fixture 数据，且构建不报红。
 6. **Save and Deploy**，等日志出现 `✓ built in ...` 与部署成功提示
 
 **不需要 `_redirects`**：本项目用 `HashRouter`，URL 只会有 `/` 与 `/#/xxx`，不会向服务器请求深链路径，故无需 SPA fallback 规则（对比：若改用 `BrowserRouter` 才需要 `_redirects` 里的 `/* /index.html 200`）。
@@ -217,11 +220,11 @@ CF 项目**默认对所有非生产分支自动构建预览部署**（官方：*
 - §3.1.3 把 preview 关掉之后，`deploy` 分支的 push 对 CF 完全不可见，**不产生任何构建**；
 - 这也意味着**数据更新后站点无需重新部署**——但前提是前端能读到 `deploy` 分支的数据（见下节）。
 
-#### 3.1.5 🔴 已知限制：私有仓库下运行时数据不可达
+#### 3.1.5 数据可达性方案（已定：独立公开数据仓库）
 
-前端 `src/services/dataClient.ts` 的三层降级顺序为 **① raw.githubusercontent.com → ② jsDelivr（版本化 commit）→ ③ `./data/` 本地兜底**（`src/config/site.ts` 提供基址）。
+前端 `src/services/dataClient.ts` 的三层降级顺序为 **① raw.githubusercontent.com → ② jsDelivr（版本化 commit）→ ③ `./data/` 本地兜底**（`src/config/site.ts` 提供基址；`<owner>` / `<repo>` 由环境变量 `VITE_DATA_OWNER` / `VITE_DATA_REPO` 覆盖，默认指向本仓库）。
 
-而本项目仓库是 **private**，前两层在浏览器端**均不可用**：
+**问题复现与实测证据**（私有仓库形态下，前两层在浏览器端均不可用）：
 
 | 层 | 结果 | 依据 |
 |---|---|---|
@@ -233,17 +236,36 @@ CF 项目**默认对所有非生产分支自动构建预览部署**（官方：*
 >
 > 🔴 **由此产生一个高危诱导**：把本地 `dist/` 目录**拖拽**上传达 CF 可以立刻"看到数据"——**但拖拽属于 Direct Upload，会永久锁死本项目的 Git 集成能力**（§3.0）。**禁止为图省事走这条路。**
 
-**结论（推导，未在 CF 实测）**：按当前形态部署，站点能正常渲染，但首屏为 **3 条 P1 fixture + 「数据可能非最新」横幅**；真实数据（`deploy` 分支）读不到。
+**已选方案 + 其余候选（备查）**：
 
-**候选解法（尚未拍板，按侵入度排序）**：
+最终采用 **方案 ①：独立公开数据仓库**。理由：零前端改动（owner/repo 已由 `VITE_DATA_OWNER` / `VITE_DATA_REPO` 支持）、数据仍走运行时 fetch（保持实时）、私有代码仓库不公开。原「仓库转 public」「构建时带出数据」「Worker 代理」三个候选均降级为**未采用的备选**（见下表）。
 
-| # | 方案 | 优点 | 代价 |
-|---|---|---|---|
-| 1 | **仓库转 public** | 零代码改动，raw 与 jsDelivr 立即可用 | 源清单与采集数据完全公开 |
-| 2 | **构建时带出数据**：Git 集成项目的 Build command 改为先拉 `deploy` 分支数据再构建（如 `git fetch --depth=1 origin deploy && git checkout origin/deploy -- today stats history latest.json && mkdir -p public/data && cp -r today stats history latest.json public/data/ && npm run build`） | 数据内联进产物，不依赖运行时网络，私有仓库也能正常展示 | Build command 变复杂；数据随构建时间点冻结（失去运行时实时性） |
-| 3 | **Cloudflare Worker 代理** GitHub Contents API（带 token 服务端读取） | 数据保持实时，仓库维持私有 | 多一个组件要维护，需处理缓存与鉴权 |
+| # | 方案 | 状态 | 优点 | 代价 |
+|---|---|---|---|---|
+| ① | **独立公开数据仓库**（采用） | ✅ **已定** | 零前端改动；数据实时；代码仓库维持私有 | 需新建公开仓库 + 搬运 workflow + CF 两个构建期环境变量 |
+| ② | 仓库转 public | 未采用（备选） | 零代码改动，raw 与 jsDelivr 立即可用 | 源清单与采集数据完全公开 |
+| ③ | 构建时带出数据（Git 集成 Build command 拉 `deploy` 分支） | 未采用（备选） | 数据内联进产物，不依赖运行时网络 | Build command 变复杂；数据随构建时间点冻结（失去运行时实时性） |
+| ④ | Cloudflare Worker 代理 GitHub Contents API（带 token 服务端读取） | 未采用（备选） | 数据保持实时，仓库维持私有 | 多一个组件要维护，需处理缓存与鉴权 |
 
-> 方案 1 与 2 属**构建/配置层面**改动，**不涉及"项目类型"这类不可逆决策**，因此「先跑通部署、数据后置」的推进顺序是成立的。
+**架构说明（代码仓库 ↔ 公开数据仓库）**：
+
+- **私有仓库 `Shonee/rss-radar`**：代码 + 配置（`src/`、`scripts/`、`config/`、`docs/`），含 `deploy` 数据分支作为私有备份与 `archive` / `notify` 工作分支。
+- **公开数据仓库 `Shonee/rss-radar-data`**：仅承载数据，分支仍叫 `deploy`，结构为 `today/`（当天数据 + `today/latest.json` 指针）、`history/`、`stats/`。
+- **搬运**：新增 `.github/workflows/mirror-data.yml`，由 `collect` / `notify` / `archive` 完成事件经 `workflow_run` 触发，把私有仓库的 `deploy` 分支 `--force` 推送到公开数据仓库。**不能用 `on: push`**——`deploy` 分支提交信息带 `[skip ci]`，GitHub 会跳过 push 触发的 workflow。
+- **前端取数**：仍走三层降级，仅 owner/repo 经 `VITE_DATA_OWNER` / `VITE_DATA_REPO` 指向公开数据仓库（生产环境 `Shonee` / `rss-radar-data`）。`collect.yml` 已修指针落点为 `today/latest.json`，与前端 `config/site-config.json` 的 `deploy.pointerPath` 一致。
+
+**落地清单（用户需在 GitHub / Cloudflare 后台做的事，按顺序）**：
+
+1. **新建公开仓库** `Shonee/rss-radar-data`（空仓库即可，不必初始化 README）。
+2. **创建细粒度 PAT**：**只在** `rss-radar-data` 上拥有 `Contents: Read and write` 权限；值由你生成，存为 secret（勿在文档/代码中明文存放）。
+3. 在私有仓库 `Shonee/rss-radar` 的 **Settings → Secrets and variables → Actions** 添加 secret **`DATA_REPO_TOKEN`**（值为上一步的 PAT）；可选添加 repository variable **`DATA_REPO`**（默认 `Shonee/rss-radar-data`，不设也可）。
+4. CF Pages 项目 → **Settings → Environment variables**（**Production 环境，构建期生效**）新增 **`VITE_DATA_OWNER=Shonee`** 与 **`VITE_DATA_REPO=rss-radar-data`**。
+5. 触发一次重新部署；或在 Actions 里手动 `workflow_dispatch` 跑一次 `mirror-data` 验证镜像成功。
+6. **验收**：打开站点，首屏应为**当天真实条目**（量级上千，不是 3 条）。
+
+> ⚠️ **配置前先配好 secret，否则数据永远是空的。** `DATA_REPO_TOKEN` 未配置时，`mirror-data.yml` 会打印 `::warning::` 并**跳过**镜像（不会失败），所以配置前的部署不会报红、却也读不到任何数据——这正是「页面空 / 只有 fixture」的根因之一。务必先把上面 1–4 步走完。
+>
+> 原「首屏 3 条 fixture + 数据可能非最新横幅 = 预期结果」的判据**已作废**：配好数据通道后，那属于**故障信号**（见 §3.1.6）。
 
 #### 3.1.6 部署验收标准：正常现象 vs 真故障
 
@@ -252,9 +274,9 @@ CF 项目**默认对所有非生产分支自动构建预览部署**（官方：*
 | 观察到的现象 | 判定 |
 |---|---|
 | 页面正常渲染，四个页面均可导航切换 | ✅ 部署成功 |
-| 首屏 **3 条**内容，日期显示 `2026-09-13` | ✅ 命中 P1 fixture（§3.1.5 预期结果），非故障 |
-| 顶部出现「数据可能非最新」横幅 | ✅ 三层降级的设计行为，诚实反馈 |
-| 页面 2 渠道看板显示多个 `failed` | ✅ fixture 中的旧健康状态 |
+| 首屏 **3 条**内容，日期显示 `2026-09-13` | ❌ **故障信号**：数据通道未配好，前端只读到 `public/data/today/snapshot.json` 的 P1 fixture（§3.1.5）。配好 `DATA_REPO_TOKEN` + `VITE_DATA_OWNER` / `VITE_DATA_REPO` 后，首屏应为当天真实条目（量级上千） |
+| 顶部出现「数据可能非最新」横幅 | ✅ 三层降级的设计行为，诚实反馈（数据滞后 >60 分钟时出现，非故障） |
+| 页面 2 渠道看板**大量/全部** `failed` | ❌ **故障信号**：多为 fixture（`date=2026-09-13`）里的旧健康状态；真实数据下应反映当天采集结果。若数据通道已配却仍如此，检查 `mirror-data` 是否成功推送公开仓库 |
 | 白屏 / 控制台报 `assets/index-*.js` 404 | ❌ **真故障**：构建产物引用路径问题 |
 | 页面结构错乱 / MUI 样式全丢 | ❌ **真故障**：CSS 未加载 |
 | CF 构建日志中 `npm ci` 或 `tsc` 报错 | ❌ **真故障**：环境或类型问题（排查见 §3.1.7） |
@@ -464,13 +486,14 @@ on:
 
 ## 7. Workflow 清单、所需 Secrets 与落地清单
 
-### 7.1 六个 workflow
+### 7.1 七个 workflow
 
 | Workflow | 用途 | 关键 Secrets | 推送分支 |
 |---|---|---|---|
 | `collect.yml` | 每 30 分钟采集写 `deploy` 分支 | `GITHUB_TOKEN`（内置） | `deploy` |
 | `notify.yml` | 每日日报 + 实时热点触发 | `SMTP_PASSWORD`（邮箱）、`FEISHU_WEBHOOK` / `DINGTALK_WEBHOOK` / `WECOM_WEBHOOK`（对应渠道，可选） | 无（不推代码） |
 | `archive.yml` | 每年 1/1 年度归档 | `GITHUB_TOKEN`（内置） | `deploy` |
+| `mirror-data.yml` | `collect`/`notify`/`archive` 完成后把 `deploy` 分支 `--force` 推到公开数据仓库 `rss-radar-data`（数据可达性方案，§3.1.5） | `DATA_REPO_TOKEN`（细粒度 PAT，仅 `rss-radar-data` 写权限） | 公开仓库 `rss-radar-data` 的 `deploy` |
 | `deploy-gh-pages.yml` | 手动部署 GH Pages | 无需（内置 `GITHUB_TOKEN`） | 无 |
 | `deploy-cf-pages.yml` | 手动 Direct Upload 到 CF Pages | `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` | 无 |
 | `keepalive.yml` | 每周 trivial commit 防休眠 | `GITHUB_TOKEN`（内置） | `master` |
@@ -487,6 +510,7 @@ on:
 | `CLOUDFLARE_ACCOUNT_ID` | CF 账户 ID | **仅路径 B 必需** |
 | `SMTP_PASSWORD` | 邮箱通知（nodemailer）；配合 `config/notify.json` 的 smtp 配置 | 启用邮箱通知时必需（默认 `enabled:false`） |
 | `FEISHU_WEBHOOK` / `DINGTALK_WEBHOOK` / `WECOM_WEBHOOK` | 对应 IM 渠道 webhook | 启用对应渠道时必需（默认全 `enabled:false`） |
+| `DATA_REPO_TOKEN` | `mirror-data.yml` 推送数据到公开数据仓库 `rss-radar-data`（细粒度 PAT，仅该仓库 `Contents: Read and write`） | **配置数据通道必需**；不设则镜像跳过、站点读不到数据，且构建/部署不报红 |
 
 > Secrets 在仓库 **Settings → Secrets and variables → Actions** 配置。通知相关 secret 仅在对应渠道 `enabled:true` 时才被读取；当前 4 个通知渠道在 `config/notify.json` 中**全部 `enabled:false`**。
 
@@ -509,6 +533,6 @@ on:
 **待完成**
 
 8. 仅当改走路径 B 时才需要：配置 Secrets `CLOUDFLARE_API_TOKEN`（仅 Pages:Edit）与 `CLOUDFLARE_ACCOUNT_ID`。
-9. **决定数据可达性方案**（§3.1.5）—— 否则站点将停留在 P1 fixture 数据。
+9. ~~决定数据可达性方案~~ ✅ 已定**独立公开数据仓库**（§3.1.5）：新建公开 `rss-radar-data` + `mirror-data.yml` + CF 环境变量 `VITE_DATA_OWNER` / `VITE_DATA_REPO`；落地清单见 §3.1.5。
 
 > 上述状态截至 **2026-09-15 首次构建失败**时；**站点渲染结果尚未在 CF 上实测**（首次构建未走到部署阶段）。

@@ -826,7 +826,8 @@ PRD F-073 要求运行时刷新。**v1.2 校准**：CF Pages 改由 **Direct Upl
 
 **我们的策略**：
 
-- **主**：运行时 fetch **`raw.githubusercontent.com/<owner>/rss-radar/deploy/today/latest.json`**（**小指针文件**，含 `{date, generatedAt, snapshotPath, reportPath, eventPath, commit}`）+ 其指向的当天投影快照与报告。**接受 raw ≤5 分钟 TTL**。
+- **主**：运行时 fetch **`raw.githubusercontent.com/<owner>/<repo>/deploy/today/latest.json`**（**小指针文件**，含 `{date, generatedAt, snapshotPath, reportPath, eventPath, commit}`）+ 其指向的当天投影快照与报告。**接受 raw ≤5 分钟 TTL**。
+  - 📌 **`<owner>` / `<repo>` 可配置（v1.2 数据可达性方案）**：原设计默认指向本仓库（`<owner>`= 当前账号、`<repo>`=`rss-radar`，`deploy` 分支）。生产环境改为指向**独立公开数据仓库** `Shonee/rss-radar-data`（`deploy` 分支），由构建期环境变量 `VITE_DATA_OWNER` / `VITE_DATA_REPO` 覆盖（`src/vite-env.d.ts` 已声明，`src/config/site.ts` 读取，前端零改动）。原因与搬运机制见 `DEPLOYMENT.md` §3.1.5：私有代码仓库的 raw / jsDelivr 对匿名浏览器均 404，故把数据镜像到独立公开仓库，私有仓库的 `deploy` 分支保留为私有备份与 `archive` / `notify` 工作分支。
 - **前端绕浏览器缓存**：`fetch(url, { cache: 'no-store' })` 或加 `?t=Date.now()`（**只对浏览器层有效**）。
 - **回退**：raw 失败 → 尝试 **jsDelivr**（**用 commit SHA 或 tag**，规避分支缓存）；再失败 → 用**构建期内联**的最近快照（展示「数据可能非最新」横幅）。
 - **降级提示**：`now - latest.generatedAt > 60 分钟` → 顶部黄条「数据更新延迟」。
@@ -855,6 +856,8 @@ async function loadLatest():
 |---|---|---|---|---|
 | **`master`** | `src/`、`scripts/`、`config/`（sources/site-config/exclusions/notify）、`.github/`、`docs/`、`package.json` 等 | ✅ 全部代码与配置 | 人（PR）+ 少量脚本 | **不含任何数据文件** |
 | **`deploy`**（部署分支，orphan，无代码） | `today/`（当天数据）+ `history/YYYY/MM/`（历史）+ `history-index.json` + `archive-index.json` + `stats/` | ❌ 无代码、无构建 | Actions `collect.yml` / `archive.yml` | 专供**页面运行时读取** |
+
+> 📌 **v1.2 数据可达性方案补注**：私有代码仓库的 `deploy` 分支**保留为私有备份与 `archive` / `notify` 工作分支**；其数据经 `mirror-data.yml`（`workflow_run` 触发，`--force` 推送）同步到**独立公开数据仓库 `Shonee/rss-radar-data`** 的同名 `deploy` 分支。页面运行时实际读取的是公开数据仓库（由 `VITE_DATA_OWNER` / `VITE_DATA_REPO` 指向，见 §6.3.3），因此私有仓库是否公开**不影响**前端取数。细节见 `DEPLOYMENT.md` §3.1.5。
 
 **deploy 分支的提交策略（承 `format-decision.md §5.3` 策略 B）**：
 
