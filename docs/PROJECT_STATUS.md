@@ -86,12 +86,14 @@ URL 标准化与去重 L1~L5 ｜ 事件流 NDJSON + 月度归档 ｜ 报告生�
 | `npm run test:e2e:full` | 31 断言全过，退出码 0 |
 | `npm run test:regression` | 118/118，domVerified true，退出码 0 |
 | 6 个 workflow YAML | 全部可解析、cron 合法、无 `pages-action`、wrangler 固定 SHA |
-| 真实采集（11 源） | `ok=6 err=5 items=79`；跨天模拟封口验证通过 |
+| 真实采集（11 源，**P6 扩容前**） | `ok=6 err=5 items=79`；跨天模拟封口验证通过 |
 | **未验证** | Actions 真实触发 / CF Pages 真实部署 / 通知真实发送 |
 
 ---
 
 ## 五、快照数据现状（回答「一批渠道为什么失败」）
+
+> ⚠️ 以下为 **P6 扩容前**（当时 11 个源）的采集快照，保留以记录当时的失败成因；**当前配置已是 32 渠道 / 34 源**。
 
 以 2026-09-15 真实采集（11 源）为例：**ok=6 / failed=5**，共 79 条条目。
 

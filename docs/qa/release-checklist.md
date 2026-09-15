@@ -3,14 +3,14 @@
 > 对照 README §六「MVP 验收 5 条」。每条给出 **判据 / 当前证据 / 状态** 三栏。
 > 状态三态：**✅ 已满足** / **⚠️ 部分满足（缺什么）** / **⛔ 未验证（为什么）**。
 >
-> 渠道数按 **11** 计（`config/sources.json` 已含 奇客Solidot / 爱范儿 / 机核，从 8 → 11）。
+> 渠道数当前为 **32**（启用 31）—— P6 阶段整合原 `rss_private` 源清单后由 11/11 扩充至 32/34（历史上曾从 8 → 11：奇客Solidot / 爱范儿 / 机核）。
 > 全链路 e2e 见 `tests/e2e/full-pipeline.mjs`（覆盖 ingestRound → 折叠 → 去重 → 报告 → 跨天 rollover → 归档 → history-index 读回断言）。
 
 ## 总览
 
 | # | 验收项 | 状态 |
 |---|---|---|
-| ① | ≥10 渠道 | ✅ 已满足（11 渠道 / 11 源） |
+| ① | ≥10 渠道 | ✅ 已满足（32 渠道 / 34 源，启用 31 / 32） |
 | ② | Actions 每 30 分钟采集 + 次日转历史 | ⚠️ 部分满足（代码侧已完整接入并经真实管线验证；**远程 Actions 真实触发未验证**） |
 | ③ | 四页面 + 趋势图 | ✅ 已满足 |
 | ④ | GH Pages 手动 + CF Pages 直传 | ⚠️ 部分满足（脚本与文档已就绪，真实部署未验证） |
@@ -20,12 +20,12 @@
 
 ## ① ≥10 渠道
 
-- **判据**：`config/sources.json` 中 `channels` 与 `sources` 数量 ≥ 10，且均为 `enabled:true`。
+- **判据**：`config/sources.json` 中 `channels` 与 `sources` 数量 ≥ 10（**启用数**亦 ≥ 10）。
 - **当前证据**：
   - `config/sources.json` → `channels: 32`（启用 31）、`sources: 34`（启用 32）。P6 整合原 `rss_private` 源清单后由 11/11 扩充至 32/34；2 个实测失效源（`iao-su-rss`、`douban-movie-review`）标 `enabled:false`。
-  - 渠道覆盖：ruanyifeng-blog、ruanyifeng-weekly、v2ex、sspai、hacker-news、huggingface-blog、github-blog、kernel-panic（播客）、**solidot（奇客）**、**ifanr（爱范儿）**、**gcores（机核）**。
+  - 渠道覆盖：**31 个启用渠道** = 原 11 个（阮一峰博客 / 阮一峰周刊 / V2EX / 少数派 / Hacker News / Hugging Face / GitHub Blog / 内核恐慌 / 奇客Solidot / 爱范儿 / 机核）+ P6 新增 20 个（胡涂说、开源中国、精品MAC应用分享、不死鸟、吾爱破解、小众软件、月光博客、黑果小兵、程序员技术博客、字节跳动技术团队、美团技术团队、携程技术、36氪、雪球、人人都是产品经理、IT之家、WordPress大学、蠎周刊、豆瓣、国家统计局）。停用 1 个：`iao-su`。
   - 品类（CategoryKey 启用集）覆盖 `tech_blog / ai / news / dev_community / podcast / newsletter / finance / other`（`config/categories.json`）。
-- **状态**：✅ 已满足（11 ≥ 10，含计划扩容的 3 个新增渠道，已随扩容 commit 生效）。
+- **状态**：✅ 已满足（启用 31 ≥ 10）。
 
 ---
 
