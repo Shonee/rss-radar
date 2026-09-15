@@ -2,7 +2,7 @@
 
 > **定位**：这是从原 `rss_private` 项目**原样归档**的参考实现，**不参与 CI、不参与构建、不保证可运行**。保留它的目的是记录原始「飞书表当源清单 + feedparser 按时间窗解析」的思路，作为 rss-radar 当前实现的设计溯源。
 >
-> 源项目路径：`/Users/dushouxin/WorkSpace/github/rss_private`（Python + 飞书多维表格源清单同步 + feedparser 解析）。其 RSS 源清单已合并进 `config/sources.json`。
+> 源项目：原 `rss_private`（Python + 飞书多维表格源清单同步 + feedparser 解析；独立于本仓库的另一个项目目录）。其 RSS 源清单已合并进 `config/sources.json`。
 
 ## 归档内容
 
