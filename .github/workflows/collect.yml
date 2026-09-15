@@ -46,7 +46,8 @@ jobs:
       - name: Run collector (output to out-of-tree dir)
         # 真实 CLI：node scripts/collect/index.mjs [--out <dir>]（见 scripts/collect/index.mjs）
         # --out 指向仓库外目录，避免污染工作树；dev-bridge 仍会写到 public/data，下面清理
-        run: node scripts/collect/index.mjs --out /tmp/deploy-data
+        # 部分失败（单源失败不阻断整体）仍继续发布成功产物；致命错误/全部失败仍保持非 0
+        run: node scripts/collect/index.mjs --allow-partial-success --out /tmp/deploy-data
 
       - name: Clean dev-bridge artifacts (untracked public/data)
         run: rm -rf public/data/today public/data/latest.json
