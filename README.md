@@ -82,7 +82,7 @@ npm config set registry https://registry.npmmirror.com --location=user
 | `scripts/dev/` | 本地开发辅助（`seed-history.mjs`） |
 | `scripts/validate-schema.mjs` | ajv 校验 config / schema |
 | `scripts/smoke/` | smoke-test：产物契约断言 + e2e 管线 |
-| `config/` | 站点默认配置（sources / exclusions / notify / site-config / …） |
+| `config/` | 站点默认配置（sources / exclusions / notify / site-config / …；当前 11 个 RSS 渠道） |
 | `docs/` | PRD / ARCHITECTURE / 数据模型 / 实施计划 / 本套使用文档 |
 
 更详细的目录解释见 [`docs/ARCHITECTURE.md` §8](./docs/ARCHITECTURE.md)。
@@ -147,18 +147,19 @@ npm run seed:history              # 3 天
 node scripts/dev/seed-history.mjs --days 7   # 7 天
 ```
 
-## 6 个 workflow（**P4 待做，当前一个都还没创建**）
+## 6 个 workflow（**P4 已创建**）
 
-> ⚠️ `.github/workflows/` 目录**尚不存在**，下列 6 个 workflow 均属 P4 阶段交付物，本文档仅列职责，不代表已实现。
+> `.github/workflows/` 下 6 个文件均已随 P4 创建。触发段默认「只手动、不自动」（`push:` 注释 + 保留 `workflow_dispatch` + job `if` 守卫），详见 [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md)。
+> ⚠️ **尚未真实触发验证**：代码未 push 到远程仓库，Actions 与各部署目标均未真跑过（见「已知限制」）。
 
-| Workflow | 职责 |
-|---|---|
-| `collect.yml` | 每 30 分钟跑一次采集，写 `deploy` 分支 |
-| `notify.yml` | 每日 08:00 推送日报 + 实时热点阈值触发 |
-| `archive.yml` | 每年 1/1 年度归档 → GitHub Release |
-| `deploy-gh-pages.yml` | 手动触发，部署到 GitHub Pages |
-| `deploy-cf-pages.yml` | 手动触发，Direct Upload 到 CF Pages |
-| `keepalive.yml` | 每周 trivial commit 防 Actions 休眠 |
+| Workflow | 触发条件 | 用途 |
+|---|---|---|
+| `collect.yml` | cron `7,37 * * * *` + `workflow_dispatch`；提交带 `[skip ci]`，当天 amend / 跨天新建 | 每 30 分钟跑采集，结果写 `deploy` 分支 |
+| `notify.yml` | cron `3 0 * * *`（≈ 08:03 Asia/Shanghai）+ `workflow_dispatch` | 每日日报 + 实时热点阈值触发，写 `stats/notify-*.json` |
+| `archive.yml` | cron `23 0 1 1 *`（每年 1/1）+ `workflow_dispatch` | 年度归档 |
+| `deploy-gh-pages.yml` | `push:` 默认注释 + `workflow_dispatch` | 手动部署到 GitHub Pages |
+| `deploy-cf-pages.yml` | `push:` 默认注释 + `workflow_dispatch`；`cloudflare/wrangler-action@v3`（生产固定 commit SHA） | 手动 Direct Upload 到 CF Pages |
+| `keepalive.yml` | 每周一次 | trivial commit 防 Actions 休眠 |
 
 ## 数据契约
 
@@ -212,13 +213,13 @@ node scripts/dev/seed-history.mjs --days 7   # 7 天
 | 实施计划 | [`docs/IMPLEMENTATION_PLAN.md`](./docs/IMPLEMENTATION_PLAN.md) |
 | 数据模型 | [`docs/data-model/README.md`](./docs/data-model/README.md) |
 
-## 已知限制（截至 P3）
+## 已知限制（截至 P4）
 
 - **P2 已完成**：SimHash + Dice L3 去重、事件流 NDJSON 双写、跨天 rollover、月度 NDJSON、报告生成、URL 健康检查
 - **P3 已完成**：前端 5 条路由（4 页面 + 关于）、通知模块（4 渠道适配器 + 模板 + 节流幂等）、`seed:history` 历史种子
-- **P4 待做**：6 个 GitHub Actions workflow + 部署到 GH Pages / CF Pages + 其余 docs（VERIFICATION / CONTRIBUTING 等）
+- **P4 进度**：6 个 GitHub Actions workflow 已随 P4 创建（见上「6 个 workflow」），但**尚未真实触发验证**——代码未 push 到远程仓库，Actions 与各部署目标均未真跑；`docs/VERIFICATION.md` / `docs/CONTRIBUTING.md` 已补齐；部署端到端仍待 P5 验证
 - **L5 关键词 Jaccard 主题重合**：仍未实现（见上文「L1~L5 去重分级」）
-- **通知真实发送尚未验证**：`.github/workflows/notify.yml` 尚未创建，当前只在本地做过 dry-run 与 mock 单测；4 个渠道在 `config/notify.json` 中**全部 `enabled:false`**
+- **通知真实发送尚未验证**：4 个渠道在 `config/notify.json` 中**全部 `enabled:false`**；`notify.yml` 已创建但仅做过本地 dry-run 与 mock 单测，未真发
 
 ## License
 

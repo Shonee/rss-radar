@@ -12,13 +12,14 @@
 | 项 | 状态 |
 |---|---|
 | 本地 `dev` / `build` / `preview` | ✅ **可用**（我已实跑验证） |
-| `.github/workflows/deploy-gh-pages.yml` | ❌ **尚未创建**（T-P4-02） |
-| `.github/workflows/deploy-cf-pages.yml` | ❌ **尚未创建**（T-P4-03） |
+| 6 个 workflow（collect / notify / archive / deploy-gh-pages / deploy-cf-pages / keepalive） | 🟡 **已创建，尚未真实触发验证** |
+| `.github/workflows/deploy-gh-pages.yml` | 🟡 **已创建**（T-P4-02，未真跑） |
+| `.github/workflows/deploy-cf-pages.yml` | 🟡 **已创建**（T-P4-03，未真跑） |
 | Cloudflare Pages Direct Upload 项目 | ❌ **尚未创建** |
 | `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` | ❌ **尚未准备**（主理人已决定延后到代码上传远程仓库后再做） |
 | 部署端到端 | ❌ **未验证** |
 
-> **因此本文档目前是「按架构设计的操作手册」**：本地部分是实测的；GitHub Pages / Cloudflare Pages 部分是**尚未落地的设计**，**不要把未验证的步骤当作已验证**。落地后请按真实 workflow 复核。
+> **因此本文档目前是「按架构设计的操作手册」**：本地部分是实测的；6 个 workflow 文件已随 P4 创建、但**代码尚未 push 到远程仓库，Actions 与 CF Pages 部署均未真实验证**，GitHub Pages / Cloudflare Pages 部分是**尚未端到端跑通的设计**，**不要把未验证的步骤当作已验证**。落地后请按真实 workflow 复核。
 
 ---
 
@@ -69,9 +70,9 @@ GH Pages 把站点放在**子路径** `https://<owner>.github.io/rss-radar/`。�
 
 - 仓库 → **Settings → Pages → Build and deployment → Source** 选 **GitHub Actions**。
 
-### 2.3 workflow（**尚未创建**，下面是设计骨架）
+### 2.3 workflow（**已创建，未真实触发验证**，骨架如下）
 
-文件 `.github/workflows/deploy-gh-pages.yml`（设计）：
+文件 `.github/workflows/deploy-gh-pages.yml`（设计骨架；P4 已创建）：
 
 - **触发**：`workflow_dispatch`（手动）；`push:` 段**默认整段注释**（§6.1.1，先手动，稳定后再开自动）。
 - **步骤**：checkout → `actions/setup-node@v4`（Node 20 + `cache: npm`）→ `npm ci` → `npm run build` → `actions/configure-pages` + `actions/upload-pages-artifact`（`dist`）+ `actions/deploy-pages`。
@@ -114,9 +115,9 @@ GH Pages 把站点放在**子路径** `https://<owner>.github.io/rss-radar/`。�
 
 > ⚠️ **不可逆**：Direct Upload 项目**事后无法切换为 Git 集成**（官方明确：*"You cannot switch to Git integration later"*）。若要改回 Git 集成，需新建项目。
 
-### 3.4 workflow（**尚未创建**，设计骨架）
+### 3.4 workflow（**已创建，未真实触发验证**，设计骨架）
 
-`.github/workflows/deploy-cf-pages.yml`（取自 ARCHITECTURE §7.6.5）：
+`.github/workflows/deploy-cf-pages.yml`（取自 ARCHITECTURE §7.6.5；P4 已创建）：
 
 ```yaml
 name: deploy-cf-pages
@@ -194,12 +195,38 @@ on:
 
 ---
 
-## 7. 尚待完成（落地清单）
+## 7. Workflow 清单、所需 Secrets 与落地清单
 
-1. 创建 `.github/workflows/deploy-gh-pages.yml`（T-P4-02）。
-2. 创建 `.github/workflows/deploy-cf-pages.yml`（T-P4-03），`wrangler-action` **固定 commit SHA**。
+### 7.1 六个 workflow（P4 已创建）
+
+| Workflow | 用途 | 关键 Secrets |
+|---|---|---|
+| `collect.yml` | 每 30 分钟采集写 `deploy` 分支 | `GITHUB_TOKEN`（内置） |
+| `notify.yml` | 每日日报 + 实时热点触发 | `SMTP_PASSWORD`（邮箱）、`FEISHU_WEBHOOK` / `DINGTALK_WEBHOOK` / `WECOM_WEBHOOK`（对应渠道，可选） |
+| `archive.yml` | 每年 1/1 年度归档 | `GITHUB_TOKEN`（内置） |
+| `deploy-gh-pages.yml` | 手动部署 GH Pages | 无需（内置 `GITHUB_TOKEN`） |
+| `deploy-cf-pages.yml` | 手动 Direct Upload 到 CF Pages | `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` |
+| `keepalive.yml` | 每周 trivial commit 防休眠 | `GITHUB_TOKEN`（内置） |
+
+> 触发段默认「只手动、不自动」（`push:` 注释 + 保留 `workflow_dispatch` + job `if` 守卫）。详细触发条件见 `README.md` §6 个 workflow。
+
+### 7.2 所需 GitHub Secrets 清单
+
+| Secret | 用途 | 是否必需 |
+|---|---|---|
+| `CLOUDFLARE_API_TOKEN` | CF Pages Direct Upload（仅 Account › Cloudflare Pages › Edit 最小权限） | 部署 CF Pages 必需 |
+| `CLOUDFLARE_ACCOUNT_ID` | CF 账户 ID | 部署 CF Pages 必需 |
+| `SMTP_PASSWORD` | 邮箱通知（nodemailer）；配合 `config/notify.json` 的 smtp 配置 | 启用邮箱通知时必需（默认 `enabled:false`） |
+| `FEISHU_WEBHOOK` / `DINGTALK_WEBHOOK` / `WECOM_WEBHOOK` | 对应 IM 渠道 webhook | 启用对应渠道时必需（默认全 `enabled:false`） |
+
+> Secrets 在仓库 **Settings → Secrets and variables → Actions** 配置。通知相关 secret 仅在对应渠道 `enabled:true` 时才被读取；当前 4 个通知渠道在 `config/notify.json` 中**全部 `enabled:false`**。
+
+### 7.3 尚待完成（落地清单）
+
+1. ~~创建 `.github/workflows/deploy-gh-pages.yml`（T-P4-02）~~ ✅ 已创建（未真跑）
+2. ~~创建 `.github/workflows/deploy-cf-pages.yml`（T-P4-03），`wrangler-action` **固定 commit SHA**~~ ✅ 已创建（未真跑）
 3. CF 控制台建 **Direct Upload** 项目。
-4. 配 Secrets：`CLOUDFLARE_API_TOKEN`（仅 Pages:Edit）、`CLOUDFLARE_ACCOUNT_ID`。
-5. 手动触发一次，确认 URL 可访问、页面渲染正确（P5 验证）。
+4. 配 Secrets：`CLOUDFLARE_API_TOKEN`（仅 Pages:Edit）、`CLOUDFLARE_ACCOUNT_ID`（及可选通知 secret）。
+5. 手动触发每个 workflow 一次，确认 Actions 跑通、CF Pages URL 可访问、页面渲染正确（P5 验证）。
 
-> 以上均**尚未执行**，故本文档的 GH Pages / CF Pages 部分**尚未端到端验证**。
+> 以上 3~5 **尚未执行**；workflow 文件虽已随 P4 创建，但**代码尚未 push 到远程仓库，Actions 与 CF Pages 部署均未真实验证**，故本文档的 GH Pages / CF Pages 部分**尚未端到端验证**。
