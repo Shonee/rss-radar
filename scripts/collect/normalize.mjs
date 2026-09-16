@@ -73,9 +73,10 @@ export function sanitizeSummary(rawText, maxChars = DEFAULT_SUMMARY_MAX_CHARS) {
  * @returns {Object} 归一化后的 Item（最小字段集）
  */
 export function normalizeItem(raw, source, channel, opts = {}) {
-  const publishedAt = toIsoUtc(raw.publishedAt || raw.pubDate || raw.updated || raw.date);
-  const updatedAt = toIsoUtc(raw.updatedAt || raw.updated || raw.publishedAt) ?? publishedAt;
   const url = raw.url || raw.link || '';
+  const publishedAt =
+    toIsoUtc(raw.publishedAt || raw.pubDate || raw.updated || raw.date) ?? dateFromUrl(url);
+  const updatedAt = toIsoUtc(raw.updatedAt || raw.updated || raw.publishedAt) ?? publishedAt;
   const title = String(raw.title ?? '(untitled)').slice(0, 512);
   const dedupKey = keyOf({ url, guid: raw.guid, sourceId: source.id, title });
   return {
@@ -109,6 +110,38 @@ export function normalizeItem(raw, source, channel, opts = {}) {
     language: raw.language ?? channel.language ?? undefined,
     mediaType: raw.mediaType ?? 'article',
   };
+}
+
+/**
+ * 从 URL 提取发布日期（兜底）：许多博客平台把发布日期编进 URL
+ * （WordPress `/%year%/%month%/%day%/`、Hexo/Jekyll `/:year/:month/:day/:title`）。
+ * 部分 feed 的 item 不带 pubDate/dc:date（实例：美团 tech.meituan.com/rss.xml 由
+ * @vuepress/plugin-feed 生成，10 条 item 全部无日期），此时归一化只能落到
+ * nowIso()（抓取时间），前端「30 分钟前」即由此而来——URL 日期远比抓取时间准确。
+ *
+ * 仅接受「日」精度的两种模式；不匹配或非真实日历日期返回 undefined。
+ * 拒绝超过 1 天的未来日期（URL 日期在未来几乎必然是误匹配，如 ID 片段）。
+ */
+export function dateFromUrl(url) {
+  if (!url) return undefined;
+  const patterns = [
+    /\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//, // /2026/09/10/slug
+    /(\d{4})-(\d{2})-(\d{2})/, // slug-2026-09-10 或 ?date=2026-09-10
+  ];
+  for (const re of patterns) {
+    const m = String(url).match(re);
+    if (!m) continue;
+    // 不能只靠 Date.parse：new Date('2026-02-30T00:00:00Z') 会被滚动成 03-02 而非判非法，
+    // 必须做日历往返校验（年月日逐项比对）
+    const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])];
+    const dt = new Date(`${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}T00:00:00Z`);
+    if (Number.isNaN(dt.getTime())) continue;
+    if (dt.getUTCFullYear() !== y || dt.getUTCMonth() !== mo - 1 || dt.getUTCDate() !== d) continue;
+    const iso = dt.toISOString().replace(/\.\d{3}Z$/, 'Z');
+    if (Date.parse(iso) > Date.now() + 24 * 60 * 60 * 1000) continue; // 未来日期几乎必然是误匹配
+    return iso;
+  }
+  return undefined;
 }
 
 function toIsoUtc(d) {
