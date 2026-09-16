@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-09-16T00:54:11.349Z",
+  "event": "dailyReport",
+  "idempotencyKey": "daily:2026-09-12",
+  "date": "2026-09-12",
+  "durationMs": 1,
+  "results": [
+    {
+      "channelId": "email-main",
+      "channelType": "email",
+      "ok": false,
+      "skipped": true,
+      "skipReason": "disabled",
+      "status": null,
+      "error": null,
+      "durationMs": 0
+    },
+    {
+      "channelId": "feishu-webhook",
+      "channelType": "feishu",
+      "ok": false,
+      "skipped": true,
+      "skipReason": "disabled",
+      "status": null,
+      "error": null,
+      "durationMs": 0
+    },
+    {
+      "channelId": "dingtalk-webhook",
+      "channelType": "dingtalk",
+      "ok": false,
+      "skipped": true,
+      "skipReason": "disabled",
+      "status": null,
+      "error": null,
+      "durationMs": 0
+    },
+    {
+      "channelId": "wecom-webhook",
+      "channelType": "wecom",
+      "ok": false,
+      "skipped": true,
+      "skipReason": "disabled",
+      "status": null,
+      "error": null,
+      "durationMs": 0
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "sent": 0,
+    "failed": 0,
+    "skipped": 4
+  }
+}
