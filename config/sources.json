@@ -526,11 +526,12 @@
       "name": "科技爱好者周刊",
       "type": "rss",
       "url": "https://www.ruanyifeng.com/blog/weekly/rss.xml",
-      "enabled": true,
+      "enabled": false,
       "language": "zh-CN",
       "interval": 60,
+      "notes": "2026-09-16 实测该 URL 对任何 UA 均为 404（weekly/atom.xml、feed.xml 等候选路径全部 404），阮一峰博客无独立周刊 feed；周刊文章已包含在主博客 atom（ruanyifeng-blog-atom）中。待官方提供独立 feed 后再启用。",
       "createdAt": "2026-09-01T00:00:00Z",
-      "updatedAt": "2026-09-01T00:00:00Z"
+      "updatedAt": "2026-09-16T00:00:00Z"
     },
     {
       "id": "v2ex-hot",
