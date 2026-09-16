@@ -24,6 +24,7 @@
     "reconcile:entities": "node scripts/reconcile-entities.mjs",
     "collect": "node scripts/collect/index.mjs",
     "collect:once": "node scripts/collect/index.mjs --once",
+    "warm:cdn": "node scripts/collect/warm-cdn.mjs",
     "seed:history": "node scripts/dev/seed-history.mjs"
   },
   "dependencies": {

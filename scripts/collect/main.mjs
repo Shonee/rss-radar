@@ -140,6 +140,17 @@ export async function main() {
     roundRoot: outRoot,
     date,
     channelWeights,
+    // ⚠️ 刻意保留占位值 `'local'`。2026-09-16 实测复核后确认：**不需要**回填真实 sha。
+    //   ① 前端 `isValidCommit()` 会把它过滤掉，退回 `@<branch>`（即 `@deploy`）；
+    //   ② 实测 `@deploy/<每轮唯一文件名>` → `x-cache: MISS, MISS` + **200**：
+    //      分支引用对**全新 URL** 必然回源，既不陈旧也不 404。陈旧只发生在
+    //      **稳定文件名**（`today/latest.json`）上，而那条链由前端 `isStale()` 闸门兜；
+    //   ③ 要回填真实 sha，得「先提交内容 → 得知 sha → 再写指针 → 二次提交」，
+    //      因为指针必须引用**包含该快照的那个 commit**，而它的 sha 在写指针时尚未产生；
+    //      且把 sha 误用于**可变路径**（`history/*.ndjson`、`stats/*.json`）会把它们
+    //      **冻结在该快照** —— 那是能力回归，不是优化。
+    //   ⇒ 收益未被实测支持，复杂度与风险却真实存在。真正的首访瓶颈是边缘冷回源
+    //      （见 `scripts/collect/warm-cdn.mjs` 头部注释），已由 workflow 的 warm job 处理。
     commit: 'local',
     fetchResults: results,
   });

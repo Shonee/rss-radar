@@ -101,3 +101,50 @@ jobs:
           fi
 
           git push --force-with-lease origin deploy
+
+  # ── 边缘预热：把「每小时第一位访客」的冷回源从 10.4s 压到 ~0.5s ────────────────
+  #
+  # 依据（2026-09-16 实测，同一快照 URL / 源文件 3.55MB / brotli 608KB）：
+  #   冷（POP 与 Shield 都没）→ `x-cache: MISS, MISS`   TTFB 10.4s
+  #   预热后               → `x-cache: MISS, HIT`    TTFB 0.46s   ← 11 倍
+  # 快照/报告文件名每轮带时间戳 ⇒ **每小时都是全新 URL** ⇒ 每小时的第一位访客必然
+  # 付这 10.4s，这正是「第一次打开很慢、之后就快了」。预热一次即填满盾层（实测边缘
+  # 响应 `vary: Accept-Encoding`，变体只按编码分、与 UA 无关，故一次就够）。
+  #
+  # 为什么必须是**独立 job**：`deploy` 是 orphan 分支（只含 today/ stats/ history/），
+  # collect job 在 publish 步骤切过去后工作树里没有 `scripts/`，无法就地调用脚本。
+  # 独立 job 从 master 重新 checkout 即可拿到脚本。
+  # 而且它与采集链路**完全解耦**：needs+continue-on-error 双重兜底，本 job 失败
+  # 不影响数据发布 —— 预热只是投递优化，不是正确性依赖。
+  warm:
+    needs: collect
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: true
+    # 最小权限：只需读代码（master）+ 读 deploy 指针，不推送任何东西。
+    # 工作流级给的是 contents: write（collect job 推 deploy 需要），本 job 显式收窄。
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout master (scripts)
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch pointer from deploy branch
+        run: |
+          set -euo pipefail
+          git fetch --depth=1 origin deploy
+          git show origin/deploy:today/latest.json > /tmp/latest.json
+          cat /tmp/latest.json
+
+      - name: Warm jsDelivr edges
+        continue-on-error: true
+        run: |
+          set +e
+          node scripts/collect/warm-cdn.mjs --pointer /tmp/latest.json
+          echo "[warm] exit=$?（预热失败不影响任何产出）"
+          exit 0
