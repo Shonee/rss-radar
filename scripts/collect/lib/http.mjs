@@ -12,7 +12,7 @@ import { readFileSync } from 'node:fs';
  */
 
 /** 默认 UA：参考 ARCHITECTURE §3.7 */
-const DEFAULT_UA = 'rss-radar-bot/1.0 (+https://github.com/<owner>/rss-radar)';
+export const DEFAULT_UA = 'rss-radar-bot/1.0 (+https://github.com/<owner>/rss-radar)';
 
 /** 判断错误是否可重试 */
 function isRetryable(err) {

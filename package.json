@@ -19,6 +19,9 @@
     "smoke": "bash scripts/smoke/run.sh",
     "validate": "node scripts/validate-schema.mjs",
     "sync:sources": "node scripts/sync-sources.mjs",
+    "import:channels": "node scripts/import-channels.mjs",
+    "export:channels": "node scripts/export-channels.mjs",
+    "reconcile:entities": "node scripts/reconcile-entities.mjs",
     "collect": "node scripts/collect/index.mjs",
     "collect:once": "node scripts/collect/index.mjs --once",
     "seed:history": "node scripts/dev/seed-history.mjs"

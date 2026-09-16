@@ -13,6 +13,7 @@ import { copyToPublicData, refreshLatestLink } from './write.mjs';
 import { todayLocal, nowIso } from './lib/time.mjs';
 import { appendEvents, makeEvent } from './append-events.mjs';
 import { projectSnapshot, pruneOldStampedArtifacts } from './project-snapshot.mjs';
+import { normalizeFeedUrl } from '../lib/channel-registry.mjs';
 import { makeRunId } from './lib/run-id.mjs';
 import { writeReport } from './report.mjs';
 import { checkUrls, persistSourceHealth } from './url-health.mjs';
@@ -77,9 +78,25 @@ export async function main() {
   // 摘要截断长度取自 config（analysis.summaryMaxChars），透传给归一化层。
   // 此前该配置项在采集侧零引用 → 长摘要原样入库 → 违反 snapshot schema 的 300 字上限。
   const summaryMaxChars = siteConfig?.analysis?.summaryMaxChars;
-  const results = await runPool(dueSources, concurrency, async (source) => {
-    return collectOne(source, channelMap, ruleMap, excludes, summaryMaxChars);
+  // 同一 feed URL 只发**一次**网络请求（主理人 2026-09-16 拍板：
+  // 「不要重复请求同一个渠道获取 rss 信息」）。
+  //
+  // 注册表层已用同一条归一化规则判重（scripts/lib/channel-registry.mjs +
+  // auditRegistry 的 duplicateFeedUrls），这里是采集层的对应落点：
+  // 即便将来为了「多渠道共用同一个 feed」而保留多个 source 条目，
+  // 网络请求也不会翻倍。抓取一次 → 各 source 各自做本地归一化
+  //（channelId 不同，条目的渠道归属必须区分）。
+  const sourceGroups = groupSourcesByFeedUrl(dueSources);
+  const groupedResults = await runPool(sourceGroups, concurrency, async (group) => {
+    return collectGroup(group, channelMap, ruleMap, excludes, summaryMaxChars);
   });
+  const results = groupedResults.flat();
+  if (sourceGroups.length < dueSources.length) {
+    console.log(
+      `[collect] 同 feed 去重  sources=${dueSources.length} → 唯一 URL ${sourceGroups.length}`
+      + `（省下 ${dueSources.length - sourceGroups.length} 次请求）`,
+    );
+  }
 
   // 统计
   let ok = 0;
@@ -351,55 +368,104 @@ async function runPool(items, concurrency, worker) {
 }
 
 /**
- * 采集单个 source 的完整流程（含归一化 + 分类 + 排除）
- * 失败隔离：单源失败不阻断整体（allSettled 语义）
+ * 按**归一化 feed URL** 给 source 分组，同 URL 归为一组。
+ *
+ * 组内第 0 个是「代表 source」—— 只有它真正发网络请求。组内顺序保持 `dueSources`
+ * 的原始顺序，从而结果顺序稳定（可复现 / 幂等）。
+ *
+ * ⚠️ 归一化规则必须与 `scripts/lib/channel-registry.mjs` 的 `normalizeFeedUrl` 一致：
+ *    注册表层判重与采集层去重若用两套规则，就会出现「审计报重复、采集仍抓两次」的分叉。
+ *
+ * @param {Array<{id:string, url:string}>} dueSources
+ * @returns {Array<Array<Object>>}
+ */
+export function groupSourcesByFeedUrl(dueSources) {
+  const byKey = new Map();
+  for (const s of dueSources ?? []) {
+    const key = normalizeFeedUrl(s?.url) || String(s?.id ?? '');
+    if (!byKey.has(key)) byKey.set(key, []);
+    byKey.get(key).push(s);
+  }
+  return [...byKey.values()];
+}
+
+/**
+ * 采集一个「同 feed 组」：**只抓一次**，再为组内每个 source 各做一次本地
+ * 归一化 / 分类 / 排除，产出逐 source 的结果。
+ *
+ * 为什么归一化不能共用：条目的 `channelId` / `channelName` 由 source 的归属决定 ——
+ * 两个 source 挂同一个 feed 但属于不同 channel 时，条目必须各自归属。
+ * 组内共用的只有**网络请求**这一件事（`rawItems` 视为只读输入）。
+ *
+ * 失败隔离：抓取失败时组内每个 source 各自标记失败（而非整轮中断）；
+ * channel 缺失时也只有那一个 source 失败。
  *
  * 返回结构（T-P3-fix：显式补 `ok`，供 projectSnapshot 汇总逐源健康度）：
  *   成功 → { sourceId, channelId, channelName, ok:true, items, rawItemCount, httpStatus, hitCount }
  *   失败 → { sourceId, channelId, channelName, ok:false, error }
+ *
+ * @returns {Promise<Array<Object>>} 与 group 等长的结果数组
  */
-async function collectOne(source, channelMap, ruleMap, excludes, summaryMaxChars) {
-  const channel = channelMap.get(source.channelId);
-  if (!channel) {
-    return { sourceId: source.id, channelId: source.channelId, channelName: '(missing)', ok: false, error: new Error(`channel ${source.channelId} not found`) };
-  }
-  let rawItems;
+async function collectGroup(group, channelMap, ruleMap, excludes, summaryMaxChars) {
+  const primary = group[0];
+  let rawItems = [];
   let httpStatus = 0;
+  let fetchError = null;
+
   try {
-    const connector = get(source.type); // unknown type → throws
-    const res = await connector.run(source);
+    const connector = get(primary.type); // unknown type → throws
+    const res = await connector.run(primary);
     rawItems = res.items ?? [];
     httpStatus = res.httpStatus ?? 0;
   } catch (err) {
+    fetchError = err;
+  }
+
+  const sharedWith = group.length > 1 ? group.map((s) => s.id) : undefined;
+
+  return group.map((source) => {
+    const channel = channelMap.get(source.channelId);
+    if (!channel) {
+      return {
+        sourceId: source.id,
+        channelId: source.channelId,
+        channelName: '(missing)',
+        ok: false,
+        error: new Error(`channel ${source.channelId} not found`),
+      };
+    }
+    if (fetchError) {
+      return {
+        sourceId: source.id,
+        channelId: source.channelId,
+        channelName: channel.name,
+        ok: false,
+        error: fetchError,
+      };
+    }
+
+    const out = [];
+    let hitCount = 0;
+    for (const raw of rawItems) {
+      const item = normalizeItem(raw, source, channel, { summaryMaxChars });
+      item.category = classifyItem(item, ruleMap);
+      const ev = evaluateItem(item, excludes);
+      if (ev.excluded) {
+        hitCount += 1;
+        continue;
+      }
+      out.push(item);
+    }
     return {
       sourceId: source.id,
       channelId: source.channelId,
       channelName: channel.name,
-      ok: false,
-      error: err,
+      ok: true,
+      items: out,
+      rawItemCount: rawItems.length,
+      httpStatus,
+      hitCount,
+      ...(sharedWith ? { sharedWith } : {}),
     };
-  }
-
-  const out = [];
-  let hitCount = 0;
-  for (const raw of rawItems) {
-    const item = normalizeItem(raw, source, channel, { summaryMaxChars });
-    item.category = classifyItem(item, ruleMap);
-    const ev = evaluateItem(item, excludes);
-    if (ev.excluded) {
-      hitCount += 1;
-      continue;
-    }
-    out.push(item);
-  }
-  return {
-    sourceId: source.id,
-    channelId: source.channelId,
-    channelName: channel.name,
-    ok: true,
-    items: out,
-    rawItemCount: rawItems.length,
-    httpStatus,
-    hitCount,
-  };
+  });
 }

@@ -26,6 +26,21 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
+// 渠道 id 派生 / 标签解析 / feed URL 归一化统一收敛到 scripts/lib/channel-registry.mjs。
+// 同一个概念有两份实现，是清单类项目最典型的漂移源 —— 两处规则一旦分叉，
+// 「同一渠道判成两个」或「两个渠道判成一个」都会静默发生。
+import {
+  deriveChannelId,
+  parseTags,
+  freeId,
+  normalizeFeedUrl,
+  normalizeHomepage,
+  deriveHomepageFromFeed,
+  hostOf,
+} from './lib/channel-registry.mjs';
+
+// 保持既有导出面（scripts/__tests__/sync-sources.test.mjs 直接测这两个函数）
+export { deriveChannelId, parseTags };
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
@@ -108,134 +123,30 @@ export function parseBitableUrl(url) {
   return { appToken, tableId };
 }
 
-/** 去尾部斜杠（用于 URL 归一化比较） */
-function stripTrailingSlash(s) {
-  return String(s || '').replace(/\/+$/, '');
-}
-
-/** 取 URL 的 host；失败则原样返回（兜底） */
-function hostOf(u) {
-  try {
-    return new URL(u).host;
-  } catch {
-    return String(u || '');
-  }
-}
-
-/** 取 URL 的 origin；失败则空串 */
-function originOf(u) {
-  try {
-    return new URL(u).origin;
-  } catch {
-    return '';
-  }
-}
-
-/** 取 URL 的 path 段（按 / 切分，去掉空段）；失败则空数组 */
-function pathSegmentsOf(u) {
-  try {
-    return new URL(u).pathname.split('/').filter(Boolean);
-  } catch {
-    return [];
-  }
-}
+// ⬇️ stripTrailingSlash / hostOf / originOf 三个**本地实现已删除**，统一收敛到 lib：
+//    - URL 比较 → lib 的 `normalizeHomepage`（实体键：去协议 + 去 www + 去尾斜杠）
+//    - host 提取 → lib 的 `hostOf`
+//    - 主页兜底 → lib 的 `deriveHomepageFromFeed`（原来的 `originOf(rssUrl)` 会把
+//      整个路径丢掉，是「同站不同栏目压成一条渠道」的根因）
+//    这正是本文件顶部那段注释所警告的「同一个概念有两份实现，是清单类项目最
+//    典型的漂移源」—— 本地那份已清除。
 
 // ----------------------------------------------------------------------------
 // channel id 派生
 // ----------------------------------------------------------------------------
+//
+// ⬇️ pathSegmentsOf / FEED_STOPWORDS / deriveChannelId 的实现已下沉到
+//    scripts/lib/channel-registry.mjs（本文件顶部 import + re-export）。
+//    保留此处小节标题只为让 diff 易读；导出面与行为完全不变。
 
-/** 通用 feed 词停用表：path 段若是这些（或其本身就无区分度）则不参与 channel id 派生 */
-const FEED_STOPWORDS = new Set([
-  'feed',
-  'rss',
-  'atom',
-  'index',
-  'feeds',
-  'feed.xml',
-  'rss.xml',
-  'atom.xml',
-  'index.html',
-]);
-
-/**
- * 由 homepage（网站地址）派生 channel id：
- *   - 取 host：小写、去 www. 前缀、剥掉最后一个 label（TLD），这是 rss-radar 现有约定（appinn.com → appinn）
- *   - 取 path 中**第一个有区分度的段**拼到 host 之后（区分「同域挂多博主」场景，如 blog.csdn.net/ByteDanceTech）
- *     「有区分度」= 非空、不在 FEED_STOPWORDS、且非纯数字/纯符号段
- *   - 非字母数字 → '-'，折叠连续 '-'，转小写，去首尾 '-'，长度兜底 ≥2
- *   - 必须匹配 ^[a-z0-9][a-z0-9-]{1,63}$（长度至少 2）；不合法直接抛错（防回归护栏）
- * @param {string} homepage
- * @returns {string}
- */
-export function deriveChannelId(homepage) {
-  let host = hostOf(homepage) || String(homepage || '');
-  host = host.toLowerCase();
-  if (host.startsWith('www.')) host = host.slice(4);
-  // 去掉 TLD（最后一个 '.' 之后的段）
-  const lastDot = host.lastIndexOf('.');
-  if (lastDot > 0) host = host.slice(0, lastDot);
-  let base = host.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-
-  // 拼接 path 中第一个有区分度的段（同域多博主场景的区分度在 path）
-  for (const seg of pathSegmentsOf(homepage)) {
-    const raw = String(seg).toLowerCase();
-    if (!raw || FEED_STOPWORDS.has(raw)) continue;
-    const cleaned = raw.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-    if (!cleaned) continue;
-    if (/^[0-9-]+$/.test(cleaned)) continue; // 纯数字 / 纯符号段不参与
-    base = `${base}-${cleaned}`;
-    break;
-  }
-
-  // 统一收尾：折叠连续 '-'、去首尾 '-'、小写、长度兜底 ≥2
-  let id = base.toLowerCase().replace(/-+/g, '-').replace(/^-+|-+$/g, '');
-  if (id.length < 2) id = (id + 'xx').slice(0, Math.max(id.length, 2));
-
-  // 防回归护栏：派生结果必须满足 channel id 正则
-  if (!CHANNEL_ID_RE.test(id)) {
-    throw new Error(`deriveChannelId: 派生 id 非法 "${id}"（来自 homepage=${homepage}）`);
-  }
-  return id;
-}
 
 // ----------------------------------------------------------------------------
 // 标签容错解析（JSON 数组 / Python repr 单引号）
 // ----------------------------------------------------------------------------
+//
+// ⬇️ parseTags 的实现已下沉到 scripts/lib/channel-registry.mjs
+//    （本文件顶部 import + re-export）。行为与导出面完全不变。
 
-/**
- * 解析飞书「标签」列。该列格式不统一：可能是 JSON 数组（["Mac","软件下载"]），
- * 也可能是 Python repr 单引号（['Mac', '软件下载']）。
- * 规则：先试 JSON.parse；失败则用正则抽取被 ' 或 " 包裹的 token；
- * 解析不出 / 空 → 返回 null（调用方据此「只有非空才写入 tags」）。
- * @param {any} raw
- * @returns {string[] | null}
- */
-export function parseTags(raw) {
-  if (raw == null) return null;
-  if (Array.isArray(raw)) {
-    const arr = raw.map((x) => String(x).trim()).filter(Boolean);
-    return arr.length ? arr : null;
-  }
-  const s = String(raw).trim();
-  if (!s) return null;
-  // 1) 先试 JSON
-  try {
-    const parsed = JSON.parse(s);
-    if (Array.isArray(parsed)) {
-      const arr = parsed.map((x) => String(x).trim()).filter(Boolean);
-      return arr.length ? arr : null;
-    }
-  } catch {
-    /* 非 JSON，往下走 */
-  }
-  // 2) Python repr / 任意被引号包裹的 token
-  const m = s.match(/['"]([^'"]+)['"]/g);
-  if (m) {
-    const arr = m.map((tok) => tok.replace(/^['"]|['"]$/g, '').trim()).filter(Boolean);
-    return arr.length ? arr : null;
-  }
-  return null;
-}
 
 // ----------------------------------------------------------------------------
 // 记录 → 候选 config 纯函数（可单测、可复用）
@@ -261,7 +172,12 @@ export function mapRecordsToConfig(records, existingConfig = { channels: [], sou
   const existingChannels = Array.isArray(existingConfig.channels) ? existingConfig.channels : [];
   const existingSources = Array.isArray(existingConfig.sources) ? existingConfig.sources : [];
 
-  const existingSourceUrls = new Set(existingSources.map((s) => stripTrailingSlash(s.url)));
+  // 去重键统一用 channel-registry 的 normalizeFeedUrl（与导入管线同一条规则）——
+  // 只用「去尾斜杠」会漏掉 `?utm_source=x`、query 顺序、默认端口等等价写法，
+  // 结果就是同一个渠道被当成两个，进而被重复请求。
+  const existingSourceUrls = new Set(
+    existingSources.map((s) => normalizeFeedUrl(s.url)).filter(Boolean),
+  );
   const channels = existingChannels.slice();
   const sources = existingSources.slice();
 
@@ -287,13 +203,13 @@ export function mapRecordsToConfig(records, existingConfig = { channels: [], sou
     const rssUrl = field(rec, 'RSS地址');
     if (!rssUrl) continue; // 没有 RSS 地址无法生成 source，跳过
 
-    // 去重：与已有 source.url（尾部 / 归一化）或本次新生成的重复 → 跳过
-    const normRss = stripTrailingSlash(rssUrl);
-    if (existingSourceUrls.has(normRss)) {
+    // 去重：与已有 source.url（归一化）或本次新生成的重复 → 跳过
+    const normRss = normalizeFeedUrl(rssUrl);
+    if (normRss && existingSourceUrls.has(normRss)) {
       skipped += 1;
       continue;
     }
-    if (sources.some((s) => stripTrailingSlash(s.url) === normRss)) {
+    if (normRss && sources.some((s) => normalizeFeedUrl(s.url) === normRss)) {
       skipped += 1;
       continue;
     }
@@ -305,11 +221,13 @@ export function mapRecordsToConfig(records, existingConfig = { channels: [], sou
     const tagsRaw = field(rec, '标签');
     const description = field(rec, '描述') || '';
 
-    const homepage = siteUrl || originOf(rssUrl) || rssUrl;
+    // 主页兜底统一走 lib（栏目级，不是裸 host）；判重也用实体键归一化 ——
+    // 于是 http/https、www/非 www 的同一实体不会再被判成两条渠道。
+    const homepage = siteUrl || deriveHomepageFromFeed(rssUrl) || rssUrl;
     const host = hostOf(homepage) || homepage;
 
-    // 1) homepage 相同 → 复用已有 channel（不新建）
-    let channel = channels.find((c) => stripTrailingSlash(c.homepage) === stripTrailingSlash(homepage));
+    // 1) 同一实体 → 复用已有 channel（不新建）
+    let channel = channels.find((c) => normalizeHomepage(c.homepage) === normalizeHomepage(homepage));
     let reused = false;
     let channelId;
     if (channel) {

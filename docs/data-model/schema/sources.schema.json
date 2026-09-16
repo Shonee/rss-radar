@@ -80,6 +80,13 @@
           "description": "自由标签（非受控词表，仅作展示/检索；正式分类请用 category）。用于承载外部源清单导入时的原始标签，如 [\"Mac\",\"软件下载\"]"
         },
         "description": { "type": "string", "description": "渠道自由描述，如「已断更，最新文章 2024 年」。用于承载外部源清单导入时的原始说明，不参与采集逻辑" },
+        "origin": {
+          "type": "string",
+          "enum": ["manual", "garss", "rsshub-doc", "feishu", "opml", "generic"],
+          "description": "溯源：该条目由谁引入。缺省视为 manual（人工编写）。与 originRef / importBatch 配合，使「批量导入可幂等重跑、且绝不覆盖人工修改」成为可能（对齐 garss 的 editreadme-* 前缀思想）"
+        },
+        "originRef": { "type": "string", "description": "外部来源里的原始 id（如 garss 的 S137 / editreadme-faebdd92）——重跑导入时的幂等锚点" },
+        "importBatch": { "type": "string", "description": "导入批次名，如 garss-2026-04。用于「整批回滚」与「这个渠道是哪批引进的」" },
         "createdAt": { "type": "string", "format": "date-time", "description": "源创建时间" },
         "updatedAt": { "type": "string", "format": "date-time", "description": "源更新时间" }
       }
@@ -112,6 +119,13 @@
         "params": { "type": "object", "description": "仅 feishu_bitable：附加查询参数，如 {\"page_size\": 200}", "additionalProperties": true },
         "headers": { "type": "object", "description": "附加请求头(不得放密钥值，仅静态头如 Accept)", "additionalProperties": { "type": "string" } },
         "notes": { "type": "string", "description": "备注(如「待核实连通性」)" },
+        "origin": {
+          "type": "string",
+          "enum": ["manual", "garss", "rsshub-doc", "feishu", "opml", "generic"],
+          "description": "溯源：该源由谁引入。与 channel.origin 独立 —— 同一渠道的多个 feed 可能来自不同批次"
+        },
+        "originRef": { "type": "string", "description": "外部来源里的原始 id（重跑导入时的幂等锚点）" },
+        "importBatch": { "type": "string", "description": "导入批次名，如 garss-2026-04" },
         "createdAt": { "type": "string", "format": "date-time" },
         "updatedAt": { "type": "string", "format": "date-time" },
         "lastFetchAt": { "type": "string", "format": "date-time", "description": "最近一次抓取时间(由采集脚本回写)" },
