@@ -59,11 +59,14 @@ export function useResource<T extends ResourceLike>(
         })
         .catch((err: unknown) => {
           if (mountedRef.current) {
-            setState({
-              data: null,
+            // 刷新失败不丢弃上一轮成功数据：页面继续渲染旧数据（配 AlertBar 提示），
+            // 而不是从「有内容」退成空态/错误页。首载失败时 prev.data 本就是 null，
+            // 行为与原先一致（ErrorBanner）。
+            setState((prev) => ({
+              data: prev.data,
               loading: false,
               error: err instanceof Error ? err.message : String(err),
-            });
+            }));
           }
         });
     },

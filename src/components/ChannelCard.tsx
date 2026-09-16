@@ -40,6 +40,12 @@ export default function ChannelCard({ channel, cardLimit = 10, testId = 'channel
         p: 2,
         opacity: isFailed ? 0.6 : 1,
         filter: isFailed ? 'grayscale(0.4)' : 'none',
+        // 等高布局：栅格 stretch 拉齐同行卡片后，卡片内部按 flex 列填充，
+        // 条目区 flex:1 吃掉富余高度，footer（查看全部）由 marginTop:auto 钉到右下角
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        boxSizing: 'border-box',
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
@@ -124,7 +130,7 @@ export default function ChannelCard({ channel, cardLimit = 10, testId = 'channel
         </span>
       </Box>
 
-      <Box sx={{ mt: 1.5 }}>
+      <Box sx={{ mt: 1.5, flex: 1, minHeight: 0 }}>
         {shown.length > 0 ? (
           shown.map((it) => {
             const dead = it.status === 'dead' && (it.alternateUrl === null || it.alternateUrl === '');
@@ -167,7 +173,14 @@ export default function ChannelCard({ channel, cardLimit = 10, testId = 'channel
       </Box>
 
       {channel.items.length > cardLimit && (
-        <Box sx={{ mt: 1.5 }}>
+        <Box
+          sx={{
+            marginTop: 'auto',
+            pt: 1.5,
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
           <Link
             data-testid="channel-card-more"
             href={`/#/?channel=${encodeURIComponent(channel.channelId)}`}

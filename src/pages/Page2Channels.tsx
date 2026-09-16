@@ -14,6 +14,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
+import Link from '@mui/material/Link';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -27,6 +28,7 @@ import { resolveBoardState } from '../services/boardState';
 import { categoryColor, tokens } from '../theme/tokens';
 import { ALL_CHANNELS, ENABLED_CHANNELS, ENABLED_CHANNEL_IDS } from '../services/channels';
 import {
+  AlertBar,
   ChannelCard,
   ConfigDrawer,
   EmptyState,
@@ -35,6 +37,7 @@ import {
   type ChannelSortKey,
   type ConfigDrawerValue,
 } from '../components';
+import { formatAbsolute, formatRelative } from '../services/time';
 
 interface RawSource {
   channelId: string;
@@ -252,6 +255,17 @@ export default function Page2Channels() {
         <Box sx={{ color: tokens.surface.text2, fontSize: tokens.fs.sm, mt: 0.5 }}>
           每个渠道一张卡片，专注看单渠道动态。共 <strong>{ENABLED_CHANNELS.length}</strong> 个渠道，当前展示{' '}
           <strong data-testid="p2-shown-count">{cards.length}</strong> 个。
+          {snap?.generatedAt && (
+            <Box
+              component="span"
+              data-testid="p2-data-updated"
+              data-generated-at={snap.generatedAt}
+              title={`快照生成时间：${formatAbsolute(snap.generatedAt)}`}
+              sx={{ ml: 1.5, color: tokens.surface.text3 }}
+            >
+              数据更新于 {formatRelative(snap.generatedAt)}
+            </Box>
+          )}
         </Box>
       </Box>
       <Button
@@ -324,9 +338,10 @@ export default function Page2Channels() {
   );
 
   let body: JSX.Element;
-  if (loading) {
+  if (loading && !snap) {
     body = <SkeletonList count={4} testId="p2-skeleton" />;
-  } else if (error) {
+  } else if (error && !snap) {
+    // 首次加载即失败：无旧数据可保留，走全页错误态
     body = <ErrorBanner message={`数据加载失败：${error}`} onRetry={reload} testId="p2-error" />;
   } else if (boardState === 'empty-none') {
     // 两种成因合流：① 用户取消了全部渠道（channelIds=[]）② 当前分类筛选无命中
@@ -366,7 +381,9 @@ export default function Page2Channels() {
           display: 'grid',
           gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
           gap: 2,
-          alignItems: 'start',
+          // stretch（默认值）：同行卡片拉齐到该行最高卡片，数据少的卡片不塌陷；
+          // 卡片内部用 flex 列把「查看全部」钉到右下角（见 ChannelCard）
+          alignItems: 'stretch',
           minWidth: 0,
         }}
       >
@@ -381,6 +398,15 @@ export default function Page2Channels() {
     <Box data-testid="p2-root" data-component="page2-channels">
       {header}
       {controls}
+      {/* 刷新失败但保留了上一轮数据：黄条提示 + 旧数据照常渲染，不从有内容退成错误页 */}
+      {error && snap && (
+        <AlertBar severity="warning" testId="p2-stale-warning">
+          本次刷新数据失败，仍展示上一次获取的内容。
+          <Link component="button" underline="hover" sx={{ ml: 1 }} onClick={reload}>
+            重试
+          </Link>
+        </AlertBar>
+      )}
       {body}
 
       <ConfigDrawer
