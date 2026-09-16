@@ -162,8 +162,12 @@ test('projectSnapshot 完整 round：appendEvents → projectSnapshot → snapsh
     const latest = JSON.parse(await readFile(proj.latestPath, 'utf8'));
     assert.equal(latest.date, date);
     assert.equal(latest.commit, 'local');
-    assert.equal(latest.snapshotPath, `today/snapshot-${date}.json`);
-    assert.equal(latest.reportPath, `today/report-${date}.json`);
+    // 2026-09-16 起快照 / 报告文件名带 4 位 UTC 后缀，使 URL 成为内容地址
+    // （见 scripts/collect/lib/time.mjs 的 stampFromIso：固定名会被 CDN 长缓存成陈旧数据）
+    assert.match(latest.snapshotPath, new RegExp(`^today/snapshot-${date}-\\d{4}\\.json$`));
+    assert.match(latest.reportPath, new RegExp(`^today/report-${date}-\\d{4}\\.json$`));
+    assert.match(proj.stamp, /^\d{4}$/);
+    assert.equal(latest.snapshotPath, `today/${proj.snapshotPath.split('/').pop()}`);
     assert.equal(latest.eventPath, `today/events-${date}.ndjson`);
   } finally {
     await rm(root, { recursive: true });

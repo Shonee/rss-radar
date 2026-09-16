@@ -346,7 +346,14 @@ async function main() {
     try {
       snap = await evalExpr(`(async()=>{const u=new URL('./data/today/latest.json',document.baseURI).href;const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);return await r.json();})()`, { await: true });
       if (snap && snap.date) {
-        report = await evalExpr(`(async()=>{const u=new URL('./data/today/report-${snap.date}.json',document.baseURI).href;const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);return await r.json();})()`, { await: true });
+        // 报告路径只认**快照自带的声明**（2026-09-16 起采集端写入）。
+        // 报告名带 4 位 UTC 后缀，按 `report-<date>.json` 猜会 404，或静默命中
+        // 遗留的同名陈旧文件 —— 本断言曾因此拿到 903 条旧数据（snap 是 894）。
+        // 缺省（老快照）即跳过报告，不猜名。
+        const reportRel = snap.reportPath || '';
+        if (reportRel) {
+          report = await evalExpr(`(async()=>{const u=new URL('./data/${reportRel}',document.baseURI).href;const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);return await r.json();})()`, { await: true });
+        }
       }
       histIndex = await evalExpr(`(async()=>{const u=new URL('./data/history/history-index.json',document.baseURI).href;const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);return await r.json();})()`, { await: true });
     } catch (e) {
@@ -466,7 +473,19 @@ async function main() {
     // 原断言要求 `snapshot.channels` 存在 —— 那是把实现里的漂移字段当成了契约
     // （其内容其实是分类，且不在 snapshot.schema.json 白名单内）。改为守住真正的契约：
     // 顶层键必须全部落在白名单里，多一个未契约字段即失败。
-    const SNAP_ALLOWED_KEYS = ['schemaVersion', 'date', 'timezone', 'generatedAt', 'stats', 'items'];
+    //
+    // 白名单**从 schema 读**，不在测试里再维护一份：硬编码会在 schema 增字段时静默漂移，
+    // 把合法的契约字段误判成「多余」（2026-09-16 新增 reportPath 时就正是这样被拦下的）。
+    let SNAP_ALLOWED_KEYS = ['schemaVersion', 'date', 'timezone', 'generatedAt', 'reportPath', 'stats', 'items'];
+    try {
+      const snapSchema = JSON.parse(
+        fs.readFileSync(path.join(REPO_ROOT, 'docs/data-model/schema/snapshot.schema.json'), 'utf8'),
+      );
+      const schemaKeys = Object.keys(snapSchema.properties || {});
+      if (schemaKeys.length) SNAP_ALLOWED_KEYS = schemaKeys;
+    } catch {
+      // schema 不可读（如远程模式）→ 退回内置清单
+    }
     const snapKeys = Object.keys(snap || {});
     rec('B13', 'B', 'snapshot 顶层键全部属于契约白名单',
       snapKeys.length > 0 && snapKeys.every((k) => SNAP_ALLOWED_KEYS.includes(k)),

@@ -66,6 +66,13 @@ export interface Category {
   color?: string;
 }
 
+/**
+ * 条目溯源：该 channel / source 由哪条路径引入（缺省视为 `manual`，即人工编写）。
+ * 与 schema `docs/data-model/schema/sources.schema.json` 的 enum 必须逐字一致。
+ * 与 `originRef` / `importBatch` 配合，使「批量导入可幂等重跑、且绝不覆盖人工修改」成立。
+ */
+export type EntryOrigin = 'manual' | 'garss' | 'rsshub-doc' | 'feishu' | 'opml' | 'generic';
+
 export interface Channel {
   id: string;
   name: string;
@@ -83,6 +90,12 @@ export interface Channel {
   tags?: string[];
   /** 渠道自由描述（如「已断更，最新文章 2024 年」），来自外部源清单导入，不参与采集逻辑 */
   description?: string;
+  /** 溯源：该渠道由谁引入。缺省 = manual */
+  origin?: EntryOrigin;
+  /** 外部来源里的原始 id（如 garss 的 `S137` / `editreadme-faebdd92`）——重跑导入时的幂等锚点 */
+  originRef?: string;
+  /** 导入批次名（如 `garss-2026-04`），用于整批回滚与追溯 */
+  importBatch?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -199,6 +212,12 @@ export interface Source {
   params?: Record<string, unknown>;
   headers?: Record<string, string>;
   notes?: string;
+  /** 溯源：该源由谁引入。与 `Channel.origin` 独立 —— 同一渠道的多个 feed 可能来自不同批次 */
+  origin?: EntryOrigin;
+  /** 外部来源里的原始 id（重跑导入时的幂等锚点） */
+  originRef?: string;
+  /** 导入批次名（如 `garss-2026-04`） */
+  importBatch?: string;
   createdAt: string;
   updatedAt: string;
   lastFetchAt?: string;
@@ -314,6 +333,14 @@ export interface Snapshot {
   date: string;
   timezone: 'Asia/Shanghai';
   generatedAt: string;
+  /**
+   * 同轮次报告路径（相对 `data/`，形如 `today/report-<date>-<stamp>.json`）。
+   *
+   * 2026-09-16 起由采集端写入。报告名带 4 位 UTC 后缀后，**不得**再按
+   * `report-<date>.json` 的固定名反推 —— 那样要么 404，要么静默命中
+   * 遗留的同名陈旧文件（后者更隐蔽）。老快照缺省 → 消费方按「可选」处理。
+   */
+  reportPath?: string;
   stats: SnapshotStats;
   items: Item[];
 }

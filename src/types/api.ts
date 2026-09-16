@@ -19,7 +19,15 @@ import type {
 /** 资源加载状态机 */
 export type LoadState = 'idle' | 'loading' | 'ok' | 'error';
 
-/** 数据来源（三层降级：raw 主 → jsdelivr 回退 → local 兜底） */
+/**
+ * 数据来源。
+ *
+ * 2026-09-16 起不再是一条固定链，而是**按资源分流**的两条独立降级链
+ * （见 `src/services/dataClient.ts` 文件头）：
+ *   - 指针 `today/latest.json` → raw 打头（必须新鲜；jsDelivr@branch 实测陈旧 9 小时+）
+ *   - 内容 snapshot / report → 有有效 commit 时 jsDelivr@<commit> 打头（内容寻址 + br 压缩）
+ * `LoadResult.source` 描述**内容（快照）的来源**。
+ */
 export type DataSource = 'raw' | 'jsdelivr' | 'local';
 
 /** 统一的加载结果信封（所有 client 均返回此结构） */
@@ -27,7 +35,7 @@ export interface LoadResult<T> {
   data: T;
   source: DataSource;
   fetchedAt: string;
-  /** generatedAt 超过 60 分钟（或缺失）判定为过期 */
+  /** generatedAt 超过 120 分钟（两个采集周期，或缺失）判定为过期 */
   stale: boolean;
 }
 
@@ -36,9 +44,22 @@ export interface LatestPointer {
   date: string;
   generatedAt: string;
   snapshotPath: string;
-  reportPath: string;
+  /**
+   * 同轮次报告路径（相对 `data/`，形如 `today/report-<date>-<stamp>.json`）。
+   *
+   * 2026-09-16 起权威指针必带；但**老指针 / 软链降级产物可能缺省**，
+   * 故按「可选」处理：缺省时不拉报告，**切勿**按 `report-<date>.json`
+   * 的固定名反推（会 404，或静默命中遗留同名陈旧文件）。
+   */
+  reportPath?: string;
   eventPath?: string;
-  /** 采集轮次 commit（jsDelivr 版本化 URL 用） */
+  /**
+   * 采集轮次 commit（jsDelivr 内容寻址 URL 用）。
+   *
+   * ⚠️ 必须是**远端真实存在的 git sha**。占位值（如 `'local'`）会让
+   * `jsdelivrBase(commit)` 构造出 404 地址 —— 消费前请用
+   * `dataClient.isValidCommit()` 校验。
+   */
   commit?: string;
 }
 

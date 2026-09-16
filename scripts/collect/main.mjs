@@ -12,7 +12,7 @@ import { loadExcludeRules, evaluateItem, blockedChannels } from './exclude.mjs';
 import { copyToPublicData, refreshLatestLink } from './write.mjs';
 import { todayLocal, nowIso } from './lib/time.mjs';
 import { appendEvents, makeEvent } from './append-events.mjs';
-import { projectSnapshot } from './project-snapshot.mjs';
+import { projectSnapshot, pruneOldStampedArtifacts } from './project-snapshot.mjs';
 import { makeRunId } from './lib/run-id.mjs';
 import { writeReport } from './report.mjs';
 import { checkUrls, persistSourceHealth } from './url-health.mjs';
@@ -183,10 +183,20 @@ export async function main() {
         console.warn(`[collect] dev-bridge report skipped: ${e.message}`);
       }
     }
-    refreshLatestLink(publicDir, date);
+    // 快照文件名带 4 位 UTC 后缀（见 lib/time.mjs stampFromIso），软链目标必须用真实名
+    const snapName = proj.snapshotPath.split('/').pop();
+    // 传权威指针路径作第 4 参：软链失败降级时直接复制它，避免就地拼出残缺指针
+    refreshLatestLink(publicDir, date, snapName, proj.latestPath);
+    // dev bridge 同样要清理同日旧后缀产物，否则 public/data/today/ 会按小时堆积
+    // （.gitignore 已忽略该目录，但堆积会干扰本地 dev 调试与回归脚本的目录扫描）
+    const publicTodayDir = join(publicDir, 'data/today');
+    pruneOldStampedArtifacts(publicTodayDir, date, 'snapshot', [snapName]);
+    if (reportPath) {
+      pruneOldStampedArtifacts(publicTodayDir, date, 'report', [reportPath.split('/').pop()]);
+    }
     console.log(
-      `[collect] dev-bridge refreshed -> public/data/today/snapshot-${date}.json`
-        + (reportCopied ? ` + report-${date}.json` : ''),
+      `[collect] dev-bridge refreshed -> public/data/today/${snapName}`
+        + (reportCopied ? ` + ${reportPath.split('/').pop()}` : ''),
     );
   } catch (e) {
     console.warn(`[collect] dev-bridge skipped: ${e.message}`);

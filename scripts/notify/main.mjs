@@ -14,7 +14,7 @@
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 
 import { buildDailyDigest, buildRealtime, dispatch } from './index.mjs';
 import { DEFAULT_STATE_PATH, DEFAULT_STATS_DIR } from './lib/idempotency.mjs';
@@ -107,14 +107,39 @@ async function loadJson(path, label) {
 }
 
 /**
+ * 目录里同日报告的**实际文件名**（2026-09-16 起带 4 位 UTC 后缀且每小时轮换，见
+ * `scripts/collect/lib/time.mjs` 的 `stampFromIso`）。按文件名倒序 → 最新的一份在前。
+ *
+ * @param {string} dir
+ * @param {string} date `YYYY-MM-DD`
+ * @returns {string[]}
+ */
+function findStampedReports(dir, date) {
+  try {
+    return readdirSync(dir)
+      .filter((n) => n.startsWith(`report-${date}-`) && n.endsWith('.json'))
+      .sort()
+      .reverse()
+      .map((n) => `${dir}/${n}`);
+  } catch {
+    return [];
+  }
+}
+
+/**
  * 探测 report.json 路径。
- * 优先级：--report → public/data/today/report-<date>.json → report.json → 示例文件。
+ * 优先级：--report → public/data/today/report-<date>-<stamp>.json（带后缀，最新）
+ *        → public/data/today/report-<date>.json（过渡期旧约定）→ report.json
+ *        → latest-report.json → 示例文件。
  * @returns {Promise<{report:Object, source:string}>}
  */
 export async function loadReport(opts) {
   const candidates = [];
   if (opts.report) candidates.push(opts.report);
-  if (opts.date) candidates.push(`public/data/today/report-${opts.date}.json`);
+  if (opts.date) {
+    candidates.push(...findStampedReports('public/data/today', opts.date));
+    candidates.push(`public/data/today/report-${opts.date}.json`);
+  }
   candidates.push('public/data/today/report.json');
   candidates.push('public/data/today/latest-report.json');
   candidates.push('docs/data-model/examples/report.example.json');

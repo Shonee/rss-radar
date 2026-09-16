@@ -18,7 +18,7 @@
  *   node scripts/smoke/snapshot-contract.mjs --file <path.json>     # 指定文件
  *   node scripts/smoke/snapshot-contract.mjs --tamper totalItems     # 故意篡改后断言
  */
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
@@ -37,8 +37,19 @@ function loadSnapshotSchema() {
 function findSnapshot(argFile) {
   if (argFile) return resolve(process.cwd(), argFile);
   const date = todayLocal();
-  const defaultPath = resolve(ROOT, 'tmp/today/snapshot-' + date + '.json');
-  if (existsSync(defaultPath)) return defaultPath;
+  const dir = resolve(ROOT, 'tmp/today');
+  // 2026-09-16 起快照文件名带 4 位 UTC 后缀且每小时轮换（见 scripts/collect/lib/time.mjs），
+  // 故按目录实际内容取最新一份，而不是拼固定名。
+  try {
+    const stamped = readdirSync(dir)
+      .filter((n) => n.startsWith(`snapshot-${date}-`) && n.endsWith('.json'))
+      .sort();
+    if (stamped.length > 0) return resolve(dir, stamped[stamped.length - 1]);
+  } catch {
+    /* 目录不存在：走下面的兜底 */
+  }
+  const legacyPath = resolve(dir, `snapshot-${date}.json`);
+  if (existsSync(legacyPath)) return legacyPath;
   // fallback: public/data/today/snapshot.json（demo 数据）
   const demoPath = resolve(ROOT, 'public/data/today/snapshot.json');
   if (existsSync(demoPath)) return demoPath;

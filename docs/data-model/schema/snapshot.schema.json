@@ -11,6 +11,7 @@
     "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "快照所属自然日(以 timezone 切日)", "examples": ["2026-09-12"] },
     "timezone": { "type": "string", "const": "Asia/Shanghai", "description": "切日时区，固定 Asia/Shanghai(UTC+8)" },
     "generatedAt": { "type": "string", "format": "date-time", "description": "本次快照生成时间(ISO 8601 UTC)", "examples": ["2026-09-12T09:30:12Z"] },
+    "reportPath": { "type": "string", "pattern": "^today/report-\\d{4}-\\d{2}-\\d{2}-\\d{4}\\.json$", "description": "同轮次报告文件路径(相对 data/，形如 today/report-<date>-<stamp>.json)。可选字段：2026-09-16 起快照自带此声明，使消费者无需按命名规则『反推』报告名。报告名带 4 位 UTC 后缀后，任何拼 `report-<date>.json` 固定名的写法都会失效(404 或静默命中同名陈旧文件)。旧快照可缺省。", "examples": ["today/report-2026-09-12-0930.json"] },
     "stats": { "$ref": "#/definitions/stats" },
     "items": {
       "type": "array",

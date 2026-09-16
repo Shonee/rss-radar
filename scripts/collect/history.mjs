@@ -16,14 +16,14 @@ import { nowIso } from './lib/time.mjs';
  *   roundRoot/
  *     today/
  *       events-<date>.ndjson
- *       snapshot-<date>.json
- *       report-<date>.json
+ *       snapshot-<date>-<stamp>.json   # stamp = 4 位 UTC HHmm，每小时轮换（见 lib/time.mjs）
+ *       report-<date>-<stamp>.json
  *     history/
  *       history-index.json            # 滚动 days[]
  *       2026/
  *         09/
  *           items.ndjson              # 月度精简累积
- *           snapshot-<date>.json      # 按天归档（可选）
+ *           snapshot-<date>.json      # 按天归档（可选；终态，故不带 stamp）
  *           SEALED                   # 月末哨兵文件
  *
  * @typedef {Object} RolloverOpts
@@ -120,14 +120,48 @@ export async function appendSnapshotToMonthlyNdjson(roundRoot, snapshot, prevDat
 }
 
 /**
- * 把 today/snapshot-<prevDate>.json move 到 history/YYYY/MM/snapshot-<prevDate>.json
- * 若 today/snapshot-<prevDate>.json 不存在则 no-op（archive-index 路径）
+ * 在 `today/` 下定位某日的快照源文件。
+ *
+ * 2026-09-16 起快照文件名带 4 位 UTC 后缀（`snapshot-<date>-<stamp>.json`），
+ * 且后缀随每小时采集轮换、当轮会清理旧后缀。归档必须**查找当前存在的那一份**，
+ * 而不是拼一个固定名 —— 否则跨天 rollover 会因 ENOENT 静默跳过归档
+ * （表现为 history 长期只有 seed 出来的数据）。
+ *
+ * 优先级：带后缀的最新一份（后缀是 HHmm，字典序即时序）> 无后缀的旧约定（过渡期兼容）。
+ *
+ * @param {string} roundRoot
+ * @param {string} date      `YYYY-MM-DD`
+ * @returns {Promise<string|null>} 路径；找不到返回 null
+ */
+export async function findTodaySnapshotPath(roundRoot, date) {
+  const todayDir = `${roundRoot}/today`;
+  let names;
+  try {
+    names = await readdir(todayDir);
+  } catch {
+    return null;
+  }
+  const stamped = names
+    .filter((n) => n.startsWith(`snapshot-${date}-`) && n.endsWith('.json'))
+    .sort();
+  if (stamped.length > 0) return `${todayDir}/${stamped[stamped.length - 1]}`;
+  const legacy = `snapshot-${date}.json`;
+  return names.includes(legacy) ? `${todayDir}/${legacy}` : null;
+}
+
+/**
+ * 把 `today/snapshot-<prevDate>[-<stamp>].json` 拷到 `history/YYYY/MM/snapshot-<prevDate>.json`。
+ * 找不到源文件则 no-op（archive-index 路径）。
+ *
+ * 归档落点的文件名**保持无后缀**的 `snapshot-<prevDate>.json` —— 它是终态产物，
+ * 不会再被覆盖，因此无需内容寻址。
  */
 export async function archiveSnapshot(roundRoot, prevDate) {
   const { year, month } = ymOf(prevDate);
   const monthDir = `${roundRoot}/history/${year}/${String(month).padStart(2, '0')}`;
-  const from = `${roundRoot}/today/snapshot-${prevDate}.json`;
+  const from = await findTodaySnapshotPath(roundRoot, prevDate);
   const to = `${monthDir}/snapshot-${prevDate}.json`;
+  if (!from) return false;
   await mkdir(monthDir, { recursive: true });
   let raw;
   try {
@@ -243,7 +277,10 @@ export async function readLatestDate(roundRoot) {
 }
 
 async function readSnapshotIfExists(roundRoot, prevDate) {
-  const p = `${roundRoot}/today/snapshot-${prevDate}.json`;
+  // 同上：文件名带轮换后缀，必须查找而非拼名。找不到就当作「无快照」，
+  // 让调用方走 no-snapshot 降级路径，而不是抛 ENOENT 打断 rollover。
+  const p = await findTodaySnapshotPath(roundRoot, prevDate);
+  if (!p) return null;
   try {
     const raw = await readFile(p, 'utf8');
     return JSON.parse(raw);
