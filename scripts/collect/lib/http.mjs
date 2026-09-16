@@ -1,5 +1,6 @@
 // lib/http.mjs — fetch + AbortController + 重试 + UA + ETag/Last-Modified
 import { readFileSync } from 'node:fs';
+import { decodeBody } from './charset.mjs';
 
 /**
  * @typedef {Object} FetchOpts
@@ -25,9 +26,14 @@ function isRetryable(err) {
 
 /**
  * 拉取 HTTP(S) URL 的原始 body + headers
+ *
+ * body 已按响应声明的编码正确解码（见 charset.mjs）——非 UTF-8 源（GBK/GB18030/
+ * Big5 等）不会再变成 U+FFFD 乱码。判定过程与结果通过 encoding / encodingSource /
+ * replacements 字段暴露，便于上层记录「这个源用什么编码解的、有没有残留坏字」。
+ *
  * @param {string} url
  * @param {FetchOpts & {extraRetries?: number}} [opts]
- * @returns {Promise<{status:number, headers:Headers, body:string, etag?:string, lastModified?:string, notModified?:boolean, contentType?:string, attempts:number}>}
+ * @returns {Promise<{status:number, headers:Headers, body:string, encoding?:string, encodingSource?:string, replacements?:number, etag?:string, lastModified?:string, notModified?:boolean, contentType?:string, attempts:number}>}
  */
 export async function fetchText(url, opts = {}) {
   const timeoutMs = opts.timeoutMs ?? 15000;
@@ -63,14 +69,23 @@ export async function fetchText(url, opts = {}) {
         await sleep(backoff(attempt));
         continue;
       }
-      const body = await res.text();
+      // ⚠️ 刻意不用 res.text()：WHATWG 规范规定它**始终按 UTF-8 解码并忽略响应头
+      // 里的 charset**，于是 GBK 站点（52pojie 等 Discuz 论坛：HTTP 头只给
+      // `application/xml` 不带 charset，编码写在 XML 声明里）会整源变成 U+FFFD 乱码。
+      // 改取原始字节，交给 charset.mjs 分级嗅探（BOM → HTTP charset → 内嵌声明 →
+      // UTF-8 严格试探 → GB18030 兜底），并把判定结果一并返回便于排查。
+      const contentType = res.headers.get('content-type') ?? undefined;
+      const decoded = decodeBody(Buffer.from(await res.arrayBuffer()), contentType);
       return {
         status: res.status,
         headers: res.headers,
-        body,
+        body: decoded.text,
+        encoding: decoded.encoding,
+        encodingSource: decoded.source,
+        replacements: decoded.replacements,
         etag: res.headers.get('etag') ?? undefined,
         lastModified: res.headers.get('last-modified') ?? undefined,
-        contentType: res.headers.get('content-type') ?? undefined,
+        contentType,
         attempts: attempt + 1,
       };
     } catch (err) {
