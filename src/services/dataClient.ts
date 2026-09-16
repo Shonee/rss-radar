@@ -37,7 +37,7 @@
 
 import type { Report, Snapshot } from '../types/models';
 import type { DataSource, LatestBundle, LatestPointer, LoadResult } from '../types/api';
-import { SITE, jsdelivrBase, localBase, rawBase } from '../config/site';
+import { CDN_HOST_BY_SOURCE, SITE, cdnBase, localBase, rawBase } from '../config/site';
 
 /**
  * 指针 / 小文件超时。
@@ -112,17 +112,30 @@ function isFileProtocol(): boolean {
 
 // ---------- 来源顺序（两条独立链） ----------
 
+/** CDN 家族来源（顺序即降级顺序；与 config/site.ts 的 CDN_HOSTS 一一对应） */
+const CDN_SOURCES: readonly DataSource[] = ['fastly', 'gcore', 'jsdelivr'];
+
 /**
- * 指针文件的来源顺序：**raw 打头**。
+ * 指针文件的来源顺序：**CDN 打头，raw 退居后备**。
  *
- * 依据实测 A：jsDelivr 对分支引用返回陈旧内容（落后 9 小时+），指针一旦陈旧
- * 整站就加载到昨天的快照。raw 只有约 237B，未压缩的代价可以忽略。
- * jsDelivr@branch 仍留在第二位 —— 它陈旧，但总好过完全没有数据。
+ * 2026-09-16 实测（杭州）后重排。原顺序是 `raw 打头`，理由是「jsDelivr 对分支引用
+ * 返回陈旧内容，指针一陈旧整站就加载旧快照」。该理由本身没错 —— 当日复测
+ * `cdn.jsdelivr.net` 上的指针确实仍陈旧 14 小时 —— 但**代价被低估了**：raw 在国内
+ * 会连接挂起（实测 `http=000`、60s 无任何响应），把它排在首位等于让每次首访都白等
+ * 一个完整超时才降级，这正是「第一次打开转圈」的直接来源。
+ *
+ * 重排后同时拿下两点：
+ *   ① `fastly` / `gcore` 边缘的指针是**实时**的（age=0），并非「CDN 一律陈旧」；
+ *   ② 它们更快（0.90s / 0.99s，走东京节点）。
+ *
+ * ⚠️ 但「CDN 打头」能成立的前提是**新鲜度校验**：CDN 的陈旧风险依然存在且各家边缘
+ * 表现不一致，故 `loadLatest` 阶段 1 会用 isStale() 校验 generatedAt，陈旧即继续
+ * 降级到下一来源。这道校验与本顺序是一体两面 —— 去掉校验，这个顺序就会加载到旧快照。
  */
 export function resolvePointerOrder(options: LoadOptions): DataSource[] {
-  if (options.preferLocal === true) return ['local', 'raw', 'jsdelivr'];
-  if (isFileProtocol()) return ['local', 'raw', 'jsdelivr'];
-  return ['raw', 'jsdelivr', 'local'];
+  if (options.preferLocal === true) return ['local', ...CDN_SOURCES, 'raw'];
+  if (isFileProtocol()) return ['local', ...CDN_SOURCES, 'raw'];
+  return [...CDN_SOURCES, 'raw', 'local'];
 }
 
 /**
@@ -150,23 +163,26 @@ export function isImmutablePath(relPath: string | undefined | null): boolean {
 /**
  * 内容文件（快照 / 报告）的来源顺序。
  *
- * jsDelivr 打头需要**两个条件之一**成立，否则会拿到陈旧数据：
+ * CDN 打头需要**两个条件之一**成立，否则会拿到陈旧数据：
  *   ① 有效 commit → `@<commit>` 内容寻址（同一 commit 内容永不变）
  *   ② 路径不可变（带小时戳后缀）→ 新内容 = 新 URL = 必然回源
  * 两者都不满足时只能走 raw：`@branch` 会被 CDN 按 URL 缓存数小时，
  * `@<占位值>`（如 `@local`）直接 404。
+ *
+ * 内容侧的多域名顺序没有指针侧那种顾虑 —— 条件 ①/② 一旦成立，URL 即内容地址，
+ * 任何边缘拿到的都是同一份，故 fastly/gcore 打头纯粹是拿它们的速度。
  */
 export function resolveContentOrder(
   options: LoadOptions,
   commit?: string,
   contentPath?: string | null,
 ): DataSource[] {
-  if (options.preferLocal === true) return ['local', 'jsdelivr', 'raw'];
-  if (isFileProtocol()) return ['local', 'jsdelivr', 'raw'];
+  if (options.preferLocal === true) return ['local', ...CDN_SOURCES, 'raw'];
+  if (isFileProtocol()) return ['local', ...CDN_SOURCES, 'raw'];
   if (isValidCommit(commit) || isImmutablePath(contentPath)) {
-    return ['jsdelivr', 'raw', 'local'];
+    return [...CDN_SOURCES, 'raw', 'local'];
   }
-  return ['raw', 'jsdelivr', 'local'];
+  return ['raw', ...CDN_SOURCES, 'local'];
 }
 
 /**
@@ -181,14 +197,14 @@ export function resolveOrder(options: LoadOptions): DataSource[] {
 
 function baseFor(source: DataSource, commit?: string): string {
   if (source === 'raw') return rawBase();
-  if (source === 'jsdelivr') {
-    // ⚠️ 只有**有效** commit 才能进 URL —— 把占位值（如 'local'）拼进去会构造出
-    // 必然 404 的地址（`@local`），这正是本函数此前让第二层降级 100% 失效的原因。
-    // 无有效 commit 时退回分支引用；此时能否安全长缓存改由「路径是否不可变」决定
-    // （见 isImmutablePath / resolveContentOrder）。
-    return jsdelivrBase(isValidCommit(commit) ? (commit as string) : SITE.branch);
-  }
-  return localBase();
+  if (source === 'local') return localBase();
+  // CDN 家族（fastly / gcore / jsdelivr）：仅域名不同，URL 构造规则一致。
+  // ⚠️ 只有**有效** commit 才能进 URL —— 把占位值（如 'local'）拼进去会构造出
+  // 必然 404 的地址（`@local`），这正是本函数此前让第二层降级 100% 失效的原因。
+  // 无有效 commit 时退回分支引用；此时能否安全长缓存改由「路径是否不可变」决定
+  // （见 isImmutablePath / resolveContentOrder）。
+  const host = CDN_HOST_BY_SOURCE[source as 'fastly' | 'gcore' | 'jsdelivr'];
+  return cdnBase(host, isValidCommit(commit) ? (commit as string) : SITE.branch);
 }
 
 /** 各来源的缓存模式：本地调试要即时，远程交给 HTTP 头 */
@@ -397,6 +413,8 @@ export async function loadLatest(options: LoadOptions = {}): Promise<LoadResult<
   let pointer: LatestPointer | null = null;
   let inlineSnap: Snapshot | null = null;
   let pointerSource: DataSource = 'local';
+  /** 首个「成功但已过期」的指针：全部来源都过期时兜底用它（陈旧数据优于无数据） */
+  let staleFallback: { pointer: LatestPointer; inlineSnap: Snapshot | null; source: DataSource } | null = null;
 
   for (const source of resolvePointerOrder(options)) {
     // local 兜底：先试 latest.json（指针或直接快照），再退 P1 的 snapshot.json
@@ -406,6 +424,17 @@ export async function loadLatest(options: LoadOptions = {}): Promise<LoadResult<
         const loaded = await withQuickRetry(() =>
           fetchPointerFromBase(baseFor(source, commit), relPath, fetchImpl, pointerTimeout, source),
         );
+        // ★ 新鲜度校验：「请求成功」不等于「可用」。
+        // CDN 对分支引用存在长缓存，且各家边缘表现不一致（2026-09-16 实测
+        // cdn.jsdelivr.net 的指针陈旧 14 小时、而 fastly/gcore 实时），而指针一旦
+        // 陈旧，**整站都会加载到旧快照**。故这里必须看 generatedAt，不能只要 HTTP 200
+        // 就用：过期就记下兜底、继续降级到下一个来源找更新鲜的。
+        if (isStale(loaded.pointer.generatedAt, nowMs)) {
+          if (!staleFallback) {
+            staleFallback = { pointer: loaded.pointer, inlineSnap: loaded.inlineSnap, source };
+          }
+          continue;
+        }
         pointer = loaded.pointer;
         inlineSnap = loaded.inlineSnap;
         pointerSource = source;
@@ -416,6 +445,15 @@ export async function loadLatest(options: LoadOptions = {}): Promise<LoadResult<
       }
     }
     if (pointer) break;
+  }
+
+  // 全部来源都过期 → 用最早拿到的那个兜底。此时不静默：isStale() 会把 stale=true
+  // 一路透传到 UI，由界面提示「数据已过期」，而不是假装成新鲜数据。
+  if (!pointer && staleFallback) {
+    pointer = staleFallback.pointer;
+    inlineSnap = staleFallback.inlineSnap;
+    pointerSource = staleFallback.source;
+    if (pointer.commit) commit = pointer.commit;
   }
 
   if (!pointer) throw lastError;

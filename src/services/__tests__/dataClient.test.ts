@@ -111,13 +111,43 @@ describe('isValidCommit — 占位值必须被拦下', () => {
 });
 
 describe('来源顺序 — 指针与内容分流', () => {
-  it('指针：raw 打头（jsDelivr 分支引用实测陈旧 9 小时+，不能当主通道）', () => {
-    expect(resolvePointerOrder({})[0]).toBe('raw');
-    expect(resolvePointerOrder({ preferLocal: false })[0]).toBe('raw');
+  const CDN_LIST = ['fastly', 'gcore', 'jsdelivr'];
+
+  /** 降级链完整性：不重不漏，三个 CDN 域名与 local 兜底都在列 */
+  const expectCompleteChain = (order: string[]) => {
+    expect(new Set(order).size).toBe(order.length);
+    for (const s of CDN_LIST) expect(order).toContain(s);
+    expect(order).toContain('raw');
+    expect(order).toContain('local');
+  };
+
+  it('指针：CDN 家族打头，raw 退居其后（2026-09-16 实测 raw 在国内会 60s 挂起）', () => {
+    const order = resolvePointerOrder({});
+    expectCompleteChain(order);
+    expect(CDN_LIST).toContain(order[0]);
+    // raw 必须排在**所有** CDN 之后：它在国内会连接挂起（实测 http=000、60s 无响应），
+    // 占首位 = 每次首访白等一个完整超时才降级，这正是「打开就转圈」的原始来源。
+    const rawIdx = order.indexOf('raw');
+    expect(rawIdx).toBeGreaterThan(0);
+    expect(order.slice(0, rawIdx).every((s) => CDN_LIST.includes(s))).toBe(true);
+    // local 永远在最后（兜底）
+    expect(order[order.length - 1]).toBe('local');
   });
 
-  it('内容：有有效 commit → jsDelivr 内容寻址打头', () => {
-    expect(resolveContentOrder({}, COMMIT)[0]).toBe('jsdelivr');
+  it('指针：CDN 顺序稳定（fastly 打头 —— 实测 age=0 且走东京节点最快）', () => {
+    expect(resolvePointerOrder({})[0]).toBe('fastly');
+  });
+
+  it('指针：preferLocal / file 协议下 local 打头', () => {
+    expect(resolvePointerOrder({ preferLocal: true })[0]).toBe('local');
+    expect(resolvePointerOrder({ preferLocal: true })).toContain('raw');
+    expect(resolvePointerOrder({ preferLocal: true })).toContain('jsdelivr');
+  });
+
+  it('内容：有有效 commit → CDN 内容寻址打头', () => {
+    const order = resolveContentOrder({}, COMMIT);
+    expectCompleteChain(order);
+    expect(CDN_LIST).toContain(order[0]);
   });
 
   it('内容：commit 无效 → raw 打头（@local 必然 404，@branch 陈旧）', () => {
@@ -125,11 +155,11 @@ describe('来源顺序 — 指针与内容分流', () => {
     expect(resolveContentOrder({}, undefined)[0]).toBe('raw');
   });
 
-  it('内容：路径不可变（带小时戳后缀）→ 即使 commit 无效也走 jsDelivr', () => {
+  it('内容：路径不可变（带小时戳后缀）→ 即使 commit 无效也走 CDN', () => {
     const p = 'today/snapshot-2026-09-16-0347.json';
     expect(isImmutablePath(p)).toBe(true);
-    expect(resolveContentOrder({}, 'local', p)[0]).toBe('jsdelivr');
-    expect(resolveContentOrder({}, undefined, p)[0]).toBe('jsdelivr');
+    expect(CDN_LIST).toContain(resolveContentOrder({}, 'local', p)[0]);
+    expect(CDN_LIST).toContain(resolveContentOrder({}, undefined, p)[0]);
   });
 
   it('isImmutablePath：可变路径一律 false（防「固定名 + 长缓存」踩陈旧）', () => {
@@ -322,5 +352,69 @@ describe('isStale — 120 分钟阈值', () => {
     expect(isStale('2026-09-14T08:00:00Z', now)).toBe(false);
     // 超出一个采集周期才判 stale
     expect(isStale('2026-09-14T07:59:00Z', now)).toBe(true);
+  });
+});
+
+describe('指针新鲜度校验 — 「CDN 打头」能成立的前提（2026-09-16 新增）', () => {
+  const FASTLY = 'https://fastly.jsdelivr.net/gh/Shonee/rss-radar@deploy/';
+  const GCORE = 'https://gcore.jsdelivr.net/gh/Shonee/rss-radar@deploy/';
+  const NOW = Date.parse('2026-09-16T12:00:00Z');
+  /** 36 小时前 —— 远超 120 分钟阈值 */
+  const STALE_AT = '2026-09-15T00:00:00Z';
+  /** 1 小时前 —— 采集周期内的正常年龄 */
+  const FRESH_AT = '2026-09-16T11:00:00Z';
+
+  it('★ CDN 边缘返回陈旧指针 → 继续降级到下一个来源（不能见 HTTP 200 就用）', async () => {
+    const pointerHits: string[] = [];
+    const fetchImpl: FetchLike = async (url) => {
+      if (url === `${FASTLY}today/latest.json`) {
+        pointerHits.push('fastly');
+        return json(makePointer('2026-09-15', STALE_AT)); // 陈旧！CDN 分支引用的长缓存
+      }
+      if (url === `${GCORE}today/latest.json`) {
+        pointerHits.push('gcore');
+        return json(makePointer('2026-09-16', FRESH_AT)); // 新鲜
+      }
+      if (url.endsWith('/today/snapshot-2026-09-16.json')) return json(makeSnapshot('2026-09-16', FRESH_AT));
+      if (url.endsWith('/today/report-2026-09-16.json')) return json(makeReport('2026-09-16'));
+      return notFound();
+    };
+
+    const res = await loadLatest({ _fetch: fetchImpl, now: NOW, preferLocal: false });
+    expect(pointerHits).toEqual(['fastly', 'gcore']);
+    expect(res.data.snap.date).toBe('2026-09-16');
+    expect(res.stale).toBe(false);
+  });
+
+  it('首个来源即新鲜 → 立即采用，不请求后续来源（快速路径不被拖慢）', async () => {
+    const pointerHits: string[] = [];
+    const fetchImpl: FetchLike = async (url) => {
+      if (url.endsWith('/today/latest.json')) {
+        pointerHits.push(url);
+        return json(makePointer('2026-09-16', FRESH_AT));
+      }
+      if (url.endsWith('/today/snapshot-2026-09-16.json')) return json(makeSnapshot('2026-09-16', FRESH_AT));
+      if (url.endsWith('/today/report-2026-09-16.json')) return json(makeReport('2026-09-16'));
+      return notFound();
+    };
+
+    const res = await loadLatest({ _fetch: fetchImpl, now: NOW, preferLocal: false });
+    expect(pointerHits.length).toBe(1);
+    expect(pointerHits[0]).toContain('fastly'); // 顺序首位就是 fastly
+    expect(res.data.snap.date).toBe('2026-09-16');
+  });
+
+  it('★ 全部来源都陈旧 → 采用兜底指针，但 stale=true（不把旧数据伪装成新的）', async () => {
+    const fetchImpl: FetchLike = async (url) => {
+      if (url.endsWith('/today/latest.json')) return json(makePointer('2026-09-15', STALE_AT));
+      if (url.endsWith('/today/snapshot-2026-09-15.json')) return json(makeSnapshot('2026-09-15', STALE_AT));
+      if (url.endsWith('/today/report-2026-09-15.json')) return json(makeReport('2026-09-15'));
+      return notFound();
+    };
+
+    const res = await loadLatest({ _fetch: fetchImpl, now: NOW, preferLocal: false });
+    // 有数据总好过空白页，但必须诚实标记过期
+    expect(res.data.snap.date).toBe('2026-09-15');
+    expect(res.stale).toBe(true);
   });
 });

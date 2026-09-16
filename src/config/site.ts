@@ -23,9 +23,49 @@ export function rawBase(): string {
   return `https://raw.githubusercontent.com/${SITE.owner}/${SITE.repo}/${SITE.branch}/`;
 }
 
-/** jsDelivr 版本化基址（必须用 commit / tag，规避分支引用长缓存，末尾带 /） */
+/** jsDelivr 的边缘域名。顺序按「内容新鲜度 + 国内可达性」实测结果排列（见 cdnBase 注释） */
+export const CDN_HOSTS = [
+  'fastly.jsdelivr.net',
+  'gcore.jsdelivr.net',
+  'cdn.jsdelivr.net',
+] as const;
+
+export type CdnHost = (typeof CDN_HOSTS)[number];
+
+/** DataSource 里的 CDN 标识 → 实际边缘域名 */
+export const CDN_HOST_BY_SOURCE: Record<'fastly' | 'gcore' | 'jsdelivr', CdnHost> = {
+  fastly: 'fastly.jsdelivr.net',
+  gcore: 'gcore.jsdelivr.net',
+  jsdelivr: 'cdn.jsdelivr.net',
+};
+
+/**
+ * 指定边缘域名的版本化基址（末尾带 `/`）。
+ *
+ * 为什么需要**多个**域名：2026-09-16 实测（杭州，请求同一份 `today/latest.json`）
+ * 发现三家边缘的缓存状态并不一致 ——
+ *   cdn.jsdelivr.net    → 内容陈旧 14 小时（age=20775、cf-cache-status: HIT）
+ *   fastly.jsdelivr.net → 实时（age=0），走东京节点，0.90s
+ *   gcore.jsdelivr.net  → 实时（age=0），0.99s
+ * 即：**换域名确实能换到更新、更快的边缘**，故不把它们合成一个笼统的 `jsdelivr`。
+ *
+ * 分支引用 vs 内容寻址（2026-09-16 实测校正）：
+ *   - **稳定文件名**（`today/latest.json`）：`@deploy` 按 URL 长缓存 → 实测陈旧 14 小时。
+ *     故指针**绝不能**只靠 CDN 单通道，必须配 `isStale()` 新鲜度闸门。
+ *   - **每轮唯一文件名**（`snapshot-<date>-<HHmm>.json`）：URL 本身是全新的 ⇒ 必然回源，
+ *     实测 `@deploy/<新文件>` → `x-cache: MISS, MISS` + **200**，既不陈旧也不 404。
+ *     此时 `@branch` 与 `@<sha>` 等价 —— 差别只在语义严格度，不在性能。
+ *     ⚠️ 「@deploy 会被解析到固定 commit，内容不随分支推进更新」这句只对**稳定文件名**
+ *     成立；曾据此把占位 commit 判为性能根因，属过度外推。
+ *   - 传占位值（如 `local`）会构造出必然 404 的 `@local/`；`isValidCommit()` 专门拦它。
+ */
+export function cdnBase(host: string, commit: string): string {
+  return `https://${host}/gh/${SITE.owner}/${SITE.repo}@${commit}/`;
+}
+
+/** jsDelivr 版本化基址（默认域名，等价于 `cdnBase('cdn.jsdelivr.net', commit)`） */
 export function jsdelivrBase(commit: string): string {
-  return `https://cdn.jsdelivr.net/gh/${SITE.owner}/${SITE.repo}@${commit}/`;
+  return cdnBase('cdn.jsdelivr.net', commit);
 }
 
 /** 本地 / 构建期内联兜底基址（Vite 把 public/ 暴露为 ./） */

@@ -28,7 +28,17 @@ export type LoadState = 'idle' | 'loading' | 'ok' | 'error';
  *   - 内容 snapshot / report → 有有效 commit 时 jsDelivr@<commit> 打头（内容寻址 + br 压缩）
  * `LoadResult.source` 描述**内容（快照）的来源**。
  */
-export type DataSource = 'raw' | 'jsdelivr' | 'local';
+/**
+ * 数据来源标识。
+ *
+ * `fastly` / `gcore` / `jsdelivr` 是 jsDelivr 的**三个边缘域名**，共享同一源站但
+ * 各自独立缓存。2026-09-16 实测（杭州，请求同一份指针）三者表现并不一致：
+ *   cdn.jsdelivr.net    → 内容陈旧 14 小时（age=20775, cf-cache-status: HIT）
+ *   fastly.jsdelivr.net → 内容新鲜（age=0），走东京节点，0.90s
+ *   gcore.jsdelivr.net  → 内容新鲜（age=0），0.99s
+ * 故把它们作为独立来源分别排序与降级，而不是笼统合成一个 `jsdelivr`。
+ */
+export type DataSource = 'raw' | 'fastly' | 'gcore' | 'jsdelivr' | 'local';
 
 /** 统一的加载结果信封（所有 client 均返回此结构） */
 export interface LoadResult<T> {

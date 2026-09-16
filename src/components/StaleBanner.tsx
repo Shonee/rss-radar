@@ -5,7 +5,7 @@ import Alert from '@mui/material/Alert';
 import type { DataSource } from '../types';
 
 export interface StaleBannerProps {
-  /** 数据来源（raw / jsdelivr / local） */
+  /** 数据来源（raw / fastly / gcore / jsdelivr / local） */
   source?: DataSource | null;
   /** 最近一次数据生成时刻（ISO） */
   generatedAt?: string | null;
@@ -14,7 +14,9 @@ export interface StaleBannerProps {
 
 const SOURCE_LABEL: Record<DataSource, string> = {
   raw: '源站',
-  jsdelivr: 'CDN 回退',
+  fastly: 'CDN（Fastly）',
+  gcore: 'CDN（Gcore）',
+  jsdelivr: 'CDN（jsDelivr）',
   local: '本地缓存',
 };
 
