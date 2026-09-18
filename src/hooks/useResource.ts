@@ -10,6 +10,8 @@ import { getCached, invalidateResource } from '../services/resourceRegistry';
 
 /** resourceRegistry 中承载 loadLatest() 的键 */
 export const LATEST_KEY = 'latest';
+/** 页面1/2只需要快照，避免被报告请求拖慢。 */
+export const LATEST_SNAPSHOT_KEY = 'latest-snapshot';
 /** resourceRegistry 中承载 history-index 的键 */
 export const HISTORY_INDEX_KEY = 'history-index';
 /** resourceRegistry 中承载 archive-index 的键 */
@@ -49,16 +51,20 @@ export function useResource<T extends ResourceLike>(
   const loaderRef = useRef(loader);
   loaderRef.current = loader;
   const mountedRef = useRef(true);
+  const requestIdRef = useRef(0);
 
   const load = useCallback(
     (force: boolean): void => {
+      const requestId = ++requestIdRef.current;
       setState((prev) => ({ data: prev.data, loading: true, error: null }));
       getCached<T>(key, () => loaderRef.current(), undefined, force)
         .then((data) => {
-          if (mountedRef.current) setState({ data, loading: false, error: null });
+          if (mountedRef.current && requestId === requestIdRef.current) {
+            setState({ data, loading: false, error: null });
+          }
         })
         .catch((err: unknown) => {
-          if (mountedRef.current) {
+          if (mountedRef.current && requestId === requestIdRef.current) {
             // 刷新失败不丢弃上一轮成功数据：页面继续渲染旧数据（配 AlertBar 提示），
             // 而不是从「有内容」退成空态/错误页。首载失败时 prev.data 本就是 null，
             // 行为与原先一致（ErrorBanner）。

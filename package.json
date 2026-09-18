@@ -6,7 +6,7 @@
   "description": "把散落在各处的 RSS 源，汇聚成一份每天更新的信息雷达与热点报告。",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/check-bundle-size.mjs",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
     "test": "npm run test:node && npm run test:vitest",
@@ -25,7 +25,8 @@
     "collect": "node scripts/collect/index.mjs",
     "collect:once": "node scripts/collect/index.mjs --once",
     "warm:cdn": "node scripts/collect/warm-cdn.mjs",
-    "seed:history": "node scripts/dev/seed-history.mjs"
+    "seed:history": "node scripts/dev/seed-history.mjs",
+    "perf:report": "node scripts/check-bundle-size.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.13.0",

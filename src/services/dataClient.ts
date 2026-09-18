@@ -16,7 +16,7 @@
 // 于是分成两条独立降级链：
 //
 //   【指针】today/latest.json（约 237B，必须新鲜）
-//       raw → jsDelivr@branch → local
+//       fastly / gcore / jsDelivr 并行竞速 → raw → local
 //       raw 只有 237B，不压缩也无所谓；它自身 cache-control=max-age=300 本就只有 5 分钟窗口。
 //
 //   【内容】snapshot / report（200KB ~ 2.4MB）
@@ -350,10 +350,11 @@ async function fetchContentFromBase(
   fetchImpl: FetchLike,
   timeoutMs: number,
   source: DataSource,
+  includeReport = true,
 ): Promise<{ snap: Snapshot; rep: Report | null }> {
   // 报告只供页面3使用，和快照共享同一来源与超时窗口；并行发起可避免
   // 页面1/页面2 在等待报告时额外付出一整段网络 RTT。
-  const reportRel = pointer.reportPath ?? '';
+  const reportRel = includeReport ? pointer.reportPath ?? '' : '';
   const reportPromise: Promise<Report | null> = reportRel
     ? fetchJson(
         base + reportRel,
@@ -386,103 +387,114 @@ function toError(err: unknown): Error {
   return err instanceof Error ? err : new Error(String(err));
 }
 
+interface ResolvedLatestPointer {
+  pointer: LatestPointer;
+  inlineSnap: Snapshot | null;
+  pointerSource: DataSource;
+  commit?: string;
+  nowMs: number;
+  fetchImpl: FetchLike;
+  contentTimeout: number;
+}
+
+interface StalePointerError extends Error {
+  stalePointer?: { pointer: LatestPointer; inlineSnap: Snapshot | null; source: DataSource };
+}
+
+function stalePointerError(
+  loaded: PointerLoad,
+  source: DataSource,
+): StalePointerError {
+  const err = new Error('stale latest pointer') as StalePointerError;
+  err.stalePointer = { pointer: loaded.pointer, inlineSnap: loaded.inlineSnap, source };
+  return err;
+}
+
 /**
- * 加载「最新」数据：指针 + 当天投影快照 + 报告。
- *
- * 两条独立的降级链（见文件头注释）：
- *   1) 指针：raw 打头（必须新鲜），拿到 commit
- *   2) 内容：commit 有效则 jsDelivr@<commit> 打头（内容寻址 + br 压缩 + 长缓存）
- *
- * 返回的 `source` 描述**内容（快照）的来源** —— 它才是页面渲染的主体。
- * 全部来源失败时抛出最后一个错误。
+ * 解析最新指针。远端 CDN 指针并发竞速，先拿到且通过新鲜度校验的来源胜出；
+ * raw/local 仍按顺序作为可靠后备。这样某个 CDN 连接挂起时不会阻塞整条链。
  */
-export async function loadLatest(options: LoadOptions = {}): Promise<LoadResult<LatestBundle>> {
+async function resolveLatestPointer(options: LoadOptions = {}): Promise<ResolvedLatestPointer> {
   const fetchImpl = resolveFetch(options);
   const nowMs = options.now ?? Date.now();
   const pointerTimeout = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const contentTimeout = options.contentTimeoutMs ?? CONTENT_TIMEOUT_MS;
-
   let commit = options.commit;
   let lastError: Error = new Error('loadLatest: no source attempted');
-
-  // ---------- 阶段 1：指针 ----------
-  let pointer: LatestPointer | null = null;
-  let inlineSnap: Snapshot | null = null;
-  let pointerSource: DataSource = 'local';
-  /** 首个「成功但已过期」的指针：全部来源都过期时兜底用它（陈旧数据优于无数据） */
   let staleFallback: { pointer: LatestPointer; inlineSnap: Snapshot | null; source: DataSource } | null = null;
 
-  for (const source of resolvePointerOrder(options)) {
-    // local 兜底：先试 latest.json（指针或直接快照），再退 P1 的 snapshot.json
+  const accept = (loaded: PointerLoad, source: DataSource): ResolvedLatestPointer | null => {
+    if (isStale(loaded.pointer.generatedAt, nowMs)) {
+      if (!staleFallback) staleFallback = { pointer: loaded.pointer, inlineSnap: loaded.inlineSnap, source };
+      return null;
+    }
+    if (loaded.pointer.commit) commit = loaded.pointer.commit;
+    return { pointer: loaded.pointer, inlineSnap: loaded.inlineSnap, pointerSource: source, commit, nowMs, fetchImpl, contentTimeout };
+  };
+
+  const pointerOrder = resolvePointerOrder(options);
+  const firstRawIndex = pointerOrder.indexOf('raw');
+  const cdnSources = firstRawIndex > 0 ? pointerOrder.slice(0, firstRawIndex) : [];
+
+  if (cdnSources.length > 0 && !options.preferLocal && !isFileProtocol()) {
+    const attempts = cdnSources.map(async (source) => {
+      const loaded = await withQuickRetry(() =>
+        fetchPointerFromBase(baseFor(source, commit), SITE.pointerPath, fetchImpl, pointerTimeout, source),
+      );
+      const accepted = accept(loaded, source);
+      if (!accepted) throw stalePointerError(loaded, source);
+      return accepted;
+    });
+    try {
+      return await Promise.any(attempts);
+    } catch (err) {
+      const errors = err instanceof AggregateError ? err.errors : [];
+      for (const cause of errors) {
+        if (cause && typeof cause === 'object' && 'stalePointer' in cause) continue;
+        lastError = toError(cause);
+      }
+    }
+  }
+
+  const fallbackStart = options.preferLocal || isFileProtocol() ? 0 : (firstRawIndex >= 0 ? firstRawIndex : 0);
+  for (const source of pointerOrder.slice(fallbackStart)) {
     const paths = source === 'local' ? [SITE.pointerPath, 'today/snapshot.json'] : [SITE.pointerPath];
     for (const relPath of paths) {
       try {
         const loaded = await withQuickRetry(() =>
           fetchPointerFromBase(baseFor(source, commit), relPath, fetchImpl, pointerTimeout, source),
         );
-        // ★ 新鲜度校验：「请求成功」不等于「可用」。
-        // CDN 对分支引用存在长缓存，且各家边缘表现不一致（2026-09-16 实测
-        // cdn.jsdelivr.net 的指针陈旧 14 小时、而 fastly/gcore 实时），而指针一旦
-        // 陈旧，**整站都会加载到旧快照**。故这里必须看 generatedAt，不能只要 HTTP 200
-        // 就用：过期就记下兜底、继续降级到下一个来源找更新鲜的。
-        if (isStale(loaded.pointer.generatedAt, nowMs)) {
-          if (!staleFallback) {
-            staleFallback = { pointer: loaded.pointer, inlineSnap: loaded.inlineSnap, source };
-          }
-          continue;
-        }
-        pointer = loaded.pointer;
-        inlineSnap = loaded.inlineSnap;
-        pointerSource = source;
-        if (loaded.pointer.commit) commit = loaded.pointer.commit;
-        break;
+        const accepted = accept(loaded, source);
+        if (accepted) return accepted;
       } catch (err) {
         lastError = toError(err);
       }
     }
-    if (pointer) break;
   }
 
-  // 全部来源都过期 → 用最早拿到的那个兜底。此时不静默：isStale() 会把 stale=true
-  // 一路透传到 UI，由界面提示「数据已过期」，而不是假装成新鲜数据。
-  if (!pointer && staleFallback) {
-    pointer = staleFallback.pointer;
-    inlineSnap = staleFallback.inlineSnap;
-    pointerSource = staleFallback.source;
-    if (pointer.commit) commit = pointer.commit;
+  const fallback = staleFallback as { pointer: LatestPointer; inlineSnap: Snapshot | null; source: DataSource } | null;
+  if (fallback) {
+    if (fallback.pointer.commit) commit = fallback.pointer.commit;
+    return { pointer: fallback.pointer, inlineSnap: fallback.inlineSnap, pointerSource: fallback.source, commit, nowMs, fetchImpl, contentTimeout };
   }
+  throw lastError;
+}
 
-  if (!pointer) throw lastError;
-
-  // ---------- 阶段 2：内容 ----------
-  // dev bridge 的内联快照本身已含数据，此时**不再遍历内容通道** —— 否则
-  // fetchContentFromBase 里「report 取不到就被吞掉」的容错会让列表第一个通道
-  // 假成功，source 被误报（实测：local 内联快照会被报成 raw）。
+async function loadLatestInternal(options: LoadOptions = {}, includeReport = true): Promise<LoadResult<LatestBundle>> {
+  const resolved = await resolveLatestPointer(options);
+  const { pointer, inlineSnap, pointerSource, commit, nowMs, fetchImpl, contentTimeout } = resolved;
   let snap: Snapshot | null = inlineSnap;
   let rep: Report | null = null;
   let source: DataSource = pointerSource;
 
   if (snap) {
-    const loaded = await fetchContentFromBase(
-      baseFor(pointerSource, commit),
-      pointer,
-      snap,
-      fetchImpl,
-      contentTimeout,
-      pointerSource,
-    );
+    const loaded = await fetchContentFromBase(baseFor(pointerSource, commit), pointer, snap, fetchImpl, contentTimeout, pointerSource, includeReport);
     rep = loaded.rep;
   } else {
+    let lastError: Error = new Error('loadLatest: no content source');
     for (const candidate of resolveContentOrder(options, commit, pointer.snapshotPath)) {
       try {
-        const loaded = await fetchContentFromBase(
-          baseFor(candidate, commit),
-          pointer,
-          null,
-          fetchImpl,
-          contentTimeout,
-          candidate,
-        );
+        const loaded = await fetchContentFromBase(baseFor(candidate, commit), pointer, null, fetchImpl, contentTimeout, candidate, includeReport);
         snap = loaded.snap;
         rep = loaded.rep;
         source = candidate;
@@ -491,9 +503,8 @@ export async function loadLatest(options: LoadOptions = {}): Promise<LoadResult<
         lastError = toError(err);
       }
     }
+    if (!snap) throw lastError;
   }
-
-  if (!snap) throw lastError;
 
   return {
     data: { snap, rep, pointer },
@@ -501,6 +512,25 @@ export async function loadLatest(options: LoadOptions = {}): Promise<LoadResult<
     fetchedAt: new Date(nowMs).toISOString(),
     stale: isStale(pointer.generatedAt, nowMs),
   };
+}
+
+/**
+ * 加载「最新」数据：指针 + 当天投影快照 + 报告。
+ *
+ * 两条独立的降级链（见文件头注释）：
+ *   1) 指针：CDN 并行竞速（必须新鲜），raw/local 顺序兜底，拿到 commit
+ *   2) 内容：commit 有效则 jsDelivr@<commit> 打头（内容寻址 + br 压缩 + 长缓存）
+ *
+ * 返回的 `source` 描述**内容（快照）的来源** —— 它才是页面渲染的主体。
+ * 全部来源失败时抛出最后一个错误。
+ */
+export async function loadLatest(options: LoadOptions = {}): Promise<LoadResult<LatestBundle>> {
+  return loadLatestInternal(options, true);
+}
+
+/** 首屏使用的快照加载器：报告独立为非关键资源，绝不会阻塞页面1/2。 */
+export function loadLatestSnapshot(options: LoadOptions = {}): Promise<LoadResult<LatestBundle>> {
+  return loadLatestInternal(options, false);
 }
 
 /**

@@ -13,6 +13,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   loadLatest,
+  loadLatestSnapshot,
   isStale,
   isValidCommit,
   isImmutablePath,
@@ -189,6 +190,19 @@ describe('来源顺序 — 指针与内容分流', () => {
 });
 
 describe('loadLatest — 分流加载', () => {
+  it('快照加载器不请求报告，报告不可达也不阻塞首屏', async () => {
+    const now = Date.parse('2026-09-14T00:00:00Z');
+    const fetchImpl: FetchLike = async (url) => {
+      if (url === `${RAW}today/latest.json`) return json(makePointer());
+      if (url === `${JSD_COMMIT}today/snapshot-2026-09-14.json`) return json(makeSnapshot());
+      if (url === `${JSD_COMMIT}today/report-2026-09-14.json`) throw new Error('report should not be requested');
+      return notFound();
+    };
+    const res = await loadLatestSnapshot({ _fetch: fetchImpl, preferLocal: false, now });
+    expect(res.data.snap.date).toBe('2026-09-14');
+    expect(res.data.rep).toBeNull();
+  });
+
   it('① 正常路径：指针 raw + 快照/报告 jsdelivr@<commit>', async () => {
     const now = Date.parse('2026-09-14T00:00:00Z');
     const fetchImpl: FetchLike = async (url) => {
@@ -399,7 +413,7 @@ describe('指针新鲜度校验 — 「CDN 打头」能成立的前提（2026-09
     };
 
     const res = await loadLatest({ _fetch: fetchImpl, now: NOW, preferLocal: false });
-    expect(pointerHits.length).toBe(1);
+    expect(pointerHits.length).toBe(3);
     expect(pointerHits[0]).toContain('fastly'); // 顺序首位就是 fastly
     expect(res.data.snap.date).toBe('2026-09-16');
   });

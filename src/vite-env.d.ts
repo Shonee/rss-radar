@@ -13,3 +13,13 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+declare module 'virtual:rss-radar-channels-ui' {
+  const channels: Array<Record<string, unknown>>;
+  export default channels;
+}
+
+declare module 'virtual:rss-radar-sources-ui' {
+  const sources: Array<Record<string, unknown>>;
+  export default sources;
+}

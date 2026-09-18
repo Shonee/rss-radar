@@ -1,11 +1,43 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
+import { readFileSync } from 'node:fs';
+
+const CHANNELS_MODULE = 'virtual:rss-radar-channels-ui';
+const SOURCES_MODULE = 'virtual:rss-radar-sources-ui';
+const CHANNELS_RESOLVED = `\0${CHANNELS_MODULE}`;
+const SOURCES_RESOLVED = `\0${SOURCES_MODULE}`;
+
+function uiManifestPlugin() {
+  return {
+    name: 'rss-radar-ui-manifest',
+    resolveId(id: string) {
+      if (id === CHANNELS_MODULE) return CHANNELS_RESOLVED;
+      if (id === SOURCES_MODULE) return SOURCES_RESOLVED;
+      return undefined;
+    },
+    load(id: string) {
+      if (id !== CHANNELS_RESOLVED && id !== SOURCES_RESOLVED) return undefined;
+      const config = JSON.parse(readFileSync(path.resolve(process.cwd(), 'config/sources.json'), 'utf8')) as {
+        channels?: Array<Record<string, unknown>>;
+        sources?: Array<Record<string, unknown>>;
+      };
+      if (id === CHANNELS_RESOLVED) {
+        const channels = (config.channels ?? []).map(({ id: channelId, name, homepage, category, enabled, icon }) => ({
+          id: channelId, name, homepage, category, enabled, icon,
+        }));
+        return `export default ${JSON.stringify(channels)};`;
+      }
+      const sources = (config.sources ?? []).map(({ channelId, url }) => ({ channelId, url }));
+      return `export default ${JSON.stringify(sources)};`;
+    },
+  };
+}
 
 // ARCHITECTURE §7.2 — base: './' 让构建产物可在 GH Pages 子路径直接打开
 export default defineConfig({
   base: './',
-  plugins: [react()],
+  plugins: [uiManifestPlugin(), react()],
   resolve: {
     alias: {
       '@': path.resolve(process.cwd(), 'src'),
@@ -29,7 +61,8 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    // 生产站点不发布 source map；接入错误监控后可改为 hidden 并单独上传。
+    sourcemap: false,
     target: 'es2022',
     rollupOptions: {
       output: {

@@ -421,8 +421,10 @@ function LookbackSection({
     setLb({ status: 'loading' });
     (async () => {
       try {
-        const snap = await fetchDaySnapshot(selectedDate);
-        const rep = await fetchDayReport(selectedDate).catch(() => null);
+        const [snap, rep] = await Promise.all([
+          fetchDaySnapshot(selectedDate),
+          fetchDayReport(selectedDate).catch(() => null),
+        ]);
         if (!alive) return;
         setLb({ status: 'data', snapshot: snap.data, report: rep?.data ?? null });
       } catch {

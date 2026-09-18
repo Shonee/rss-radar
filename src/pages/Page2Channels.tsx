@@ -21,7 +21,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 import type { CategoryKey, Item } from '../types';
 import { toItemCardData, type ChannelCardData, type ChannelHealth } from '../types/api';
-import sourcesConfig from '../../config/sources.json';
+import sourcesManifest from 'virtual:rss-radar-sources-ui';
 import { categoryLabel } from '../config/categories';
 import { useSnapshot } from '../hooks';
 import { resolveBoardState } from '../services/boardState';
@@ -47,6 +47,7 @@ import {
   type ConfigDrawerValue,
 } from '../components';
 import { formatAbsolute, formatRelative } from '../services/time';
+import { indexItemsByChannel } from '../services/channelIndex';
 
 interface RawSource {
   channelId: string;
@@ -54,7 +55,7 @@ interface RawSource {
 }
 
 const CHANNELS = ALL_CHANNELS;
-const SOURCES = sourcesConfig.sources as unknown as RawSource[];
+const SOURCES = sourcesManifest as unknown as RawSource[];
 const FEED_BY_CHANNEL = new Map<string, string>();
 for (const s of SOURCES) if (!FEED_BY_CHANNEL.has(s.channelId)) FEED_BY_CHANNEL.set(s.channelId, s.url);
 
@@ -172,6 +173,8 @@ export default function Page2Channels() {
     [snap],
   );
 
+  const itemsByChannel = useMemo(() => indexItemsByChannel(allItems), [allItems]);
+
   const okByChannel = useMemo<Map<string, boolean>>(() => {
     const m = new Map<string, boolean>();
     // T-P3-fix：优先用逐源健康度 stats.sourceHealth[]（一个渠道可能有多个源，
@@ -206,13 +209,7 @@ export default function Page2Channels() {
     }
 
     const built = base.flatMap<ChannelCardData>((ch) => {
-      const chItems = allItems
-        .filter((it) => it.channelId === ch.id)
-        .sort((a, b) => {
-          const av = a.updatedAt || a.publishedAt || '';
-          const bv = b.updatedAt || b.publishedAt || '';
-          return av === bv ? 0 : av < bv ? 1 : -1;
-        });
+      const chItems = itemsByChannel.get(ch.id) ?? [];
       const statOk = okByChannel.get(ch.id);
       const health: ChannelHealth =
         ch.enabled === false
@@ -265,6 +262,7 @@ export default function Page2Channels() {
     config.staleSourceMonths,
     catFilter,
     allItems,
+    itemsByChannel,
     okByChannel,
   ]);
 

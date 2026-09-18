@@ -5,6 +5,7 @@ import { ThemeProvider, CssBaseline } from '@mui/material';
 import { HashRouter } from 'react-router-dom';
 import App from './App';
 import { theme } from './theme';
+import { startPerformanceTelemetry } from './services/performance';
 import './index.css';
 
 const rootEl = document.getElementById('root');
@@ -22,3 +23,5 @@ ReactDOM.createRoot(rootEl).render(
     </ThemeProvider>
   </React.StrictMode>,
 );
+
+startPerformanceTelemetry();

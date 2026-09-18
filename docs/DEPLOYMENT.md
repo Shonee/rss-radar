@@ -46,7 +46,7 @@ npm run preview    # 预览已构建产物 dist/，默认 http://localhost:4173/
 | `base` | `'./'` | 相对路径引用资源 → **同一份产物在子路径 / 根路径都能加载**（§7.2） |
 | `server.host` / `server.port` / `server.strictPort` | `'0.0.0.0'` / `5173` / `true` | dev server 监听；端口被占用时**直接报错**而不换端口 |
 | `preview.host` / `preview.port` / `preview.strictPort` | `'0.0.0.0'` / `4173` / `true` | 预览服务同上 |
-| `build.outDir` / `target` / `sourcemap` | `'dist'` / `'es2022'` / `true` | 输出目录与目标 |
+| `build.outDir` / `target` / `sourcemap` | `'dist'` / `'es2022'` / `false` | 输出目录与目标；生产不发布 source map，接入错误监控后可改为 `hidden` |
 | `build.rollupOptions.output.manualChunks` | `vendor-mui` / `vendor-router` / `vendor-react` / `vendor` | 把大依赖拆到独立 vendor chunk（长期缓存） |
 
 > 当前构建产物（`npm run build` 实测）：主 chunk `index-*.js` ≈ **55 kB**（gzip ≈ 18 kB）；页面2/3/4/关于各自 lazy chunk；`vendor-mui` 251 kB、`vendor-react` 142 kB、`vendor-router` 23 kB。整站 `dist/` ≈ 3.4 MB（含本地 dev-bridge 数据时）。
