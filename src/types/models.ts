@@ -480,6 +480,9 @@ export interface SiteConfig {
     showWordCloud?: boolean;
     showSummary?: boolean;
     density?: 'comfortable' | 'compact';
+    showFailedEmptyChannels?: boolean;
+    showStaleChannels?: boolean;
+    staleSourceMonths?: 6 | 12 | 24;
   };
   filters?: {
     enabledCategories?: CategoryKey[];

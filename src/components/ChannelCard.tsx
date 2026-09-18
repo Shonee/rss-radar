@@ -11,6 +11,7 @@ import type { ChannelCardData } from '../types';
 import { categoryLabel } from '../config/categories';
 import { categoryColor, tokens } from '../theme/tokens';
 import { formatRelative } from '../services/time';
+import { channelCardHref } from '../services/navigation';
 import StatusBadge, { healthToKind } from './StatusBadge';
 
 export interface ChannelCardProps {
@@ -183,7 +184,7 @@ export default function ChannelCard({ channel, cardLimit = 10, testId = 'channel
         >
           <Link
             data-testid="channel-card-more"
-            href={`/#/?channel=${encodeURIComponent(channel.channelId)}`}
+            href={channelCardHref(channel.channelId)}
             underline="hover"
             sx={{ fontSize: tokens.fs.sm }}
           >

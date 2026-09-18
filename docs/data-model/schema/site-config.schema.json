@@ -36,7 +36,10 @@
         "hotListSize": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10, "description": "页面3 热点榜条数" },
         "showWordCloud": { "type": "boolean", "default": false, "description": "是否显示词云(P1)" },
         "showSummary": { "type": "boolean", "default": true },
-        "density": { "type": "string", "enum": ["comfortable", "compact"], "default": "comfortable" }
+        "density": { "type": "string", "enum": ["comfortable", "compact"], "default": "comfortable" },
+        "showFailedEmptyChannels": { "type": "boolean", "default": false, "description": "是否展示抓取失败且没有可展示条目的渠道卡片" },
+        "showStaleChannels": { "type": "boolean", "default": false, "description": "是否展示超过 staleSourceMonths 未有新条目的渠道卡片" },
+        "staleSourceMonths": { "type": "integer", "enum": [6, 12, 24], "default": 12, "description": "渠道最近内容的最大允许陈旧月份数" }
       }
     },
     "filters": {

@@ -26,6 +26,15 @@ import { categoryLabel } from '../config/categories';
 import { useSnapshot } from '../hooks';
 import { resolveBoardState } from '../services/boardState';
 import { categoryColor, tokens } from '../theme/tokens';
+import {
+  DEFAULT_SHOW_FAILED_EMPTY_CHANNELS,
+  DEFAULT_SHOW_STALE_CHANNELS,
+  DEFAULT_STALE_SOURCE_MONTHS,
+} from '../config/site';
+import {
+  shouldHideChannel,
+  type StaleSourceMonths,
+} from '../services/channelVisibility';
 import { ALL_CHANNELS, ENABLED_CHANNELS, ENABLED_CHANNEL_IDS } from '../services/channels';
 import {
   AlertBar,
@@ -60,6 +69,9 @@ interface Page2Config {
   sort: ChannelSortKey;
   /** 用户是否在抽屉里显式设置过条数（显式值优先于移动端降级） */
   cardLimitUserSet: boolean;
+  showFailedEmpty: boolean;
+  showStaleSources: boolean;
+  staleSourceMonths: StaleSourceMonths;
 }
 
 const DEFAULT_P2_CONFIG: Page2Config = {
@@ -67,6 +79,9 @@ const DEFAULT_P2_CONFIG: Page2Config = {
   cardLimit: 10,
   sort: 'updatedAt',
   cardLimitUserSet: false,
+  showFailedEmpty: DEFAULT_SHOW_FAILED_EMPTY_CHANNELS,
+  showStaleSources: DEFAULT_SHOW_STALE_CHANNELS,
+  staleSourceMonths: DEFAULT_STALE_SOURCE_MONTHS,
 };
 
 function loadPage2Config(): Page2Config {
@@ -92,6 +107,18 @@ function loadPage2Config(): Page2Config {
       cardLimit,
       sort,
       cardLimitUserSet: parsed.cardLimitUserSet === true,
+      showFailedEmpty:
+        typeof parsed.showFailedEmpty === 'boolean'
+          ? parsed.showFailedEmpty
+          : DEFAULT_P2_CONFIG.showFailedEmpty,
+      showStaleSources:
+        typeof parsed.showStaleSources === 'boolean'
+          ? parsed.showStaleSources
+          : DEFAULT_P2_CONFIG.showStaleSources,
+      staleSourceMonths:
+        parsed.staleSourceMonths === 6 || parsed.staleSourceMonths === 24
+          ? parsed.staleSourceMonths
+          : DEFAULT_P2_CONFIG.staleSourceMonths,
     };
   } catch {
     return DEFAULT_P2_CONFIG;
@@ -178,10 +205,14 @@ export default function Page2Channels() {
       base = base.filter((c) => ((c.category ?? []) as CategoryKey[]).includes(catFilter));
     }
 
-    const built = base.map<ChannelCardData>((ch) => {
+    const built = base.flatMap<ChannelCardData>((ch) => {
       const chItems = allItems
         .filter((it) => it.channelId === ch.id)
-        .sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
+        .sort((a, b) => {
+          const av = a.updatedAt || a.publishedAt || '';
+          const bv = b.updatedAt || b.publishedAt || '';
+          return av === bv ? 0 : av < bv ? 1 : -1;
+        });
       const statOk = okByChannel.get(ch.id);
       const health: ChannelHealth =
         ch.enabled === false
@@ -191,18 +222,31 @@ export default function Page2Channels() {
             : chItems.length === 0
               ? 'empty'
               : 'ok';
-      return {
+      const lastUpdatedAt = chItems[0]?.updatedAt || chItems[0]?.publishedAt || null;
+      if (
+        shouldHideChannel({
+          health,
+          itemCount: chItems.length,
+          lastUpdatedAt,
+          showFailedEmpty: config.showFailedEmpty,
+          showStaleSources: config.showStaleSources,
+          staleSourceMonths: config.staleSourceMonths,
+        })
+      ) {
+        return [];
+      }
+      return [{
         channelId: ch.id,
         channelName: ch.name,
         icon: ch.icon,
         homepage: ch.homepage,
         feedUrl: FEED_BY_CHANNEL.get(ch.id),
         categories: (ch.category ?? []) as CategoryKey[],
-        lastUpdatedAt: chItems[0]?.updatedAt ?? null,
+        lastUpdatedAt,
         todayCount: chItems.length,
         health,
         items: chItems.map(toItemCardData),
-      };
+      }];
     });
 
     built.sort((a, b) => {
@@ -213,7 +257,16 @@ export default function Page2Channels() {
       return a.channelName < b.channelName ? -1 : 1;
     });
     return built;
-  }, [config.channelIds, config.sort, catFilter, allItems, okByChannel]);
+  }, [
+    config.channelIds,
+    config.sort,
+    config.showFailedEmpty,
+    config.showStaleSources,
+    config.staleSourceMonths,
+    catFilter,
+    allItems,
+    okByChannel,
+  ]);
 
   // 看板状态：empty-none（无卡片）/ empty-all（全渠道今日无内容）/ board。
   // 判定逻辑收敛到纯函数，页面不再就地拼 if/else（QA B10 / PRD:587）。
@@ -225,6 +278,9 @@ export default function Page2Channels() {
     channelIds: config.channelIds,
     cardLimit: config.cardLimit,
     sort: config.sort,
+    showFailedEmpty: config.showFailedEmpty,
+    showStaleSources: config.showStaleSources,
+    staleSourceMonths: config.staleSourceMonths,
   };
 
   const handleDrawerChange = (v: ConfigDrawerValue): void => {
@@ -232,6 +288,9 @@ export default function Page2Channels() {
       channelIds: v.channelIds,
       cardLimit: v.cardLimit,
       sort: v.sort,
+      showFailedEmpty: v.showFailedEmpty,
+      showStaleSources: v.showStaleSources,
+      staleSourceMonths: v.staleSourceMonths,
       cardLimitUserSet: v.cardLimit !== prev.cardLimit ? true : prev.cardLimitUserSet,
     }));
   };

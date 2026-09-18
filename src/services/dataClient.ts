@@ -351,6 +351,20 @@ async function fetchContentFromBase(
   timeoutMs: number,
   source: DataSource,
 ): Promise<{ snap: Snapshot; rep: Report | null }> {
+  // 报告只供页面3使用，和快照共享同一来源与超时窗口；并行发起可避免
+  // 页面1/页面2 在等待报告时额外付出一整段网络 RTT。
+  const reportRel = pointer.reportPath ?? '';
+  const reportPromise: Promise<Report | null> = reportRel
+    ? fetchJson(
+        base + reportRel,
+        fetchImpl,
+        timeoutMs,
+        cacheModeFor(source, false),
+      )
+        .then((raw) => (isReport(raw) ? raw : null))
+        .catch(() => null)
+    : Promise.resolve(null);
+
   let snap = inlineSnap;
   if (!snap) {
     const snapRaw = await fetchJson(
@@ -363,26 +377,8 @@ async function fetchContentFromBase(
     snap = snapRaw;
   }
 
-  // report 缺位不算失败（当日报告可能尚未生成）
-  let rep: Report | null = null;
-  // 只认声明式路径，缺省即跳过。**刻意不做「按日期猜固定名」的 fallback**：
-  // 报告名带 4 位 UTC 后缀后，猜出来的名字要么 404，要么静默命中遗留的
-  // 同名陈旧文件（回归断言 A4 曾被 903 条旧数据污染，就是这条摘掉了）。
-  const reportRel = pointer.reportPath ?? '';
-  if (reportRel) {
-    try {
-      const repRaw = await fetchJson(
-        base + reportRel,
-        fetchImpl,
-        timeoutMs,
-        cacheModeFor(source, false),
-      );
-      if (isReport(repRaw)) rep = repRaw;
-    } catch {
-      rep = null;
-    }
-  }
-
+  // report 缺位不算失败（当日报告可能尚未生成）。
+  const rep = await reportPromise;
   return { snap, rep };
 }
 

@@ -114,6 +114,15 @@ export const DEFAULT_CARD_LIMIT: number = siteConfigJson.display?.cardLimit ?? 1
 /** display.page1BatchSize 默认值 */
 export const DEFAULT_PAGE1_BATCH_SIZE: number = siteConfigJson.display?.page1BatchSize ?? 20;
 
+/** 页面2 渠道可见性默认值；用户在配置抽屉中的选择保存在 localStorage。 */
+export const DEFAULT_SHOW_FAILED_EMPTY_CHANNELS: boolean =
+  siteConfigJson.display?.showFailedEmptyChannels ?? false;
+export const DEFAULT_SHOW_STALE_CHANNELS: boolean = siteConfigJson.display?.showStaleChannels ?? false;
+export const DEFAULT_STALE_SOURCE_MONTHS: 6 | 12 | 24 =
+  siteConfigJson.display?.staleSourceMonths === 6 || siteConfigJson.display?.staleSourceMonths === 24
+    ? siteConfigJson.display.staleSourceMonths
+    : 12;
+
 /** 已启用分类（空数组表示全部） */
 export const ENABLED_CATEGORIES: CategoryKey[] =
   (siteConfigJson.filters?.enabledCategories as CategoryKey[] | undefined) ?? [];

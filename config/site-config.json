@@ -14,7 +14,10 @@
     "hotListSize": 10,
     "showWordCloud": false,
     "showSummary": true,
-    "density": "comfortable"
+    "density": "comfortable",
+    "showFailedEmptyChannels": false,
+    "showStaleChannels": false,
+    "staleSourceMonths": 12
   },
   "filters": {
     "enabledCategories": [],

@@ -480,7 +480,7 @@ on:
 | 带 hash 的静态资源 | `max-age=31536000, immutable` |
 | 数据文件 | 由 raw/CDN 控制短 TTL（raw ≈ 5 分钟）；前端 fetch 用 `cache: 'no-store'` 绕浏览器缓存 |
 
-> 📌 上表为**目标策略**；`public/_headers` **尚未创建**，当前实际依赖 CF Pages / GH Pages 的默认缓存行为。如需精确控制，需新增 `public/_headers`（CF）与对应 GH Pages 配置。
+> 📌 Cloudflare Pages 的精确缓存规则已落在 `public/_headers`：HTML 使用 `max-age=0, must-revalidate`，带 hash 的 `/assets/*` 使用一年 immutable 缓存。GitHub Pages 不读取该文件，仍依赖其默认缓存行为。
 >
 > 自定义域名：GH Pages 写 `CNAME` 文件；CF Pages 在 Dashboard 绑定。
 

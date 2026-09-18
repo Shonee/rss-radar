@@ -19,6 +19,7 @@ import type { CategoryKey } from '../types';
 import { categoryLabel } from '../config/categories';
 import { tokens } from '../theme/tokens';
 import type { ChannelOption } from './FilterBar';
+import type { StaleSourceMonths } from '../services/channelVisibility';
 
 /** 看板卡片排序：按最近更新 / 按渠道名 */
 export type ChannelSortKey = 'updatedAt' | 'channelName';
@@ -28,12 +29,18 @@ export interface ConfigDrawerValue {
   channelIds: string[] | null;
   cardLimit: number;
   sort: ChannelSortKey;
+  showFailedEmpty: boolean;
+  showStaleSources: boolean;
+  staleSourceMonths: StaleSourceMonths;
 }
 
 export const DEFAULT_CONFIG_DRAWER: ConfigDrawerValue = {
   channelIds: null,
   cardLimit: 10,
   sort: 'updatedAt',
+  showFailedEmpty: false,
+  showStaleSources: false,
+  staleSourceMonths: 12,
 };
 
 export interface ConfigDrawerProps {
@@ -141,6 +148,49 @@ export default function ConfigDrawer({
               value={String(n)}
               control={<Radio size="small" />}
               label={n === 10 ? <Chip size="small" label="10（默认）" /> : String(n)}
+            />
+          ))}
+        </RadioGroup>
+
+        <Divider sx={{ my: 1.5 }} />
+
+        <Typography sx={{ fontWeight: 600, mb: 1, fontSize: tokens.fs.base }}>卡片展示</Typography>
+        <FormControlLabel
+          control={
+            <Checkbox
+              data-testid="config-drawer-show-failed-empty"
+              size="small"
+              checked={value.showFailedEmpty}
+              onChange={(e) => onChange({ ...value, showFailedEmpty: e.target.checked })}
+            />
+          }
+          label="展示抓取失败且无内容的渠道"
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              data-testid="config-drawer-show-stale"
+              size="small"
+              checked={value.showStaleSources}
+              onChange={(e) => onChange({ ...value, showStaleSources: e.target.checked })}
+            />
+          }
+          label="展示超过限制未更新的渠道"
+        />
+        <RadioGroup
+          data-testid="config-drawer-stale-months"
+          value={String(value.staleSourceMonths)}
+          onChange={(e) =>
+            onChange({ ...value, staleSourceMonths: Number(e.target.value) as StaleSourceMonths })
+          }
+          sx={{ ml: 1 }}
+        >
+          {[6, 12, 24].map((months) => (
+            <FormControlLabel
+              key={months}
+              value={String(months)}
+              control={<Radio size="small" />}
+              label={months === 12 ? '1 年（默认）' : `${months === 6 ? '6 个月' : '2 年'}`}
             />
           ))}
         </RadioGroup>

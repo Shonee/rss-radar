@@ -26,6 +26,7 @@ import { toItemCardData } from '../types/api';
 import { DEFAULT_PAGE1_BATCH_SIZE } from '../config/site';
 import { useNotifyStats, useSnapshot } from '../hooks';
 import { countByShanghaiDay, formatRelative, passesTimeRange } from '../services/time';
+import { timeRangeFromQuery } from '../services/navigation';
 import { ALL_CHANNELS, ENABLED_CHANNELS } from '../services/channels';
 import { tokens } from '../theme/tokens';
 import {
@@ -75,6 +76,8 @@ function compareByRecencyDesc(a: Item, b: Item): number {
 export default function Page1HotStream() {
   const [searchParams] = useSearchParams();
   const channelParam = searchParams.get('channel');
+  const timeRangeParam = searchParams.get('timeRange');
+  const deepLinkTimeRange = timeRangeFromQuery(timeRangeParam);
 
   const { data: snap, loading, error, stale, source, reload } = useSnapshot();
   // T-P3-08：页面1 底部只读通知状态面板（折叠；ARCH §12 硬约束：无发送入口）
@@ -90,19 +93,25 @@ export default function Page1HotStream() {
   const [filterOpen, setFilterOpen] = useState(false);
 
   const [filter, setFilter] = useState<FilterValue>(() =>
-    channelParam ? { ...EMPTY_FILTER, channelIds: [channelParam] } : EMPTY_FILTER,
+    channelParam
+      ? { ...EMPTY_FILTER, channelIds: [channelParam], timeRange: deepLinkTimeRange }
+      : { ...EMPTY_FILTER, timeRange: deepLinkTimeRange },
   );
   const [limit, setLimit] = useState<number>(batch);
 
   // 深链 ?channel= 同步（页面加载 / 参数变化时）
   useEffect(() => {
-    if (!channelParam) return;
     setFilter((prev) =>
-      prev.channelIds.length === 1 && prev.channelIds[0] === channelParam
+      (channelParam ? prev.channelIds.length === 1 && prev.channelIds[0] === channelParam : prev.channelIds.length === 0) &&
+      prev.timeRange === deepLinkTimeRange
         ? prev
-        : { ...prev, channelIds: [channelParam] },
+        : {
+            ...prev,
+            channelIds: channelParam ? [channelParam] : [],
+            timeRange: deepLinkTimeRange,
+          },
     );
-  }, [channelParam]);
+  }, [channelParam, deepLinkTimeRange]);
 
   // 主条目（排除 duplicateOf 指向别处的重复项，与采集端去重口径一致）
   const mainItems = useMemo<Item[]>(
