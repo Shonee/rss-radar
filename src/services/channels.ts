@@ -18,7 +18,8 @@ export const ALL_CHANNELS = channelsManifest as unknown as RawChannel[];
 
 /**
  * 启用渠道 —— 所有面向用户的「共 N 个渠道」类口径的**唯一**来源。
- * 停用渠道不参与采集（不会产出任何条目），因此不计入。
+ * 注意采集门控只看 `sources[].enabled`，不看这里；页面1/3 用本集合
+ * 兜住「渠道停用后旧快照仍含其条目」的一小时窗口。
  */
 export const ENABLED_CHANNELS: RawChannel[] = ALL_CHANNELS.filter((c) => c.enabled !== false);
 

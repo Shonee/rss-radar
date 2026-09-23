@@ -19,12 +19,13 @@ import Chip from '@mui/material/Chip';
 import LinkMui from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 
-import type { CategoryKey, HotItem, Item } from '../types';
+import type { CategoryKey, ChannelActivity, HotItem, Item } from '../types';
 import { useReport, useSnapshot } from '../hooks';
 import { EmptyState, ErrorBanner, SkeletonList, PieChart, BarChart } from '../components';
 import { categoryLabel } from '../config/categories';
 import { DATA_WEIGHTS } from '../config/site';
 import { categoryColor, tokens } from '../theme/tokens';
+import { ENABLED_CHANNEL_IDS } from '../services/channels';
 import { formatAbsolute } from '../services/time';
 import { integerPercentages } from '../services/percent';
 import siteConfigJson from '../../config/site-config.json';
@@ -42,9 +43,21 @@ export default function Page3Report() {
   const { data: report, loading, error, reload } = useReport();
   const { data: snap } = useSnapshot();
 
+  // ENABLED_CHANNEL_IDS 闸门：报告与快照按小时滚动生成，渠道停用后旧产物仍含其条目，
+  // 在下一轮采集覆盖前要靠这里挡住（与页面1 同口径）。
   const snapshotItems = useMemo<Item[]>(
-    () => (snap?.items ?? []).filter((it) => !it.duplicateOf),
+    () => (snap?.items ?? []).filter((it) => !it.duplicateOf && ENABLED_CHANNEL_IDS.has(it.channelId)),
     [snap],
+  );
+
+  const hotList = useMemo<HotItem[]>(
+    () => (report?.hotList ?? []).filter((h) => ENABLED_CHANNEL_IDS.has(h.channelId)),
+    [report],
+  );
+
+  const channelActivity = useMemo<ChannelActivity[]>(
+    () => (report?.channelActivity ?? []).filter((c) => ENABLED_CHANNEL_IDS.has(c.channelId)),
+    [report],
   );
 
   // id → 快照条目：用于热点榜解析 urlStatus / alternateUrl（死链降级，ARCH §15.4）
@@ -95,7 +108,7 @@ export default function Page3Report() {
     );
   }
 
-  const hotCount = report.hotList.length;
+  const hotCount = hotList.length;
   const metrics: MetricCard[] = [
     { label: '总条数（去重后）', value: report.totalItems, hint: '今日全渠道', testId: 'p3-metric-total' },
     { label: '活跃渠道数', value: report.activeChannels, hint: '今日有更新的渠道', testId: 'p3-metric-channels' },
@@ -216,12 +229,12 @@ export default function Page3Report() {
         >
           <SectionHeader title={`热点榜 TOP ${hotCount}`} sub="按热度分（hotScore）倒序" />
           <Box data-testid="p3-hot-list" sx={{ px: 2, pb: 1 }}>
-            {report.hotList.length === 0 ? (
+            {hotList.length === 0 ? (
               <Typography sx={{ py: 2, color: tokens.surface.text3, fontSize: tokens.fs.sm }}>
                 当日暂无热点条目。
               </Typography>
             ) : (
-              report.hotList.map((h) => <HotRow key={h.id} hot={h} sourceItem={itemById.get(h.id)} />)
+              hotList.map((h) => <HotRow key={h.id} hot={h} sourceItem={itemById.get(h.id)} />)
             )}
           </Box>
         </Box>
@@ -341,7 +354,7 @@ export default function Page3Report() {
           }}
         >
           <BarChart
-            data={(report.channelActivity ?? []).map((c) => ({
+            data={channelActivity.map((c) => ({
               label: c.channelName,
               value: c.itemCount,
               color: categoryColor((c.category?.[0] ?? 'other') as CategoryKey),

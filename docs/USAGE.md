@@ -42,14 +42,14 @@ npm run validate
 - `channels[]`：**逻辑内容发布方**（页面2 卡片 + 页面3 分类的基本单位）。字段：`id / name / homepage / category[] / enabled / displayLimit / icon / language / weight …`
 - `sources[]`：**采集配置**（每条 = 一次「去哪里拿数据」）。字段：`id / channelId / name / type / url / enabled / interval / auth / fieldMapping / pagination …`
 
-一个 `Channel` 可挂多个 `Source`（多渠道备份）。**一个源能不能被采集，取决于 `source.enabled` 与 `channel.enabled` 两者都开启**。
+一个 `Channel` 可挂多个 `Source`（多渠道备份）。**采集门控只看 `source.enabled`**（`scripts/collect/main.mjs` 的 `dueSources` 过滤），外加一条渠道级例外：渠道 id 出现在 `config/exclusions.json` 的 `level:channel` 规则里时，其下所有源一并跳过。`channel.enabled` 不参与采集判定，只决定前端是否展示该渠道。
 
-> 现有 32 个渠道、34 个源（类型分布 `rss` 31 + `atom` 3；其中 2 个源实测失效已标 `enabled:false`）。字段完整说明见 [`SOURCES.md`](./SOURCES.md)。
+> 渠道与源的现量不在本文维护（`config/sources.json` 随每次导入变动）：启用渠道数看页面2 头部或页面1 数据状态条，两处同源于 `config/sources.json` 的构建期派生，数字恒等；源级明细（类型分布、哪些源 `enabled:false`）直接看配置文件。字段完整说明见 [`SOURCES.md`](./SOURCES.md)。
 
 ### 1.3 改一个源 / 启停一个源
 
 - **停用某个源**：把 `sources[]` 里该条的 `"enabled"` 改为 `false`。
-- **停用整个渠道**：把 `channels[]` 里该条的 `"enabled"` 改为 `false`（其下的 Source 也不再采集）。
+- **停用整个渠道**：`channels[]` 和该渠道下**每一个** `sources[]` 的 `"enabled"` 都要改为 `false`。只改渠道会让卡片消失、源却仍在每小时被抓取。
 - **新增源**：见 [`SOURCES.md`](./SOURCES.md) 的「零代码加一个源」，一般只改 `config/sources.json`。
 
 ### 1.4 本地跑一次采集，验证能通

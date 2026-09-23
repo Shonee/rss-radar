@@ -242,13 +242,14 @@
       "category": [
         "dev_community"
       ],
-      "enabled": true,
+      "enabled": false,
       "displayLimit": 10,
       "icon": "吾",
       "language": "zh-CN",
       "weight": 0.7,
+      "description": "吾爱破解导读-最新热门；2026-09-23 按需求下线，停止采集且不展示",
       "createdAt": "2026-09-15T00:00:00Z",
-      "updatedAt": "2026-09-15T00:00:00Z"
+      "updatedAt": "2026-09-23T00:00:00Z"
     },
     {
       "id": "appinn",
@@ -371,13 +372,14 @@
       "category": [
         "finance"
       ],
-      "enabled": true,
+      "enabled": false,
       "displayLimit": 10,
       "icon": "雪",
       "language": "zh-CN",
       "weight": 0.7,
+      "description": "雪球今日话题；2026-09-23 按需求下线，停止采集且不展示",
       "createdAt": "2026-09-15T00:00:00Z",
-      "updatedAt": "2026-09-15T00:00:00Z"
+      "updatedAt": "2026-09-23T00:00:00Z"
     },
     {
       "id": "woshipm",
@@ -1151,17 +1153,17 @@
       "category": [
         "news"
       ],
-      "enabled": true,
+      "enabled": false,
       "displayLimit": 10,
       "icon": "博",
       "language": "zh-CN",
       "weight": 0.5,
       "createdAt": "2026-09-16T04:19:53Z",
-      "updatedAt": "2026-09-16T04:19:53Z",
+      "updatedAt": "2026-09-23T00:00:00Z",
       "tags": [
         "内容平台"
       ],
-      "description": "博客园首页",
+      "description": "博客园首页；2026-09-23 按需求下线，停止采集且不展示",
       "origin": "garss",
       "originRef": "C018",
       "importBatch": "garss-2026-09"
@@ -4692,11 +4694,12 @@
       "name": "吾爱破解 导读 - 最新热门",
       "type": "rss",
       "url": "https://www.52pojie.cn/forum.php?mod=guide&rss=1&view=hot",
-      "enabled": true,
+      "enabled": false,
       "language": "zh-CN",
       "interval": 30,
+      "notes": "2026-09-23 随渠道 52pojie 一并下线（总开关关闭，不再采集）",
       "createdAt": "2026-09-15T00:00:00Z",
-      "updatedAt": "2026-09-15T00:00:00Z"
+      "updatedAt": "2026-09-23T00:00:00Z"
     },
     {
       "id": "appinn-appinns",
@@ -4812,11 +4815,12 @@
       "name": "今日话题 - 雪球",
       "type": "rss",
       "url": "https://xueqiu.com/hots/topic/rss",
-      "enabled": true,
+      "enabled": false,
       "language": "zh-CN",
       "interval": 30,
+      "notes": "2026-09-23 随渠道 xueqiu 一并下线（总开关关闭，不再采集）",
       "createdAt": "2026-09-15T00:00:00Z",
-      "updatedAt": "2026-09-15T00:00:00Z",
+      "updatedAt": "2026-09-23T00:00:00Z",
       "lastFetchAt": "2026-09-16T04:22:54Z",
       "lastStatus": "ok"
     },
@@ -5460,12 +5464,12 @@
       "name": "博客园",
       "type": "rss",
       "url": "http://feed.cnblogs.com/blog/sitehome/rss",
-      "enabled": true,
+      "enabled": false,
       "language": "zh-CN",
       "interval": 30,
       "createdAt": "2026-09-16T04:19:53Z",
-      "updatedAt": "2026-09-16T04:19:53Z",
-      "notes": "原始标签：内容平台",
+      "updatedAt": "2026-09-23T00:00:00Z",
+      "notes": "原始标签：内容平台；2026-09-23 随渠道 feed-cnblogs 一并下线（总开关关闭，不再采集）",
       "origin": "garss",
       "originRef": "C018",
       "importBatch": "garss-2026-09",
@@ -5914,12 +5918,12 @@
       "name": "博客园",
       "type": "rss",
       "url": "http://feed.cnblogs.com/blog/picked/rss",
-      "enabled": true,
+      "enabled": false,
       "language": "zh-CN",
       "interval": 30,
       "createdAt": "2026-09-16T04:19:53Z",
-      "updatedAt": "2026-09-16T04:19:53Z",
-      "notes": "原始标签：内容平台",
+      "updatedAt": "2026-09-23T00:00:00Z",
+      "notes": "原始标签：内容平台；2026-09-23 随渠道 feed-cnblogs 一并下线（总开关关闭，不再采集）",
       "origin": "garss",
       "originRef": "C017",
       "importBatch": "garss-2026-09",

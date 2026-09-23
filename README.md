@@ -78,7 +78,7 @@ npm config set registry https://registry.npmmirror.com --location=user
 | `scripts/dev/` | 本地开发辅助（`seed-history.mjs`） |
 | `scripts/validate-schema.mjs` | ajv 校验 config / schema |
 | `scripts/smoke/` | smoke-test：产物契约断言 + e2e 管线 |
-| `config/` | 站点默认配置（sources / exclusions / notify / site-config / …；当前 11 个 RSS 渠道） |
+| `config/` | 站点默认配置（sources / exclusions / notify / site-config / …；渠道与源的现量以本目录为准，文档不维护静态数字） |
 | `docs/` | PRD / ARCHITECTURE / 数据模型 / 实施计划 / 本套使用文档 |
 
 更详细的目录解释见 [`docs/ARCHITECTURE.md` §8](./docs/ARCHITECTURE.md)。

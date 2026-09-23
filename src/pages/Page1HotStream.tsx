@@ -27,7 +27,7 @@ import { DEFAULT_PAGE1_BATCH_SIZE } from '../config/site';
 import { useNotifyStats, useSnapshot } from '../hooks';
 import { countByShanghaiDay, formatRelative, passesTimeRange } from '../services/time';
 import { timeRangeFromQuery } from '../services/navigation';
-import { ALL_CHANNELS, ENABLED_CHANNELS } from '../services/channels';
+import { ALL_CHANNELS, ENABLED_CHANNELS, ENABLED_CHANNEL_IDS } from '../services/channels';
 import { tokens } from '../theme/tokens';
 import {
   AlertBar,
@@ -114,8 +114,10 @@ export default function Page1HotStream() {
   }, [channelParam, deepLinkTimeRange]);
 
   // 主条目（排除 duplicateOf 指向别处的重复项，与采集端去重口径一致）
+  // ENABLED_CHANNEL_IDS 闸门：快照按小时滚动生成，渠道停用后旧快照仍含其条目，
+  // 在下一轮采集覆盖前要靠这里挡住。
   const mainItems = useMemo<Item[]>(
-    () => (snap?.items ?? []).filter((it) => !it.duplicateOf),
+    () => (snap?.items ?? []).filter((it) => !it.duplicateOf && ENABLED_CHANNEL_IDS.has(it.channelId)),
     [snap],
   );
 

@@ -453,7 +453,7 @@
 
 | 粒度 | `level` | 作用对象 | 示例 |
 |---|---|---|---|
-| ① 整源 / 渠道停用 | `channel`（+ 直接改 `enabled`） | `Source` / `Channel` | 一键停某个渠道 |
+| ① 整源 / 渠道停用 | `channel`（+ 改 `sources[].enabled`） | `Source` / `Channel` | 停某个渠道：此处填 id，或直接把该渠道及其源全部置 `enabled:false` |
 | ② 条目级排除 | `item` | 单条 Item（关键词 / 域名 / URL / 标题正则） | 屏蔽「招聘」「广告」、垃圾域名 |
 | ③ 分类级排除 | `category` | Channel 的 `category` | 不想看 `podcast` 分类 |
 
