@@ -1,8 +1,8 @@
 {
-  "date": "2026-11-04",
-  "generatedAt": "2026-11-03T23:58:26Z",
-  "snapshotPath": "today/snapshot-2026-11-04-2358.json",
-  "reportPath": "today/report-2026-11-04-2358.json",
-  "eventPath": "today/events-2026-11-04.ndjson",
+  "date": "2026-11-05",
+  "generatedAt": "2026-11-04T21:17:19Z",
+  "snapshotPath": "today/snapshot-2026-11-05-2117.json",
+  "reportPath": "today/report-2026-11-05-2117.json",
+  "eventPath": "today/events-2026-11-05.ndjson",
   "commit": "local"
 }
