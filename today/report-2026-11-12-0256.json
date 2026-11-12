@@ -2,11 +2,11 @@
   "schemaVersion": "1.0",
   "date": "2026-11-12",
   "timezone": "Asia/Shanghai",
-  "generatedAt": "2026-11-11T21:54:54Z",
-  "totalItems": 4442,
-  "activeChannels": 70,
+  "generatedAt": "2026-11-12T02:56:42Z",
+  "totalItems": 4388,
+  "activeChannels": 69,
   "windowStart": "2026-11-11T16:00:00Z",
-  "windowEnd": "2026-11-11T21:54:53Z",
+  "windowEnd": "2026-11-12T02:56:41Z",
   "weights": {
     "sourceOverlap": 0.4,
     "recency": 0.25,
@@ -18,58 +18,58 @@
     {
       "category": "tech_blog",
       "label": "科技博客",
-      "itemCount": 2387,
+      "itemCount": 2386,
       "channelCount": 44,
-      "ratio": 0.5373705538045925
+      "ratio": 0.5437556973564266
     },
     {
       "category": "ai",
       "label": "AI",
-      "itemCount": 1337,
-      "channelCount": 58,
-      "ratio": 0.3009905447996398
+      "itemCount": 1354,
+      "channelCount": 57,
+      "ratio": 0.3085688240656336
     },
     {
       "category": "news",
       "label": "新闻",
-      "itemCount": 1128,
-      "channelCount": 44,
-      "ratio": 0.25393966681674923
-    },
-    {
-      "category": "other",
-      "label": "其他",
-      "itemCount": 249,
-      "channelCount": 13,
-      "ratio": 0.05605583070688879
+      "itemCount": 1131,
+      "channelCount": 43,
+      "ratio": 0.25774840474020055
     },
     {
       "category": "dev_community",
       "label": "开发者社区",
       "itemCount": 237,
-      "channelCount": 26,
-      "ratio": 0.05335434488968933
+      "channelCount": 25,
+      "ratio": 0.05401093892433911
+    },
+    {
+      "category": "other",
+      "label": "其他",
+      "itemCount": 191,
+      "channelCount": 12,
+      "ratio": 0.0435278030993619
     },
     {
       "category": "newsletter",
       "label": "周报",
-      "itemCount": 163,
-      "channelCount": 14,
-      "ratio": 0.03669518235029266
+      "itemCount": 159,
+      "channelCount": 12,
+      "ratio": 0.036235186873290796
     },
     {
       "category": "finance",
       "label": "财经",
-      "itemCount": 148,
-      "channelCount": 20,
-      "ratio": 0.033318325078793336
+      "itemCount": 149,
+      "channelCount": 19,
+      "ratio": 0.03395624430264357
     },
     {
       "category": "podcast",
       "label": "播客",
       "itemCount": 35,
       "channelCount": 12,
-      "ratio": 0.007879333633498424
+      "ratio": 0.007976298997265268
     }
   ],
   "hotList": [
@@ -111,7 +111,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.9997464097337382,
+      "hotScore": 0.999858149568759,
       "sourceCount": 14,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -139,7 +139,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.9997464097337346,
+      "hotScore": 0.9998581495687572,
       "sourceCount": 7,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -167,7 +167,7 @@
       "category": [
         "tech_blog"
       ],
-      "hotScore": 0.9942896466835157,
+      "hotScore": 0.9944007766260724,
       "sourceCount": 6,
       "channelNames": [
         "胡涂说"
@@ -196,7 +196,7 @@
         "news",
         "finance"
       ],
-      "hotScore": 0.9888168578744629,
+      "hotScore": 0.9889273761333839,
       "sourceCount": 18,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -224,7 +224,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.9888168578744629,
+      "hotScore": 0.9889273761333839,
       "sourceCount": 5,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -252,7 +252,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.9778228245103117,
+      "hotScore": 0.9779321139861509,
       "sourceCount": 28,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -280,7 +280,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.9778228245103117,
+      "hotScore": 0.9779321139861509,
       "sourceCount": 26,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -308,7 +308,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.9778228245103117,
+      "hotScore": 0.9779321139861509,
       "sourceCount": 23,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -336,7 +336,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.9778228245103117,
+      "hotScore": 0.9779321139861509,
       "sourceCount": 16,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -358,117 +358,106 @@
   "keywords": [
     {
       "word": "项目",
-      "count": 1323,
+      "count": 1321,
       "weight": 1
     },
     {
       "word": "没有",
-      "count": 574,
-      "weight": 0.43386243386243384
+      "count": 570,
+      "weight": 0.4314912944738834
     },
     {
       "word": "中国",
-      "count": 539,
-      "weight": 0.4074074074074074
+      "count": 522,
+      "weight": 0.3951551854655564
     },
     {
       "word": "服务",
-      "count": 513,
-      "weight": 0.3877551020408163
+      "count": 514,
+      "weight": 0.3890991672975019
     },
     {
       "word": "ai",
-      "count": 468,
-      "weight": 0.35374149659863946
+      "count": 467,
+      "weight": 0.3535200605601817
     },
     {
       "word": "使用",
-      "count": 428,
-      "weight": 0.3235071806500378
+      "count": 441,
+      "weight": 0.33383800151400456
     },
     {
       "word": "经济",
-      "count": 415,
-      "weight": 0.31368102796674224
+      "count": 416,
+      "weight": 0.31491294473883424
     },
     {
       "word": "数据",
-      "count": 396,
-      "weight": 0.29931972789115646
-    },
-    {
-      "word": "发展",
-      "count": 380,
-      "weight": 0.2872260015117158
-    },
-    {
-      "word": "我的",
-      "count": 376,
-      "weight": 0.2842025699168556
+      "count": 391,
+      "weight": 0.2959878879636639
     },
     {
       "word": "问题",
-      "count": 376,
-      "weight": 0.2842025699168556
+      "count": 388,
+      "weight": 0.2937168811506434
+    },
+    {
+      "word": "发展",
+      "count": 383,
+      "weight": 0.28993186979560936
     },
     {
       "word": "时间",
-      "count": 375,
-      "weight": 0.2834467120181406
+      "count": 378,
+      "weight": 0.2861468584405753
     },
     {
       "word": "统计",
-      "count": 375,
-      "weight": 0.2834467120181406
+      "count": 376,
+      "weight": 0.2846328538985617
+    },
+    {
+      "word": "我的",
+      "count": 367,
+      "weight": 0.2778198334595004
     },
     {
       "word": "11",
-      "count": 370,
-      "weight": 0.2796674225245654
+      "count": 363,
+      "weight": 0.2747918243754731
     },
     {
       "word": "消费",
-      "count": 357,
-      "weight": 0.2698412698412698
-    },
-    {
-      "word": "10",
-      "count": 354,
-      "weight": 0.2675736961451247
+      "count": 359,
+      "weight": 0.2717638152914459
     },
     {
       "word": "网站",
-      "count": 349,
-      "weight": 0.2637944066515495
+      "count": 354,
+      "weight": 0.2679788039364118
+    },
+    {
+      "word": "10",
+      "count": 350,
+      "weight": 0.26495079485238454
     },
     {
       "word": "2026",
-      "count": 344,
-      "weight": 0.2600151171579743
+      "count": 346,
+      "weight": 0.2619227857683573
     },
     {
       "word": "时候",
-      "count": 332,
-      "weight": 0.2509448223733938
+      "count": 333,
+      "weight": 0.25208175624526874
     },
     {
-      "word": "https",
-      "count": 301,
-      "weight": 0.2275132275132275
+      "word": "用户",
+      "count": 303,
+      "weight": 0.22937168811506434
     }
   ],
   "crossSource": [
-    {
-      "topic": "我国成功发射探源计划探路者卫星",
-      "sourceCount": 2,
-      "itemIds": [
-        "it_56faf4c268b3"
-      ],
-      "channelNames": [
-        "IT之家",
-        "36氪"
-      ]
-    },
     {
       "topic": "上周蠎快讯 2025/22",
       "sourceCount": 2,
@@ -1557,22 +1546,10 @@
       ]
     },
     {
-      "topic": "www.UIndex.org    -    The Good Fight S01E03 1080p AMZN WEBRip DDP5 1 x264-NTb",
-      "sourceCount": 3,
-      "itemIds": [
-        "it_446f69209fbc"
-      ],
-      "channelNames": [
-        "Torlock",
-        "Torlock",
-        "Torlock"
-      ]
-    },
-    {
-      "topic": "www.UIndex.org    -    His and Hers S01E03 Episode 3 1080p Web-DL x264-OFT",
+      "topic": "The.Bold.and.the.Beautiful.S40E47.720p.WEB.h264-DiRT[EZTVx.to].mkv",
       "sourceCount": 2,
       "itemIds": [
-        "it_c580021365ad"
+        "it_6409c9c05c3b"
       ],
       "channelNames": [
         "Torlock",
@@ -1580,13 +1557,12 @@
       ]
     },
     {
-      "topic": "www.UIndex.org    -    The Lord of the Rings The Rings of Power S03E04 1080p DUAL AMZN WEB-DL x264 E-AC3 5 1 - MiRA",
-      "sourceCount": 3,
+      "topic": "Limitless 2011 Unrated Upscaled BluRay 2160p HDR10 HEVC DTS-HD MA 5.1 x265-E",
+      "sourceCount": 2,
       "itemIds": [
-        "it_35a03ba3951e"
+        "it_ff61dcedf326"
       ],
       "channelNames": [
-        "Torlock",
         "Torlock",
         "Torlock"
       ]
@@ -1648,7 +1624,7 @@
       ],
       "itemCount": 1549,
       "lastUpdatedAt": "2026-11-10T16:00:00Z",
-      "activityScore": 0.3487167942368303
+      "activityScore": 0.35300820419325435
     },
     {
       "channelId": "huggingface-blog",
@@ -1658,7 +1634,7 @@
       ],
       "itemCount": 895,
       "lastUpdatedAt": "2026-11-11T05:01:16Z",
-      "activityScore": 0.2014858171994597
+      "activityScore": 0.20396536007292615
     },
     {
       "channelId": "stats-gov-cn",
@@ -1668,7 +1644,7 @@
       ],
       "itemCount": 272,
       "lastUpdatedAt": "2026-11-09T09:30:00Z",
-      "activityScore": 0.06123367852318776
+      "activityScore": 0.06198723792160438
     },
     {
       "channelId": "hutusi",
@@ -1679,7 +1655,7 @@
       ],
       "itemCount": 140,
       "lastUpdatedAt": "2026-11-06T00:00:00Z",
-      "activityScore": 0.0315173345339937
+      "activityScore": 0.03190519598906107
     },
     {
       "channelId": "daliansky",
@@ -1689,7 +1665,7 @@
       ],
       "itemCount": 124,
       "lastUpdatedAt": "2026-07-10T01:51:04Z",
-      "activityScore": 0.027915353444394417
+      "activityScore": 0.028258887876025523
     },
     {
       "channelId": "hellogithub",
@@ -1699,7 +1675,7 @@
       ],
       "itemCount": 115,
       "lastUpdatedAt": "2026-10-28T00:06:20Z",
-      "activityScore": 0.025889239081494823
+      "activityScore": 0.026207839562443026
     },
     {
       "channelId": "v2ex",
@@ -1708,8 +1684,8 @@
         "dev_community"
       ],
       "itemCount": 89,
-      "lastUpdatedAt": "2026-11-11T19:52:19Z",
-      "activityScore": 0.02003601981089599
+      "lastUpdatedAt": "2026-11-12T02:53:54Z",
+      "activityScore": 0.020282588878760256
     },
     {
       "channelId": "pychina-weekly",
@@ -1721,7 +1697,7 @@
       ],
       "itemCount": 77,
       "lastUpdatedAt": "2026-11-08T13:42:00Z",
-      "activityScore": 0.017334533993696534
+      "activityScore": 0.01754785779398359
     },
     {
       "channelId": "rakuen-thec",
@@ -1731,27 +1707,18 @@
       ],
       "itemCount": 75,
       "lastUpdatedAt": "2026-11-10T13:30:54Z",
-      "activityScore": 0.016884286357496624
+      "activityScore": 0.017092069279854148
     },
     {
       "channelId": "ithome",
       "channelName": "IT之家",
       "category": [
-        "news"
+        "news",
+        "ai"
       ],
       "itemCount": 60,
-      "lastUpdatedAt": "2026-11-11T18:13:16Z",
-      "activityScore": 0.0135074290859973
-    },
-    {
-      "channelId": "douban",
-      "channelName": "豆瓣",
-      "category": [
-        "other"
-      ],
-      "itemCount": 60,
-      "lastUpdatedAt": "2026-11-11T09:18:36Z",
-      "activityScore": 0.0135074290859973
+      "lastUpdatedAt": "2026-11-12T02:52:44Z",
+      "activityScore": 0.013673655423883319
     },
     {
       "channelId": "oschina",
@@ -1761,8 +1728,8 @@
         "ai"
       ],
       "itemCount": 50,
-      "lastUpdatedAt": "2026-11-11T10:40:01Z",
-      "activityScore": 0.01125619090499775
+      "lastUpdatedAt": "2026-11-12T01:39:40Z",
+      "activityScore": 0.011394712853236098
     },
     {
       "channelId": "199it",
@@ -1771,8 +1738,8 @@
         "news"
       ],
       "itemCount": 50,
-      "lastUpdatedAt": "2026-11-11T21:30:40Z",
-      "activityScore": 0.01125619090499775
+      "lastUpdatedAt": "2026-11-11T22:00:35Z",
+      "activityScore": 0.011394712853236098
     },
     {
       "channelId": "laruence",
@@ -1782,7 +1749,7 @@
       ],
       "itemCount": 50,
       "lastUpdatedAt": "2026-10-30T09:43:24Z",
-      "activityScore": 0.01125619090499775
+      "activityScore": 0.011394712853236098
     },
     {
       "channelId": "ptt",
@@ -1790,9 +1757,32 @@
       "category": [
         "other"
       ],
-      "itemCount": 35,
-      "lastUpdatedAt": "2026-11-11T17:23:19Z",
-      "activityScore": 0.007879333633498424
+      "itemCount": 34,
+      "lastUpdatedAt": "2026-11-12T01:59:40Z",
+      "activityScore": 0.007748404740200547
+    },
+    {
+      "channelId": "hacker-news",
+      "channelName": "Hacker News",
+      "category": [
+        "dev_community",
+        "news",
+        "ai"
+      ],
+      "itemCount": 30,
+      "lastUpdatedAt": "2026-11-12T02:11:11Z",
+      "activityScore": 0.0068368277119416595
+    },
+    {
+      "channelId": "36kr",
+      "channelName": "36氪",
+      "category": [
+        "news",
+        "finance"
+      ],
+      "itemCount": 30,
+      "lastUpdatedAt": "2026-11-12T02:48:25Z",
+      "activityScore": 0.0068368277119416595
     },
     {
       "channelId": "rengwuxian",
@@ -1803,41 +1793,28 @@
       ],
       "itemCount": 30,
       "lastUpdatedAt": "2024-12-27T10:02:13Z",
-      "activityScore": 0.00675371454299865
+      "activityScore": 0.0068368277119416595
     },
     {
       "channelId": "geekpark",
       "channelName": "极客公园",
       "category": [
         "news",
-        "ai",
-        "dev_community"
-      ],
-      "itemCount": 30,
-      "lastUpdatedAt": "2026-11-11T05:23:24Z",
-      "activityScore": 0.00675371454299865
-    },
-    {
-      "channelId": "hacker-news",
-      "channelName": "Hacker News",
-      "category": [
-        "dev_community",
-        "news"
-      ],
-      "itemCount": 29,
-      "lastUpdatedAt": "2026-11-11T21:24:35Z",
-      "activityScore": 0.006528590724898694
-    },
-    {
-      "channelId": "36kr",
-      "channelName": "36氪",
-      "category": [
-        "news",
         "ai"
       ],
-      "itemCount": 29,
-      "lastUpdatedAt": "2026-11-11T12:53:06Z",
-      "activityScore": 0.006528590724898694
+      "itemCount": 30,
+      "lastUpdatedAt": "2026-11-12T00:39:27Z",
+      "activityScore": 0.0068368277119416595
+    },
+    {
+      "channelId": "torlock",
+      "channelName": "Torlock",
+      "category": [
+        "other"
+      ],
+      "itemCount": 28,
+      "lastUpdatedAt": "2026-11-12T02:27:10Z",
+      "activityScore": 0.006381039197812215
     },
     {
       "channelId": "devework",
@@ -1848,17 +1825,7 @@
       ],
       "itemCount": 27,
       "lastUpdatedAt": "2025-02-15T00:59:27Z",
-      "activityScore": 0.006078343088698784
-    },
-    {
-      "channelId": "torlock",
-      "channelName": "Torlock",
-      "category": [
-        "other"
-      ],
-      "itemCount": 25,
-      "lastUpdatedAt": "2026-11-11T21:43:41Z",
-      "activityScore": 0.005628095452498875
+      "activityScore": 0.006153144940747493
     },
     {
       "channelId": "solidot",
@@ -1868,7 +1835,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2026-11-11T14:43:47Z",
-      "activityScore": 0.004502476361999099
+      "activityScore": 0.004557885141294439
     },
     {
       "channelId": "ifanr",
@@ -1877,18 +1844,19 @@
         "news"
       ],
       "itemCount": 20,
-      "lastUpdatedAt": "2026-11-11T11:52:16Z",
-      "activityScore": 0.004502476361999099
+      "lastUpdatedAt": "2026-11-12T02:34:22Z",
+      "activityScore": 0.004557885141294439
     },
     {
       "channelId": "gcores",
       "channelName": "机核",
       "category": [
-        "podcast"
+        "podcast",
+        "news"
       ],
       "itemCount": 20,
-      "lastUpdatedAt": "2026-11-11T20:27:55Z",
-      "activityScore": 0.004502476361999099
+      "lastUpdatedAt": "2026-11-12T01:20:00Z",
+      "activityScore": 0.004557885141294439
     },
     {
       "channelId": "bytedance-tech",
@@ -1898,7 +1866,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2024-04-16T01:01:10Z",
-      "activityScore": 0.004502476361999099
+      "activityScore": 0.004557885141294439
     },
     {
       "channelId": "ctrip-tech",
@@ -1908,7 +1876,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2026-05-13T02:08:50Z",
-      "activityScore": 0.004502476361999099
+      "activityScore": 0.004557885141294439
     },
     {
       "channelId": "apple",
@@ -1918,7 +1886,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2026-11-10T16:00:26Z",
-      "activityScore": 0.004502476361999099
+      "activityScore": 0.004557885141294439
     },
     {
       "channelId": "toodaylab",
@@ -1929,7 +1897,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2026-11-11T08:53:23Z",
-      "activityScore": 0.004502476361999099
+      "activityScore": 0.004557885141294439
     },
     {
       "channelId": "flingtrainer",
@@ -1940,7 +1908,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2026-11-11T01:19:45Z",
-      "activityScore": 0.004502476361999099
+      "activityScore": 0.004557885141294439
     },
     {
       "channelId": "blog-devtang",
@@ -1950,7 +1918,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2026-11-01T11:41:08Z",
-      "activityScore": 0.004502476361999099
+      "activityScore": 0.004557885141294439
     },
     {
       "channelId": "blog-t9t",
@@ -1961,7 +1929,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2023-12-01T00:00:00Z",
-      "activityScore": 0.004502476361999099
+      "activityScore": 0.004557885141294439
     },
     {
       "channelId": "phodal",
@@ -1972,7 +1940,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2026-10-30T07:26:48Z",
-      "activityScore": 0.004502476361999099
+      "activityScore": 0.004557885141294439
     },
     {
       "channelId": "dumplingbao-github",
@@ -1983,7 +1951,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2023-01-11T05:01:08Z",
-      "activityScore": 0.004502476361999099
+      "activityScore": 0.004557885141294439
     },
     {
       "channelId": "feedx",
@@ -1993,17 +1961,18 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2022-10-26T05:16:03Z",
-      "activityScore": 0.004502476361999099
+      "activityScore": 0.004557885141294439
     },
     {
       "channelId": "rss-nodeseek",
       "channelName": "NodeSeek",
       "category": [
-        "news"
+        "news",
+        "ai"
       ],
       "itemCount": 20,
-      "lastUpdatedAt": "2026-11-11T21:53:27Z",
-      "activityScore": 0.004502476361999099
+      "lastUpdatedAt": "2026-11-12T02:55:10Z",
+      "activityScore": 0.004557885141294439
     },
     {
       "channelId": "blog-codingnow",
@@ -2014,7 +1983,7 @@
       ],
       "itemCount": 15,
       "lastUpdatedAt": "2026-11-09T09:37:28Z",
-      "activityScore": 0.003376857271499325
+      "activityScore": 0.0034184138559708297
     },
     {
       "channelId": "bitinn",
@@ -2024,7 +1993,7 @@
       ],
       "itemCount": 15,
       "lastUpdatedAt": "2026-09-22T16:58:01Z",
-      "activityScore": 0.003376857271499325
+      "activityScore": 0.0034184138559708297
     },
     {
       "channelId": "ghost-mout",
@@ -2034,7 +2003,7 @@
       ],
       "itemCount": 15,
       "lastUpdatedAt": "2020-07-24T09:43:15Z",
-      "activityScore": 0.003376857271499325
+      "activityScore": 0.0034184138559708297
     },
     {
       "channelId": "woshipm",
@@ -2045,7 +2014,7 @@
       ],
       "itemCount": 13,
       "lastUpdatedAt": "2026-11-02T09:11:13Z",
-      "activityScore": 0.002926609635299415
+      "activityScore": 0.0029626253418413855
     },
     {
       "channelId": "wpdaxue",
@@ -2056,7 +2025,7 @@
       ],
       "itemCount": 12,
       "lastUpdatedAt": "2026-10-22T09:52:44Z",
-      "activityScore": 0.0027014858171994596
+      "activityScore": 0.0027347310847766638
     },
     {
       "channelId": "yystv",
@@ -2067,7 +2036,7 @@
       ],
       "itemCount": 12,
       "lastUpdatedAt": "2026-11-11T16:00:00Z",
-      "activityScore": 0.0027014858171994596
+      "activityScore": 0.0027347310847766638
     },
     {
       "channelId": "blog-lilydjwg",
@@ -2077,7 +2046,7 @@
       ],
       "itemCount": 12,
       "lastUpdatedAt": "2026-10-29T07:23:13Z",
-      "activityScore": 0.0027014858171994596
+      "activityScore": 0.0027347310847766638
     },
     {
       "channelId": "cnfeat",
@@ -2087,18 +2056,19 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-07-23T07:41:03Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "sspai",
       "channelName": "少数派",
       "category": [
         "tech_blog",
-        "dev_community"
+        "dev_community",
+        "news"
       ],
       "itemCount": 10,
-      "lastUpdatedAt": "2026-11-11T09:30:00Z",
-      "activityScore": 0.0022512381809995496
+      "lastUpdatedAt": "2026-11-12T00:22:09Z",
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "github-blog",
@@ -2109,7 +2079,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-11-10T18:00:00Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "xclient",
@@ -2119,7 +2089,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-11-11T14:35:24Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "appinn",
@@ -2129,7 +2099,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-11-11T08:48:57Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "techug",
@@ -2139,7 +2109,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-05-20T13:43:40Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "meituan-tech",
@@ -2150,18 +2120,28 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-11-10T00:00:00Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
+    },
+    {
+      "channelId": "masuit",
+      "channelName": "懒得勤快的博客",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-12T02:55:30Z",
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "laozuo",
       "channelName": "老左笔记",
       "category": [
-        "tech_blog",
-        "news"
+        "tech_blog"
       ],
       "itemCount": 10,
-      "lastUpdatedAt": "2026-11-11T04:16:03Z",
-      "activityScore": 0.0022512381809995496
+      "lastUpdatedAt": "2026-11-12T01:37:52Z",
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "runningcheese",
@@ -2171,7 +2151,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-03-10T11:30:16Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "imtx",
@@ -2181,7 +2161,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2025-07-23T02:37:04Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "weiwuhui",
@@ -2192,7 +2172,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-11-04T12:25:38Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "macshuo",
@@ -2202,7 +2182,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-11-01T08:47:24Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "dongwm",
@@ -2213,7 +2193,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2023-05-16T00:00:00Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "luolei",
@@ -2224,7 +2204,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-09-29T00:00:00Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "daimajia",
@@ -2234,7 +2214,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-10-18T06:26:17Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "greatdk",
@@ -2245,7 +2225,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-07-02T06:44:27Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "hawstein",
@@ -2257,7 +2237,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2025-08-13T00:00:00Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "haijiaoshi",
@@ -2267,7 +2247,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-11-11T08:13:12Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "blog-farmostwood",
@@ -2277,7 +2257,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2023-07-13T06:43:00Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "feeds-feedburner-kenengbarss",
@@ -2287,7 +2267,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-04-28T11:07:31Z",
-      "activityScore": 0.0022512381809995496
+      "activityScore": 0.0022789425706472195
     },
     {
       "channelId": "shuge",
@@ -2297,7 +2277,7 @@
       ],
       "itemCount": 9,
       "lastUpdatedAt": "2026-11-11T08:04:19Z",
-      "activityScore": 0.002026114362899595
+      "activityScore": 0.002051048313582498
     },
     {
       "channelId": "shrekshao-github",
@@ -2307,7 +2287,7 @@
       ],
       "itemCount": 9,
       "lastUpdatedAt": "2021-02-24T00:00:00Z",
-      "activityScore": 0.002026114362899595
+      "activityScore": 0.002051048313582498
     },
     {
       "channelId": "iui-su",
@@ -2317,17 +2297,7 @@
       ],
       "itemCount": 8,
       "lastUpdatedAt": "2026-11-10T16:01:00Z",
-      "activityScore": 0.0018009905447996398
-    },
-    {
-      "channelId": "masuit",
-      "channelName": "懒得勤快的博客",
-      "category": [
-        "tech_blog"
-      ],
-      "itemCount": 8,
-      "lastUpdatedAt": "2026-11-11T21:53:54Z",
-      "activityScore": 0.0018009905447996398
+      "activityScore": 0.0018231540565177757
     },
     {
       "channelId": "feeds-feedburner",
@@ -2337,7 +2307,7 @@
       ],
       "itemCount": 7,
       "lastUpdatedAt": "2026-11-01T13:39:03Z",
-      "activityScore": 0.0015758667266996848
+      "activityScore": 0.0015952597994530538
     },
     {
       "channelId": "feedx-photoworld-xml",
@@ -2347,7 +2317,7 @@
       ],
       "itemCount": 7,
       "lastUpdatedAt": "2026-11-04T04:59:07Z",
-      "activityScore": 0.0015758667266996848
+      "activityScore": 0.0015952597994530538
     },
     {
       "channelId": "micheer",
@@ -2357,7 +2327,7 @@
       ],
       "itemCount": 6,
       "lastUpdatedAt": "2026-11-08T10:01:04Z",
-      "activityScore": 0.0013507429085997298
+      "activityScore": 0.0013673655423883319
     },
     {
       "channelId": "free-apprcn",
@@ -2366,9 +2336,9 @@
         "tech_blog"
       ],
       "itemCount": 3,
-      "lastUpdatedAt": "2026-11-11T15:09:14Z",
-      "activityScore": 0.0006753714542998649
+      "lastUpdatedAt": "2026-11-12T02:01:14Z",
+      "activityScore": 0.0006836827711941659
     }
   ],
-  "summary": "今日热度榜首《国家统计局城市司首席统计师董莉娟解读2026年10月份CPI和PPI数据》（来自 国家统计局 · 数据解读，hotScore=1），关键词「项目」热度居前；88 个跨源主题。"
+  "summary": "今日热度榜首《国家统计局城市司首席统计师董莉娟解读2026年10月份CPI和PPI数据》（来自 国家统计局 · 数据解读，hotScore=1），关键词「项目」热度居前；86 个跨源主题。"
 }
