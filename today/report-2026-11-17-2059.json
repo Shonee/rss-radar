@@ -1,12 +1,12 @@
 {
   "schemaVersion": "1.0",
-  "date": "2026-11-16",
+  "date": "2026-11-17",
   "timezone": "Asia/Shanghai",
-  "generatedAt": "2026-11-16T02:43:17Z",
-  "totalItems": 2855,
-  "activeChannels": 70,
-  "windowStart": "2026-11-15T16:00:00Z",
-  "windowEnd": "2026-11-16T02:43:16Z",
+  "generatedAt": "2026-11-16T20:59:21Z",
+  "totalItems": 2877,
+  "activeChannels": 69,
+  "windowStart": "2026-11-16T16:00:00Z",
+  "windowEnd": "2026-11-16T20:59:20Z",
   "weights": {
     "sourceOverlap": 0.4,
     "recency": 0.25,
@@ -18,58 +18,58 @@
     {
       "category": "ai",
       "label": "AI",
-      "itemCount": 1277,
-      "channelCount": 58,
-      "ratio": 0.44728546409807357
+      "itemCount": 1285,
+      "channelCount": 57,
+      "ratio": 0.44664581160931527
     },
     {
       "category": "news",
       "label": "新闻",
-      "itemCount": 943,
-      "channelCount": 42,
-      "ratio": 0.33029772329246937
+      "itemCount": 996,
+      "channelCount": 43,
+      "ratio": 0.3461939520333681
     },
     {
       "category": "tech_blog",
       "label": "科技博客",
       "itemCount": 848,
-      "channelCount": 44,
-      "ratio": 0.2970227670753065
+      "channelCount": 43,
+      "ratio": 0.29475147723322903
     },
     {
       "category": "other",
       "label": "其他",
-      "itemCount": 255,
-      "channelCount": 13,
-      "ratio": 0.0893169877408056
+      "itemCount": 226,
+      "channelCount": 12,
+      "ratio": 0.07855404935696907
     },
     {
       "category": "dev_community",
       "label": "开发者社区",
-      "itemCount": 207,
-      "channelCount": 26,
-      "ratio": 0.07250437828371278
+      "itemCount": 206,
+      "channelCount": 25,
+      "ratio": 0.07160236357316649
     },
     {
       "category": "newsletter",
       "label": "周报",
-      "itemCount": 122,
+      "itemCount": 123,
       "channelCount": 11,
-      "ratio": 0.04273204903677758
+      "ratio": 0.04275286757038582
     },
     {
       "category": "finance",
       "label": "财经",
-      "itemCount": 69,
-      "channelCount": 19,
-      "ratio": 0.02416812609457093
+      "itemCount": 82,
+      "channelCount": 18,
+      "ratio": 0.028501911713590546
     },
     {
       "category": "podcast",
       "label": "播客",
-      "itemCount": 31,
-      "channelCount": 9,
-      "ratio": 0.010858143607705779
+      "itemCount": 28,
+      "channelCount": 8,
+      "ratio": 0.009732360097323601
     }
   ],
   "hotList": [
@@ -91,7 +91,7 @@
       "publishedAt": "2026-11-16T09:30:00Z",
       "components": {
         "zSource": 1,
-        "decay": 1,
+        "decay": 0.265,
         "zChannel": 0.6,
         "zKw": 0.8,
         "w1": 0.4,
@@ -103,6 +103,34 @@
     },
     {
       "rank": 2,
+      "id": "it_948634c2d610",
+      "title": "国家统计局新闻发言人就2026年10月份国民经济运行情况答记者问",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202611/t20261116_1965869.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.987120460899503,
+      "sourceCount": 24,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2026-11-16T05:50:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0.174,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 3,
       "id": "it_2a7a7734d790",
       "title": "国家统计局城市司首席统计师董莉娟解读2026年10月份CPI和PPI数据",
       "url": "https://www.stats.gov.cn/sj/sjjd/202611/t20261109_1965796.html",
@@ -111,7 +139,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.8033389870787925,
+      "hotScore": 0.9430565434355186,
       "sourceCount": 40,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -130,7 +158,7 @@
       }
     },
     {
-      "rank": 3,
+      "rank": 4,
       "id": "it_05c4e8b3a41c",
       "title": "国家统计局投资司首席统计师罗毅飞解读2025年1—11月份投资数据",
       "url": "https://www.stats.gov.cn/sj/sjjd/202512/t20251215_1962084.html",
@@ -140,7 +168,7 @@
         "news",
         "finance"
       ],
-      "hotScore": 0.8033389852941689,
+      "hotScore": 0.9430565431816199,
       "sourceCount": 18,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -159,7 +187,7 @@
       }
     },
     {
-      "rank": 4,
+      "rank": 5,
       "id": "it_2b10a8ca203f",
       "title": "国家统计局工业司统计师于卫宁解读工业企业利润数据",
       "url": "https://www.stats.gov.cn/sj/sjjd/202501/t20250127_1958494.html",
@@ -168,7 +196,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.8033389852941689,
+      "hotScore": 0.9430565431816199,
       "sourceCount": 16,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -187,7 +215,7 @@
       }
     },
     {
-      "rank": 5,
+      "rank": 6,
       "id": "it_6db5b98c9116",
       "title": "国家统计局工业司首席统计师于卫宁解读2026年1—9月份工业企业利润数据",
       "url": "https://www.stats.gov.cn/sj/sjjd/202610/t20261027_1965698.html",
@@ -196,7 +224,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.8033389852941689,
+      "hotScore": 0.9430565431816199,
       "sourceCount": 10,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -215,7 +243,7 @@
       }
     },
     {
-      "rank": 6,
+      "rank": 7,
       "id": "it_41c7c0845c80",
       "title": "国家统计局贸经司首席统计师袁彦解读1—8月份消费市场数据",
       "url": "https://www.stats.gov.cn/sj/sjjd/202609/t20260915_1965328.html",
@@ -224,7 +252,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.8033389852941689,
+      "hotScore": 0.9430565431816199,
       "sourceCount": 7,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -243,7 +271,7 @@
       }
     },
     {
-      "rank": 7,
+      "rank": 8,
       "id": "it_c31815cc573a",
       "title": "国家统计局工业司统计师于卫宁解读2025年7月份工业企业利润数据",
       "url": "https://www.stats.gov.cn/sj/sjjd/202508/t20250827_1960883.html",
@@ -252,7 +280,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.8033389852941689,
+      "hotScore": 0.9430565431816199,
       "sourceCount": 6,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -271,7 +299,7 @@
       }
     },
     {
-      "rank": 8,
+      "rank": 9,
       "id": "it_a6e955092850",
       "title": "国家统计局社科文司高级统计师张鹏解读2025年一季度全国规模以上文化及相关产业企业数据",
       "url": "https://www.stats.gov.cn/sj/sjjd/202504/t20250429_1959507.html",
@@ -280,7 +308,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.8033389852941689,
+      "hotScore": 0.9430565431816199,
       "sourceCount": 5,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -299,7 +327,7 @@
       }
     },
     {
-      "rank": 9,
+      "rank": 10,
       "id": "it_cb6b3f37ce55",
       "title": "国家统计局城市司首席统计师王中华解读2026年4月份商品住宅销售价格变动情况统计数据",
       "url": "https://www.stats.gov.cn/sj/sjjd/202605/t20260518_1963721.html",
@@ -308,7 +336,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.7945566230722472,
+      "hotScore": 0.9327467433217992,
       "sourceCount": 28,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -325,136 +353,108 @@
         "w4": 0.1,
         "w5": 0.05
       }
-    },
-    {
-      "rank": 10,
-      "id": "it_2ee1d4c89193",
-      "title": "国家统计局新闻发言人就2026年8月份国民经济运行情况答记者问",
-      "url": "https://www.stats.gov.cn/sj/sjjd/202609/t20260915_1965332.html",
-      "channelId": "stats-gov-cn",
-      "channelName": "国家统计局 · 数据解读",
-      "category": [
-        "news"
-      ],
-      "hotScore": 0.7945566230722472,
-      "sourceCount": 23,
-      "channelNames": [
-        "国家统计局 · 数据解读"
-      ],
-      "publishedAt": "2026-09-15T03:34:00Z",
-      "components": {
-        "zSource": 1,
-        "decay": 0,
-        "zChannel": 0.6,
-        "zKw": 0.8,
-        "w1": 0.4,
-        "w2": 0.25,
-        "w3": 0.2,
-        "w4": 0.1,
-        "w5": 0.05
-      }
     }
   ],
   "keywords": [
     {
       "word": "项目",
-      "count": 1289,
+      "count": 1297,
       "weight": 1
     },
     {
       "word": "ai",
-      "count": 420,
-      "weight": 0.32583397982932505
+      "count": 451,
+      "weight": 0.34772552043176563
     },
     {
       "word": "经济",
-      "count": 390,
-      "weight": 0.30256012412723043
-    },
-    {
-      "word": "统计",
-      "count": 348,
-      "weight": 0.2699767261442979
-    },
-    {
-      "word": "发展",
-      "count": 343,
-      "weight": 0.2660977501939488
+      "count": 383,
+      "weight": 0.2952968388589052
     },
     {
       "word": "数据",
-      "count": 330,
-      "weight": 0.2560124127230411
+      "count": 370,
+      "weight": 0.28527370855821127
+    },
+    {
+      "word": "统计",
+      "count": 347,
+      "weight": 0.26754047802621433
+    },
+    {
+      "word": "发展",
+      "count": 344,
+      "weight": 0.26522744795682346
     },
     {
       "word": "消费",
-      "count": 328,
-      "weight": 0.25446082234290146
+      "count": 329,
+      "weight": 0.2536622976098689
+    },
+    {
+      "word": "2026",
+      "count": 319,
+      "weight": 0.2459521973785659
     },
     {
       "word": "服务",
       "count": 313,
-      "weight": 0.24282389449185415
+      "weight": 0.2413261372397841
     },
     {
       "word": "11",
-      "count": 301,
-      "weight": 0.2335143522110163
+      "count": 297,
+      "weight": 0.2289899768696993
     },
     {
       "word": "生产",
-      "count": 283,
-      "weight": 0.2195500387897595
+      "count": 282,
+      "weight": 0.2174248265227448
     },
     {
       "word": "工业",
-      "count": 258,
-      "weight": 0.20015515903801395
-    },
-    {
-      "word": "https",
-      "count": 248,
-      "weight": 0.19239720713731576
-    },
-    {
-      "word": "使用",
-      "count": 237,
-      "weight": 0.18386346004654772
-    },
-    {
-      "word": "python",
-      "count": 236,
-      "weight": 0.1830876648564779
+      "count": 256,
+      "weight": 0.19737856592135697
     },
     {
       "word": "macos",
-      "count": 233,
-      "weight": 0.18076027928626842
+      "count": 242,
+      "weight": 0.18658442559753277
     },
     {
-      "word": "国家",
-      "count": 226,
-      "weight": 0.17532971295577968
-    },
-    {
-      "word": "2026",
-      "count": 221,
-      "weight": 0.17145073700543056
-    },
-    {
-      "word": "完成",
-      "count": 219,
-      "weight": 0.16989914662529093
-    },
-    {
-      "word": "产品",
-      "count": 211,
-      "weight": 0.16369278510473234
+      "word": "python",
+      "count": 235,
+      "weight": 0.18118735543562067
     },
     {
       "word": "季度",
-      "count": 206,
-      "weight": 0.15981380915438323
+      "count": 234,
+      "weight": 0.18041634541249035
+    },
+    {
+      "word": "使用",
+      "count": 230,
+      "weight": 0.17733230531996916
+    },
+    {
+      "word": "市场",
+      "count": 220,
+      "weight": 0.16962220508866616
+    },
+    {
+      "word": "完成",
+      "count": 215,
+      "weight": 0.16576715497301464
+    },
+    {
+      "word": "国家",
+      "count": 212,
+      "weight": 0.16345412490362374
+    },
+    {
+      "word": "https",
+      "count": 209,
+      "weight": 0.16114109483423283
     }
   ],
   "crossSource": [
@@ -685,7 +685,18 @@
       "topic": "無題",
       "sourceCount": 2,
       "itemIds": [
-        "it_c7d6f3b064e2"
+        "it_0863c392b575"
+      ],
+      "channelNames": [
+        "Pixiv(艺术家社区)",
+        "Pixiv(艺术家社区)"
+      ]
+    },
+    {
+      "topic": "リオ❤",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_92bf3ab59652"
       ],
       "channelNames": [
         "Pixiv(艺术家社区)",
@@ -704,6 +715,17 @@
         "我的小角落",
         "我的小角落",
         "我的小角落"
+      ]
+    },
+    {
+      "topic": "Re: [新聞] 小勞勃道尼準備回歸主演《鋼鐵人 4》！",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_bd30ec746eba"
+      ],
+      "channelNames": [
+        "PTT(台湾论坛)",
+        "PTT(台湾论坛)"
       ]
     },
     {
@@ -936,6 +958,39 @@
       ]
     },
     {
+      "topic": "国家统计局新闻发言人就2026年10月份国民经济运行情况答记者问",
+      "sourceCount": 24,
+      "itemIds": [
+        "it_948634c2d610"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
       "topic": "国家统计局城市司高级统计师杨彩芳解读2026年10月份商品住宅销售价格变动情况统计数据",
       "sourceCount": 6,
       "itemIds": [
@@ -1061,38 +1116,6 @@
         "it_495d0cdf9f35"
       ],
       "channelNames": [
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读"
-      ]
-    },
-    {
-      "topic": "国家统计局新闻发言人就2026年8月份国民经济运行情况答记者问",
-      "sourceCount": 23,
-      "itemIds": [
-        "it_2ee1d4c89193"
-      ],
-      "channelNames": [
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
-        "国家统计局 · 数据解读",
         "国家统计局 · 数据解读",
         "国家统计局 · 数据解读",
         "国家统计局 · 数据解读"
@@ -1515,22 +1538,10 @@
       ]
     },
     {
-      "topic": "Kiseiju.L'ospite.indesiderato.S01E22.1080p.Multi.Subs.AAC.x265-DLKING.mkv",
-      "sourceCount": 3,
-      "itemIds": [
-        "it_3f05728ed57e"
-      ],
-      "channelNames": [
-        "Torlock",
-        "Torlock",
-        "Torlock"
-      ]
-    },
-    {
-      "topic": "Twilight.of.the.Gods.S01E03.1080p.Multi.Subs.AAC.x265-DLKING.mkv",
+      "topic": "Even.the.Student.Council.Has.Its.Holes.S01E06.1080p.UNCENSORED.ADN.WEB-DL.JPN.AAC2.0.H.264.MSubs-ToonsHub (Shika).mkv",
       "sourceCount": 2,
       "itemIds": [
-        "it_482df9b9140a"
+        "it_ce413d4cf0ff"
       ],
       "channelNames": [
         "Torlock",
@@ -1568,9 +1579,9 @@
       "category": [
         "ai"
       ],
-      "itemCount": 898,
-      "lastUpdatedAt": "2026-11-13T18:00:39Z",
-      "activityScore": 0.3145359019264448
+      "itemCount": 899,
+      "lastUpdatedAt": "2026-11-16T00:00:00Z",
+      "activityScore": 0.3124782759819256
     },
     {
       "channelId": "stats-gov-cn",
@@ -1578,9 +1589,9 @@
       "category": [
         "news"
       ],
-      "itemCount": 271,
+      "itemCount": 270,
       "lastUpdatedAt": "2026-11-16T09:30:00Z",
-      "activityScore": 0.09492119089316987
+      "activityScore": 0.09384775808133472
     },
     {
       "channelId": "hutusi",
@@ -1591,7 +1602,7 @@
       ],
       "itemCount": 140,
       "lastUpdatedAt": "2026-11-06T00:00:00Z",
-      "activityScore": 0.04903677758318739
+      "activityScore": 0.04866180048661801
     },
     {
       "channelId": "daliansky",
@@ -1601,7 +1612,7 @@
       ],
       "itemCount": 124,
       "lastUpdatedAt": "2026-07-10T01:51:04Z",
-      "activityScore": 0.043432574430823115
+      "activityScore": 0.04310045185957595
     },
     {
       "channelId": "hellogithub",
@@ -1611,7 +1622,7 @@
       ],
       "itemCount": 115,
       "lastUpdatedAt": "2026-10-28T00:06:20Z",
-      "activityScore": 0.040280210157618214
+      "activityScore": 0.03997219325686479
     },
     {
       "channelId": "v2ex",
@@ -1620,9 +1631,9 @@
         "dev_community",
         "ai"
       ],
-      "itemCount": 90,
-      "lastUpdatedAt": "2026-11-16T02:42:06Z",
-      "activityScore": 0.03152364273204904
+      "itemCount": 88,
+      "lastUpdatedAt": "2026-11-16T18:34:34Z",
+      "activityScore": 0.030587417448731318
     },
     {
       "channelId": "pychina-weekly",
@@ -1634,7 +1645,7 @@
       ],
       "itemCount": 78,
       "lastUpdatedAt": "2026-11-14T03:42:00Z",
-      "activityScore": 0.027320490367775833
+      "activityScore": 0.027111574556830033
     },
     {
       "channelId": "rakuen-thec",
@@ -1642,29 +1653,30 @@
       "category": [
         "news"
       ],
-      "itemCount": 70,
-      "lastUpdatedAt": "2026-11-14T14:25:33Z",
-      "activityScore": 0.024518388791593695
+      "itemCount": 71,
+      "lastUpdatedAt": "2026-11-15T13:30:25Z",
+      "activityScore": 0.024678484532499132
     },
     {
       "channelId": "ithome",
       "channelName": "IT之家",
       "category": [
-        "news"
+        "news",
+        "tech_blog"
       ],
       "itemCount": 60,
-      "lastUpdatedAt": "2026-11-16T02:38:04Z",
-      "activityScore": 0.021015761821366025
+      "lastUpdatedAt": "2026-11-16T19:19:22Z",
+      "activityScore": 0.020855057351407715
     },
     {
-      "channelId": "douban",
-      "channelName": "豆瓣",
+      "channelId": "199it",
+      "channelName": "199IT",
       "category": [
-        "other"
+        "news"
       ],
-      "itemCount": 60,
-      "lastUpdatedAt": "2026-11-16T01:15:43Z",
-      "activityScore": 0.021015761821366025
+      "itemCount": 50,
+      "lastUpdatedAt": "2026-11-16T20:00:32Z",
+      "activityScore": 0.01737921445950643
     },
     {
       "channelId": "laruence",
@@ -1674,40 +1686,62 @@
       ],
       "itemCount": 50,
       "lastUpdatedAt": "2026-10-30T09:43:24Z",
-      "activityScore": 0.017513134851138354
+      "activityScore": 0.01737921445950643
     },
     {
       "channelId": "oschina",
       "channelName": "开源中国",
       "category": [
         "dev_community",
-        "ai"
+        "ai",
+        "tech_blog",
+        "news"
       ],
       "itemCount": 49,
-      "lastUpdatedAt": "2026-11-16T02:33:49Z",
-      "activityScore": 0.017162872154115588
+      "lastUpdatedAt": "2026-11-16T12:52:16Z",
+      "activityScore": 0.0170316301703163
+    },
+    {
+      "channelId": "douban",
+      "channelName": "豆瓣",
+      "category": [
+        "other"
+      ],
+      "itemCount": 40,
+      "lastUpdatedAt": "2026-11-16T12:55:41Z",
+      "activityScore": 0.013903371567605145
     },
     {
       "channelId": "ptt",
       "channelName": "PTT(台湾论坛)",
       "category": [
-        "other",
-        "ai"
+        "other"
       ],
-      "itemCount": 39,
-      "lastUpdatedAt": "2026-11-16T02:37:47Z",
-      "activityScore": 0.013660245183887917
+      "itemCount": 37,
+      "lastUpdatedAt": "2026-11-16T18:04:35Z",
+      "activityScore": 0.012860618700034758
+    },
+    {
+      "channelId": "hacker-news",
+      "channelName": "Hacker News",
+      "category": [
+        "dev_community",
+        "news"
+      ],
+      "itemCount": 30,
+      "lastUpdatedAt": "2026-11-16T20:48:08Z",
+      "activityScore": 0.010427528675703858
     },
     {
       "channelId": "36kr",
       "channelName": "36氪",
       "category": [
         "news",
-        "finance"
+        "ai"
       ],
       "itemCount": 30,
-      "lastUpdatedAt": "2026-11-16T02:38:42Z",
-      "activityScore": 0.010507880910683012
+      "lastUpdatedAt": "2026-11-16T12:59:01Z",
+      "activityScore": 0.010427528675703858
     },
     {
       "channelId": "rengwuxian",
@@ -1718,7 +1752,7 @@
       ],
       "itemCount": 30,
       "lastUpdatedAt": "2024-12-27T10:02:13Z",
-      "activityScore": 0.010507880910683012
+      "activityScore": 0.010427528675703858
     },
     {
       "channelId": "geekpark",
@@ -1730,18 +1764,7 @@
       ],
       "itemCount": 30,
       "lastUpdatedAt": "2026-11-16T00:47:39Z",
-      "activityScore": 0.010507880910683012
-    },
-    {
-      "channelId": "hacker-news",
-      "channelName": "Hacker News",
-      "category": [
-        "dev_community",
-        "news"
-      ],
-      "itemCount": 29,
-      "lastUpdatedAt": "2026-11-16T02:04:48Z",
-      "activityScore": 0.010157618213660246
+      "activityScore": 0.010427528675703858
     },
     {
       "channelId": "torlock",
@@ -1749,9 +1772,9 @@
       "category": [
         "other"
       ],
-      "itemCount": 27,
-      "lastUpdatedAt": "2026-11-16T02:17:32Z",
-      "activityScore": 0.009457092819614711
+      "itemCount": 29,
+      "lastUpdatedAt": "2026-11-16T20:58:17Z",
+      "activityScore": 0.01007994438651373
     },
     {
       "channelId": "devework",
@@ -1762,7 +1785,18 @@
       ],
       "itemCount": 27,
       "lastUpdatedAt": "2025-02-15T00:59:27Z",
-      "activityScore": 0.009457092819614711
+      "activityScore": 0.009384775808133473
+    },
+    {
+      "channelId": "solidot",
+      "channelName": "奇客Solidot",
+      "category": [
+        "news",
+        "ai"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-16T16:18:40Z",
+      "activityScore": 0.006951685783802572
     },
     {
       "channelId": "ifanr",
@@ -1771,19 +1805,18 @@
         "news"
       ],
       "itemCount": 20,
-      "lastUpdatedAt": "2026-11-16T01:11:22Z",
-      "activityScore": 0.0070052539404553416
+      "lastUpdatedAt": "2026-11-16T12:00:01Z",
+      "activityScore": 0.006951685783802572
     },
     {
       "channelId": "gcores",
       "channelName": "机核",
       "category": [
-        "podcast",
-        "ai"
+        "podcast"
       ],
       "itemCount": 20,
-      "lastUpdatedAt": "2026-11-16T01:25:00Z",
-      "activityScore": 0.0070052539404553416
+      "lastUpdatedAt": "2026-11-16T17:26:38Z",
+      "activityScore": 0.006951685783802572
     },
     {
       "channelId": "bytedance-tech",
@@ -1793,7 +1826,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2024-04-16T01:01:10Z",
-      "activityScore": 0.0070052539404553416
+      "activityScore": 0.006951685783802572
     },
     {
       "channelId": "ctrip-tech",
@@ -1803,7 +1836,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2026-05-13T02:08:50Z",
-      "activityScore": 0.0070052539404553416
+      "activityScore": 0.006951685783802572
     },
     {
       "channelId": "apple",
@@ -1814,7 +1847,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2026-11-16T01:18:33Z",
-      "activityScore": 0.0070052539404553416
+      "activityScore": 0.006951685783802572
     },
     {
       "channelId": "toodaylab",
@@ -1825,7 +1858,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2026-11-15T13:39:51Z",
-      "activityScore": 0.0070052539404553416
+      "activityScore": 0.006951685783802572
     },
     {
       "channelId": "flingtrainer",
@@ -1836,7 +1869,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2026-11-11T01:19:45Z",
-      "activityScore": 0.0070052539404553416
+      "activityScore": 0.006951685783802572
     },
     {
       "channelId": "blog-devtang",
@@ -1848,7 +1881,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2026-11-14T10:00:45Z",
-      "activityScore": 0.0070052539404553416
+      "activityScore": 0.006951685783802572
     },
     {
       "channelId": "blog-t9t",
@@ -1859,7 +1892,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2023-12-01T00:00:00Z",
-      "activityScore": 0.0070052539404553416
+      "activityScore": 0.006951685783802572
     },
     {
       "channelId": "phodal",
@@ -1870,7 +1903,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2026-10-30T07:26:48Z",
-      "activityScore": 0.0070052539404553416
+      "activityScore": 0.006951685783802572
     },
     {
       "channelId": "dumplingbao-github",
@@ -1881,7 +1914,7 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2023-01-11T05:01:08Z",
-      "activityScore": 0.0070052539404553416
+      "activityScore": 0.006951685783802572
     },
     {
       "channelId": "feedx",
@@ -1891,27 +1924,18 @@
       ],
       "itemCount": 20,
       "lastUpdatedAt": "2022-10-26T05:16:03Z",
-      "activityScore": 0.0070052539404553416
+      "activityScore": 0.006951685783802572
     },
     {
       "channelId": "rss-nodeseek",
       "channelName": "NodeSeek",
       "category": [
-        "news"
+        "news",
+        "ai"
       ],
       "itemCount": 20,
-      "lastUpdatedAt": "2026-11-16T02:41:04Z",
-      "activityScore": 0.0070052539404553416
-    },
-    {
-      "channelId": "solidot",
-      "channelName": "奇客Solidot",
-      "category": [
-        "news"
-      ],
-      "itemCount": 17,
-      "lastUpdatedAt": "2026-11-15T14:38:30Z",
-      "activityScore": 0.005954465849387041
+      "lastUpdatedAt": "2026-11-16T20:53:59Z",
+      "activityScore": 0.006951685783802572
     },
     {
       "channelId": "blog-codingnow",
@@ -1922,7 +1946,7 @@
       ],
       "itemCount": 15,
       "lastUpdatedAt": "2026-11-09T09:37:28Z",
-      "activityScore": 0.005253940455341506
+      "activityScore": 0.005213764337851929
     },
     {
       "channelId": "bitinn",
@@ -1932,7 +1956,7 @@
       ],
       "itemCount": 15,
       "lastUpdatedAt": "2026-09-22T16:58:01Z",
-      "activityScore": 0.005253940455341506
+      "activityScore": 0.005213764337851929
     },
     {
       "channelId": "ghost-mout",
@@ -1942,7 +1966,7 @@
       ],
       "itemCount": 15,
       "lastUpdatedAt": "2020-07-24T09:43:15Z",
-      "activityScore": 0.005253940455341506
+      "activityScore": 0.005213764337851929
     },
     {
       "channelId": "woshipm",
@@ -1953,7 +1977,7 @@
       ],
       "itemCount": 13,
       "lastUpdatedAt": "2026-11-02T09:11:13Z",
-      "activityScore": 0.004553415061295972
+      "activityScore": 0.0045185957594716716
     },
     {
       "channelId": "wpdaxue",
@@ -1964,17 +1988,18 @@
       ],
       "itemCount": 12,
       "lastUpdatedAt": "2026-10-22T09:52:44Z",
-      "activityScore": 0.004203152364273205
+      "activityScore": 0.004171011470281543
     },
     {
       "channelId": "yystv",
       "channelName": "游研社",
       "category": [
-        "other"
+        "other",
+        "news"
       ],
       "itemCount": 12,
-      "lastUpdatedAt": "2026-11-13T13:15:00Z",
-      "activityScore": 0.004203152364273205
+      "lastUpdatedAt": "2026-11-16T16:00:00Z",
+      "activityScore": 0.004171011470281543
     },
     {
       "channelId": "blog-lilydjwg",
@@ -1984,7 +2009,7 @@
       ],
       "itemCount": 12,
       "lastUpdatedAt": "2026-10-29T07:23:13Z",
-      "activityScore": 0.004203152364273205
+      "activityScore": 0.004171011470281543
     },
     {
       "channelId": "cnfeat",
@@ -1994,7 +2019,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-07-23T07:41:03Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "sspai",
@@ -2004,8 +2029,8 @@
         "dev_community"
       ],
       "itemCount": 10,
-      "lastUpdatedAt": "2026-11-15T23:24:34Z",
-      "activityScore": 0.0035026269702276708
+      "lastUpdatedAt": "2026-11-16T10:09:47Z",
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "github-blog",
@@ -2016,7 +2041,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-11-13T00:20:16Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "xclient",
@@ -2026,7 +2051,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-11-15T18:37:41Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "appinn",
@@ -2036,18 +2061,17 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-11-16T01:00:40Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "williamlong",
       "channelName": "月光博客",
       "category": [
-        "tech_blog",
-        "ai"
+        "tech_blog"
       ],
       "itemCount": 10,
-      "lastUpdatedAt": "2026-11-01T13:49:43Z",
-      "activityScore": 0.0035026269702276708
+      "lastUpdatedAt": "2026-11-10T15:22:43Z",
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "techug",
@@ -2057,7 +2081,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-05-20T13:43:40Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "meituan-tech",
@@ -2068,18 +2092,17 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-11-10T00:00:00Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "laozuo",
       "channelName": "老左笔记",
       "category": [
-        "tech_blog",
-        "ai"
+        "tech_blog"
       ],
       "itemCount": 10,
-      "lastUpdatedAt": "2026-11-14T05:42:48Z",
-      "activityScore": 0.0035026269702276708
+      "lastUpdatedAt": "2026-11-16T07:50:14Z",
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "runningcheese",
@@ -2089,7 +2112,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-03-10T11:30:16Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "imtx",
@@ -2099,18 +2122,17 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2025-07-23T02:37:04Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "weiwuhui",
       "channelName": "扯氮集",
       "category": [
-        "tech_blog",
-        "finance"
+        "tech_blog"
       ],
       "itemCount": 10,
-      "lastUpdatedAt": "2026-11-04T12:25:38Z",
-      "activityScore": 0.0035026269702276708
+      "lastUpdatedAt": "2026-11-16T02:03:02Z",
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "macshuo",
@@ -2120,7 +2142,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-11-01T08:47:24Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "dongwm",
@@ -2131,7 +2153,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2023-05-16T00:00:00Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "luolei",
@@ -2142,7 +2164,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-09-29T00:00:00Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "daimajia",
@@ -2152,7 +2174,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-10-18T06:26:17Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "greatdk",
@@ -2163,7 +2185,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-07-02T06:44:27Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "hawstein",
@@ -2175,7 +2197,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2025-08-13T00:00:00Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "haijiaoshi",
@@ -2185,7 +2207,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-11-11T08:13:12Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "blog-farmostwood",
@@ -2195,7 +2217,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2023-07-13T06:43:00Z",
-      "activityScore": 0.0035026269702276708
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "tumutanzi",
@@ -2204,8 +2226,8 @@
         "tech_blog"
       ],
       "itemCount": 10,
-      "lastUpdatedAt": "2026-11-10T16:00:00Z",
-      "activityScore": 0.0035026269702276708
+      "lastUpdatedAt": "2026-11-15T16:00:00Z",
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "feeds-feedburner-kenengbarss",
@@ -2215,17 +2237,7 @@
       ],
       "itemCount": 10,
       "lastUpdatedAt": "2026-04-28T11:07:31Z",
-      "activityScore": 0.0035026269702276708
-    },
-    {
-      "channelId": "shuge",
-      "channelName": "书格",
-      "category": [
-        "other"
-      ],
-      "itemCount": 9,
-      "lastUpdatedAt": "2026-11-11T08:04:19Z",
-      "activityScore": 0.0031523642732049035
+      "activityScore": 0.003475842891901286
     },
     {
       "channelId": "shrekshao-github",
@@ -2235,7 +2247,7 @@
       ],
       "itemCount": 9,
       "lastUpdatedAt": "2021-02-24T00:00:00Z",
-      "activityScore": 0.0031523642732049035
+      "activityScore": 0.0031282586027111575
     },
     {
       "channelId": "iui-su",
@@ -2244,8 +2256,8 @@
         "other"
       ],
       "itemCount": 8,
-      "lastUpdatedAt": "2026-11-15T04:01:00Z",
-      "activityScore": 0.0028021015761821367
+      "lastUpdatedAt": "2026-11-16T03:41:00Z",
+      "activityScore": 0.002780674313521029
     },
     {
       "channelId": "feeds-feedburner",
@@ -2255,7 +2267,7 @@
       ],
       "itemCount": 7,
       "lastUpdatedAt": "2026-11-01T13:39:03Z",
-      "activityScore": 0.0024518388791593695
+      "activityScore": 0.0024330900243309003
     },
     {
       "channelId": "micheer",
@@ -2265,7 +2277,7 @@
       ],
       "itemCount": 6,
       "lastUpdatedAt": "2026-11-08T10:01:04Z",
-      "activityScore": 0.0021015761821366026
+      "activityScore": 0.0020855057351407717
     },
     {
       "channelId": "free-apprcn",
@@ -2274,8 +2286,8 @@
         "tech_blog"
       ],
       "itemCount": 3,
-      "lastUpdatedAt": "2026-11-15T15:34:12Z",
-      "activityScore": 0.0010507880910683013
+      "lastUpdatedAt": "2026-11-16T17:11:08Z",
+      "activityScore": 0.0010427528675703858
     },
     {
       "channelId": "feedx-photoworld-xml",
@@ -2285,18 +2297,8 @@
       ],
       "itemCount": 3,
       "lastUpdatedAt": "2026-11-15T12:59:06Z",
-      "activityScore": 0.0010507880910683013
-    },
-    {
-      "channelId": "masuit",
-      "channelName": "懒得勤快的博客",
-      "category": [
-        "tech_blog"
-      ],
-      "itemCount": 2,
-      "lastUpdatedAt": "2026-11-13T08:02:28Z",
-      "activityScore": 0.0007005253940455342
+      "activityScore": 0.0010427528675703858
     }
   ],
-  "summary": "今日热度榜首《国家统计局城市司高级统计师杨彩芳解读2026年10月份商品住宅销售价格变动情况统计数据》（来自 国家统计局 · 数据解读，hotScore=1），关键词「项目」热度居前；81 个跨源主题。"
+  "summary": "今日热度榜首《国家统计局城市司高级统计师杨彩芳解读2026年10月份商品住宅销售价格变动情况统计数据》（来自 国家统计局 · 数据解读，hotScore=1），关键词「项目」热度居前；82 个跨源主题。"
 }
