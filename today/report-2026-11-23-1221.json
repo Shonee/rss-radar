@@ -1,0 +1,2355 @@
+{
+  "schemaVersion": "1.0",
+  "date": "2026-11-23",
+  "timezone": "Asia/Shanghai",
+  "generatedAt": "2026-11-23T12:21:58Z",
+  "totalItems": 2921,
+  "activeChannels": 71,
+  "windowStart": "2026-11-22T16:00:00Z",
+  "windowEnd": "2026-11-23T12:21:56Z",
+  "weights": {
+    "sourceOverlap": 0.4,
+    "recency": 0.25,
+    "frequency": 0.2,
+    "channelWeight": 0.1,
+    "keywordHeat": 0.05
+  },
+  "categoryStats": [
+    {
+      "category": "ai",
+      "label": "AI",
+      "itemCount": 1298,
+      "channelCount": 59,
+      "ratio": 0.44436836699760357
+    },
+    {
+      "category": "news",
+      "label": "新闻",
+      "itemCount": 989,
+      "channelCount": 43,
+      "ratio": 0.33858267716535434
+    },
+    {
+      "category": "tech_blog",
+      "label": "科技博客",
+      "itemCount": 860,
+      "channelCount": 49,
+      "ratio": 0.29441971927422117
+    },
+    {
+      "category": "other",
+      "label": "其他",
+      "itemCount": 253,
+      "channelCount": 13,
+      "ratio": 0.08661417322834646
+    },
+    {
+      "category": "dev_community",
+      "label": "开发者社区",
+      "itemCount": 204,
+      "channelCount": 22,
+      "ratio": 0.06983909619993153
+    },
+    {
+      "category": "newsletter",
+      "label": "周报",
+      "itemCount": 123,
+      "channelCount": 11,
+      "ratio": 0.0421088668264293
+    },
+    {
+      "category": "finance",
+      "label": "财经",
+      "itemCount": 78,
+      "channelCount": 18,
+      "ratio": 0.02670318384115029
+    },
+    {
+      "category": "podcast",
+      "label": "播客",
+      "itemCount": 33,
+      "channelCount": 13,
+      "ratio": 0.011297500855871277
+    }
+  ],
+  "hotList": [
+    {
+      "rank": 1,
+      "id": "it_948634c2d610",
+      "title": "国家统计局新闻发言人就2026年10月份国民经济运行情况答记者问",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202611/t20261116_1965869.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 1,
+      "sourceCount": 24,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2026-11-16T05:50:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 2,
+      "id": "it_2a7a7734d790",
+      "title": "国家统计局城市司首席统计师董莉娟解读2026年10月份CPI和PPI数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202611/t20261109_1965796.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9999999995226828,
+      "sourceCount": 40,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2026-11-09T09:30:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 3,
+      "id": "it_05c4e8b3a41c",
+      "title": "国家统计局投资司首席统计师罗毅飞解读2025年1—11月份投资数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202512/t20251215_1962084.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news",
+        "finance"
+      ],
+      "hotScore": 0.9999999995226828,
+      "sourceCount": 18,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2025-12-15T03:00:02Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 4,
+      "id": "it_2b10a8ca203f",
+      "title": "国家统计局工业司统计师于卫宁解读工业企业利润数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202501/t20250127_1958494.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9999999995226828,
+      "sourceCount": 16,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2025-01-27T09:30:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 5,
+      "id": "it_6db5b98c9116",
+      "title": "国家统计局工业司首席统计师于卫宁解读2026年1—9月份工业企业利润数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202610/t20261027_1965698.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9999999995226828,
+      "sourceCount": 10,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2026-10-27T09:30:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 6,
+      "id": "it_41c7c0845c80",
+      "title": "国家统计局贸经司首席统计师袁彦解读1—8月份消费市场数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202609/t20260915_1965328.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9999999995226828,
+      "sourceCount": 7,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2026-09-15T03:00:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 7,
+      "id": "it_c31815cc573a",
+      "title": "国家统计局工业司统计师于卫宁解读2025年7月份工业企业利润数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202508/t20250827_1960883.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9999999995226828,
+      "sourceCount": 6,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2025-08-27T09:30:01Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 8,
+      "id": "it_a6e955092850",
+      "title": "国家统计局社科文司高级统计师张鹏解读2025年一季度全国规模以上文化及相关产业企业数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202504/t20250429_1959507.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9999999995226828,
+      "sourceCount": 5,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2025-04-29T09:30:01Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 1,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 9,
+      "id": "it_adfa91851691",
+      "title": "国家统计局城市司高级统计师杨彩芳解读2026年10月份商品住宅销售价格变动情况统计数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202611/t20261116_1965838.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9890676760709867,
+      "sourceCount": 6,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2026-11-16T09:30:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 0.8,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 10,
+      "id": "it_cb6b3f37ce55",
+      "title": "国家统计局城市司首席统计师王中华解读2026年4月份商品住宅销售价格变动情况统计数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202605/t20260518_1963721.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.989067675337627,
+      "sourceCount": 28,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2026-05-18T09:30:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 0.8,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "word": "项目",
+      "count": 1292,
+      "weight": 1
+    },
+    {
+      "word": "ai",
+      "count": 459,
+      "weight": 0.35526315789473684
+    },
+    {
+      "word": "经济",
+      "count": 383,
+      "weight": 0.2964396284829721
+    },
+    {
+      "word": "数据",
+      "count": 370,
+      "weight": 0.28637770897832815
+    },
+    {
+      "word": "发展",
+      "count": 346,
+      "weight": 0.2678018575851393
+    },
+    {
+      "word": "统计",
+      "count": 345,
+      "weight": 0.26702786377708976
+    },
+    {
+      "word": "消费",
+      "count": 340,
+      "weight": 0.2631578947368421
+    },
+    {
+      "word": "2026",
+      "count": 314,
+      "weight": 0.24303405572755418
+    },
+    {
+      "word": "服务",
+      "count": 302,
+      "weight": 0.23374613003095976
+    },
+    {
+      "word": "11",
+      "count": 290,
+      "weight": 0.22445820433436534
+    },
+    {
+      "word": "生产",
+      "count": 282,
+      "weight": 0.21826625386996903
+    },
+    {
+      "word": "工业",
+      "count": 262,
+      "weight": 0.20278637770897834
+    },
+    {
+      "word": "https",
+      "count": 249,
+      "weight": 0.19272445820433437
+    },
+    {
+      "word": "macos",
+      "count": 237,
+      "weight": 0.18343653250773995
+    },
+    {
+      "word": "python",
+      "count": 237,
+      "weight": 0.18343653250773995
+    },
+    {
+      "word": "使用",
+      "count": 234,
+      "weight": 0.18111455108359134
+    },
+    {
+      "word": "季度",
+      "count": 224,
+      "weight": 0.17337461300309598
+    },
+    {
+      "word": "国家",
+      "count": 220,
+      "weight": 0.17027863777089783
+    },
+    {
+      "word": "市场",
+      "count": 217,
+      "weight": 0.16795665634674922
+    },
+    {
+      "word": "完成",
+      "count": 216,
+      "weight": 0.16718266253869968
+    }
+  ],
+  "crossSource": [
+    {
+      "topic": "上周蠎快讯 2025/22",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_3c08e22c0872"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "魏锋华：前三季度农业经济形势稳中向好",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_270ebada4263"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局农村司司长魏锋华解读早稻生产情况",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_ea55812176e5"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司首席统计师袁彦解读1—2月份消费市场数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_088ae578950e"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "张毅：前三季度居民收入和消费支出稳定增长",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_8eb7e2501801"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司统计师孙晓解读5月份工业生产数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_ff68a91cf5dd"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司首席统计师袁彦解读5月份消费市场数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_49de6a78543f"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司首席统计师袁彦解读4月份消费市场数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_b6f3047ae709"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "王萍萍：一季度就业形势总体稳定",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_da07148e82c7"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司统计师于卫宁解读工业企业利润数据",
+      "sourceCount": 16,
+      "itemIds": [
+        "it_2b10a8ca203f"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司统计师孙晓解读11月份工业生产数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_995592098af9"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司统计师付加奇解读11月份消费市场数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_20917633f2e8"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司统计师孙晓解读10月份工业生产数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_80f433ffaf0c"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司统计师付加奇解读10月份消费市场数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_b1e578c638c1"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司统计师孙晓解读8月份工业生产数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_5f8e9e96ba22"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司统计师付加奇解读8月份消费市场数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_5dce01b0a03e"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局农村司司长王贵荣解读早稻生产情况",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_33e0e63e5120"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "王萍萍：上半年就业形势总体稳定",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_aca81d7339ef"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司统计师孙晓解读工业企业利润数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_3db476018884"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "(untitled)",
+      "sourceCount": 5,
+      "itemIds": [
+        "it_ad04296ca2e5"
+      ],
+      "channelNames": [
+        "笨方法学写作",
+        "我的小角落",
+        "我的小角落",
+        "我的小角落",
+        "我的小角落"
+      ]
+    },
+    {
+      "topic": "Building a Healthcare Robot from Simulation to Deployment with NVIDIA Isaac",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_4754c48ec89e"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "Training and Finetuning Sparse Embedding Models with Sentence Transformers",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_78a74dd6e22c"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "Open R1: Update #4",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_1172932ec030"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "Accelerating PyTorch Transformers with Intel Sapphire Rapids - part 2",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_ae2e9a534ac7"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "2D Asset Generation: AI for Game Development #4",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_44d1f35b84fd"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "AI for Game Development: Creating a Farming Game in 5 Days. Part 2",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_0114fe4831df"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "An Introduction to Q-Learning Part 2/2",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_5889a8d85a8c"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "2025-11-05",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_c45e4c4bee01"
+      ],
+      "channelNames": [
+        "胡涂说",
+        "胡涂说"
+      ]
+    },
+    {
+      "topic": "2025-10-15",
+      "sourceCount": 6,
+      "itemIds": [
+        "it_83e2b33cadee"
+      ],
+      "channelNames": [
+        "胡涂说",
+        "胡涂说",
+        "胡涂说",
+        "胡涂说",
+        "胡涂说",
+        "胡涂说"
+      ]
+    },
+    {
+      "topic": ":fire: xbatis 1.10.12 正式发版，mybatis 系列最好用最简单最方便的 ORM !!",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_4dd8492227e9"
+      ],
+      "channelNames": [
+        "开源中国",
+        "开源中国"
+      ]
+    },
+    {
+      "topic": "【黑果小兵】【微信首发】macOS Big Sur 11.3.1 20E241 Installer for OpenCore 0.6.8 and CLOVER 5134 and PE三EFI分区原版镜像",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_469fdd72dc76"
+      ],
+      "channelNames": [
+        "黑果小兵的部落阁",
+        "黑果小兵的部落阁"
+      ]
+    },
+    {
+      "topic": "【黑果小兵】【微信首发】macOS Big Sur 11.2.2 20D80 Installer for OpenCore 0.6.7 and CLOVER 5131 and PE三EFI分区原版镜像",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_488c42889f2f"
+      ],
+      "channelNames": [
+        "黑果小兵的部落阁",
+        "黑果小兵的部落阁"
+      ]
+    },
+    {
+      "topic": "【微信首发】macOS Catalina 10.15.7 19H15 正式版 Clover 5126/OC/PE三分区支持Intel及AMD双平台原版镜像",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_fa8efa3ef1ed"
+      ],
+      "channelNames": [
+        "黑果小兵的部落阁",
+        "黑果小兵的部落阁"
+      ]
+    },
+    {
+      "topic": "【黑果小兵】macOS High Sierra 10.13DB9 17A360a with Clover 4189原版镜像",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_b59a3046cd99"
+      ],
+      "channelNames": [
+        "黑果小兵的部落阁",
+        "黑果小兵的部落阁"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2025/21",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_22ee2c3db279"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2025/19",
+      "sourceCount": 10,
+      "itemIds": [
+        "it_d70e38537d97"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2025/09",
+      "sourceCount": 7,
+      "itemIds": [
+        "it_f8580849a839"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2025/08",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_070054f7c831"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2024/52",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_22538d19cf44"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2024/49",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_1b36352fd7ee"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "国家统计局新闻发言人就2026年10月份国民经济运行情况答记者问",
+      "sourceCount": 24,
+      "itemIds": [
+        "it_948634c2d610"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局城市司高级统计师杨彩芳解读2026年10月份商品住宅销售价格变动情况统计数据",
+      "sourceCount": 6,
+      "itemIds": [
+        "it_adfa91851691"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局城市司首席统计师董莉娟解读2026年10月份CPI和PPI数据",
+      "sourceCount": 40,
+      "itemIds": [
+        "it_2a7a7734d790"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局服务业调查中心首席统计师霍丽慧解读2026年10月中国采购经理指数",
+      "sourceCount": 14,
+      "itemIds": [
+        "it_f98272fef1e5"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局社科文司统计师潘旭华解读2026年前三季度全国规模以上文化及相关产业企业数据",
+      "sourceCount": 4,
+      "itemIds": [
+        "it_01d6b42cfa3b"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司首席统计师于卫宁解读2026年1—9月份工业企业利润数据",
+      "sourceCount": 10,
+      "itemIds": [
+        "it_6db5b98c9116"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局社科文司统计师林梅解读2025年中国创新指数",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_495d0cdf9f35"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司首席统计师孙晓解读2026年8月份工业生产数据",
+      "sourceCount": 4,
+      "itemIds": [
+        "it_6f60b3412e01"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局投资司张刚解读2026年1—8月份投资数据",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_9e536d8e342b"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局贸经司首席统计师袁彦解读1—8月份消费市场数据",
+      "sourceCount": 7,
+      "itemIds": [
+        "it_41c7c0845c80"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局统计科学研究所所长闾海琪解读2025年我国经济发展新动能指数",
+      "sourceCount": 4,
+      "itemIds": [
+        "it_8f2ae04f634b"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局农村司司长魏锋华解读夏粮生产情况",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_f10b00deae31"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局投资司张刚解读2026年1—5月份投资数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_508c9c65cb39"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局城市司首席统计师王中华解读2026年4月份商品住宅销售价格变动情况统计数据",
+      "sourceCount": 28,
+      "itemIds": [
+        "it_cb6b3f37ce55"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局局长就2025年全年国民经济运行情况答记者问",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_7031d5e073d6"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司首席统计师于卫宁解读2025年1—11月份工业企业利润数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_a75ba8fb74be"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司首席统计师孙晓解读11月份工业生产数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_836111b4c473"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局投资司首席统计师罗毅飞解读2025年1—11月份投资数据",
+      "sourceCount": 18,
+      "itemIds": [
+        "it_05c4e8b3a41c"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局服务业调查中心高级统计师赵庆河解读2025年8月中国采购经理指数",
+      "sourceCount": 26,
+      "itemIds": [
+        "it_2624d0559d41"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司统计师于卫宁解读2025年7月份工业企业利润数据",
+      "sourceCount": 6,
+      "itemIds": [
+        "it_c31815cc573a"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局人口和就业统计司司长王萍萍解读2024年城镇单位就业人员平均工资数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_dbd65d0fb3a4"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局社科文司高级统计师张鹏解读2025年一季度全国规模以上文化及相关产业企业数据",
+      "sourceCount": 5,
+      "itemIds": [
+        "it_a6e955092850"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局副局长就2025年一季度国民经济运行情况答记者问",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_b75b66ca07b7"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局社科文司高级统计师张鹏解读2024年前三季度全国规模以上文化及相关产业企业数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_7a7cc63540c7"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局工业司首席统计师王新解读4月份工业生产数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_e7c5ed116dd7"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局城市司高级统计师沈赟解读2023年12月份商品住宅销售价格变动情况统计数据",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_24cbc8cfb1ba"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "国家统计局城市司高级统计师沈赟解读2023年11月份商品住宅销售价格变动情况统计数据",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_5937164a6005"
+      ],
+      "channelNames": [
+        "国家统计局 · 数据解读",
+        "国家统计局 · 数据解读"
+      ]
+    },
+    {
+      "topic": "2020年-2025年印度4G智能手机出货量份额（附原数据表） ​​​",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_eba85a899261"
+      ],
+      "channelNames": [
+        "199IT",
+        "199IT"
+      ]
+    },
+    {
+      "topic": "2026年德国主要足球俱乐部品牌价值同比（附原数据表） ​​​",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_1e65d77886d3"
+      ],
+      "channelNames": [
+        "199IT",
+        "199IT"
+      ]
+    },
+    {
+      "topic": "2025年Q3-2026年Q3全球后期及成长型风险投资交易量（附原数据表） ​​​",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_abd5f24455e5"
+      ],
+      "channelNames": [
+        "199IT",
+        "199IT"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 122 期",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_e16e7e0dba9b"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 119 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_0ac638d474b6"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 118 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_5cfff89545c2"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 117 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_b7e23e073615"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 116 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_ba83f7f1a1da"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 115 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_a54b6d68932a"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 114 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_0437296dd711"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 113 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_3806d3aaabb8"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 111 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_b834d4c2dea1"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 110 期",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_21f46ab5833f"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "www.UIndex.org    -    Dig 2026 S01E05 Hog's Best Day 1080p AMZN WEB-DL DDP5 1 H 264-playWEB",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_2a0dd9324aac"
+      ],
+      "channelNames": [
+        "Torlock",
+        "Torlock"
+      ]
+    },
+    {
+      "topic": "www.UIndex.org    -    Dig 2026 S01E03 Dirt Crush 1080p AMZN WEB-DL DDP5 1 H 264-playWEB",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_63dd434c41bd"
+      ],
+      "channelNames": [
+        "Torlock",
+        "Torlock"
+      ]
+    },
+    {
+      "topic": "www.UIndex.org    -    Dig 2026 S01E09 Only You 720p AMZN WEB-DL DDP5 1 H 264-playWEB",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_76c6b58fab3f"
+      ],
+      "channelNames": [
+        "Torlock",
+        "Torlock"
+      ]
+    },
+    {
+      "topic": "Encounter Game Dev Progress Video MS2",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_0c314ee5f131"
+      ],
+      "channelNames": [
+        "ShrekShao",
+        "ShrekShao"
+      ]
+    },
+    {
+      "topic": "WordPress 网站开发“微信小程序”实战(五)",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_c8500fdf0bb6"
+      ],
+      "channelNames": [
+        "DeveWork",
+        "DeveWork",
+        "DeveWork"
+      ]
+    }
+  ],
+  "channelActivity": [
+    {
+      "channelId": "huggingface-blog",
+      "channelName": "Hugging Face Blog",
+      "category": [
+        "ai"
+      ],
+      "itemCount": 906,
+      "lastUpdatedAt": "2026-11-20T00:00:00Z",
+      "activityScore": 0.31016775077028413
+    },
+    {
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "itemCount": 270,
+      "lastUpdatedAt": "2026-11-16T09:30:00Z",
+      "activityScore": 0.09243409791167409
+    },
+    {
+      "channelId": "hutusi",
+      "channelName": "胡涂说",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 141,
+      "lastUpdatedAt": "2026-11-18T00:00:00Z",
+      "activityScore": 0.04827114002054091
+    },
+    {
+      "channelId": "daliansky",
+      "channelName": "黑果小兵的部落阁",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 124,
+      "lastUpdatedAt": "2026-07-10T01:51:04Z",
+      "activityScore": 0.042451215337213286
+    },
+    {
+      "channelId": "hellogithub",
+      "channelName": "HelloGitHub 月刊",
+      "category": [
+        "news"
+      ],
+      "itemCount": 115,
+      "lastUpdatedAt": "2026-10-28T00:06:20Z",
+      "activityScore": 0.03937007874015748
+    },
+    {
+      "channelId": "v2ex",
+      "channelName": "V2EX",
+      "category": [
+        "dev_community"
+      ],
+      "itemCount": 88,
+      "lastUpdatedAt": "2026-11-23T12:19:29Z",
+      "activityScore": 0.030126668948990073
+    },
+    {
+      "channelId": "pychina-weekly",
+      "channelName": "蠎周刊（Python 周刊）",
+      "category": [
+        "newsletter",
+        "tech_blog",
+        "news"
+      ],
+      "itemCount": 79,
+      "lastUpdatedAt": "2026-11-21T03:42:00Z",
+      "activityScore": 0.02704553235193427
+    },
+    {
+      "channelId": "rakuen-thec",
+      "channelName": "Pixiv(艺术家社区)",
+      "category": [
+        "news"
+      ],
+      "itemCount": 77,
+      "lastUpdatedAt": "2026-11-22T14:35:12Z",
+      "activityScore": 0.026360835330366313
+    },
+    {
+      "channelId": "ithome",
+      "channelName": "IT之家",
+      "category": [
+        "news",
+        "ai",
+        "tech_blog"
+      ],
+      "itemCount": 60,
+      "lastUpdatedAt": "2026-11-23T12:11:11Z",
+      "activityScore": 0.020540910647038686
+    },
+    {
+      "channelId": "douban",
+      "channelName": "豆瓣",
+      "category": [
+        "other",
+        "ai"
+      ],
+      "itemCount": 60,
+      "lastUpdatedAt": "2026-11-23T07:23:53Z",
+      "activityScore": 0.020540910647038686
+    },
+    {
+      "channelId": "laruence",
+      "channelName": "风雪之隅",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 50,
+      "lastUpdatedAt": "2026-10-30T09:43:24Z",
+      "activityScore": 0.017117425539198903
+    },
+    {
+      "channelId": "oschina",
+      "channelName": "开源中国",
+      "category": [
+        "dev_community"
+      ],
+      "itemCount": 49,
+      "lastUpdatedAt": "2026-11-23T10:56:06Z",
+      "activityScore": 0.016775077028414926
+    },
+    {
+      "channelId": "199it",
+      "channelName": "199IT",
+      "category": [
+        "news"
+      ],
+      "itemCount": 47,
+      "lastUpdatedAt": "2026-11-22T22:00:19Z",
+      "activityScore": 0.01609038000684697
+    },
+    {
+      "channelId": "ptt",
+      "channelName": "PTT(台湾论坛)",
+      "category": [
+        "other",
+        "ai"
+      ],
+      "itemCount": 38,
+      "lastUpdatedAt": "2026-11-23T10:01:04Z",
+      "activityScore": 0.013009243409791168
+    },
+    {
+      "channelId": "36kr",
+      "channelName": "36氪",
+      "category": [
+        "news",
+        "finance"
+      ],
+      "itemCount": 30,
+      "lastUpdatedAt": "2026-11-23T12:19:43Z",
+      "activityScore": 0.010270455323519343
+    },
+    {
+      "channelId": "rengwuxian",
+      "channelName": "扔物线",
+      "category": [
+        "other",
+        "tech_blog"
+      ],
+      "itemCount": 30,
+      "lastUpdatedAt": "2024-12-27T10:02:13Z",
+      "activityScore": 0.010270455323519343
+    },
+    {
+      "channelId": "geekpark",
+      "channelName": "极客公园",
+      "category": [
+        "news"
+      ],
+      "itemCount": 30,
+      "lastUpdatedAt": "2026-11-23T07:49:06Z",
+      "activityScore": 0.010270455323519343
+    },
+    {
+      "channelId": "hacker-news",
+      "channelName": "Hacker News",
+      "category": [
+        "dev_community",
+        "news",
+        "ai"
+      ],
+      "itemCount": 29,
+      "lastUpdatedAt": "2026-11-23T10:06:43Z",
+      "activityScore": 0.009928106812735364
+    },
+    {
+      "channelId": "torlock",
+      "channelName": "Torlock",
+      "category": [
+        "other"
+      ],
+      "itemCount": 27,
+      "lastUpdatedAt": "2026-11-23T11:24:06Z",
+      "activityScore": 0.009243409791167409
+    },
+    {
+      "channelId": "devework",
+      "channelName": "DeveWork",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 27,
+      "lastUpdatedAt": "2025-02-15T00:59:27Z",
+      "activityScore": 0.009243409791167409
+    },
+    {
+      "channelId": "solidot",
+      "channelName": "奇客Solidot",
+      "category": [
+        "news"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-23T10:10:43Z",
+      "activityScore": 0.006846970215679562
+    },
+    {
+      "channelId": "bytedance-tech",
+      "channelName": "字节跳动技术团队官方博客",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2024-04-16T01:01:10Z",
+      "activityScore": 0.006846970215679562
+    },
+    {
+      "channelId": "ctrip-tech",
+      "channelName": "携程技术",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-05-13T02:08:50Z",
+      "activityScore": 0.006846970215679562
+    },
+    {
+      "channelId": "apple",
+      "channelName": "Apple新闻",
+      "category": [
+        "news"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-19T15:59:07Z",
+      "activityScore": 0.006846970215679562
+    },
+    {
+      "channelId": "toodaylab",
+      "channelName": "理想生活实验室",
+      "category": [
+        "other"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-23T10:56:31Z",
+      "activityScore": 0.006846970215679562
+    },
+    {
+      "channelId": "flingtrainer",
+      "channelName": "FLiNG Trainer",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-11T01:19:45Z",
+      "activityScore": 0.006846970215679562
+    },
+    {
+      "channelId": "blog-devtang",
+      "channelName": "唐巧的博客",
+      "category": [
+        "tech_blog",
+        "ai",
+        "news"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-14T10:00:45Z",
+      "activityScore": 0.006846970215679562
+    },
+    {
+      "channelId": "blog-t9t",
+      "channelName": "透明创业实验",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2023-12-01T00:00:00Z",
+      "activityScore": 0.006846970215679562
+    },
+    {
+      "channelId": "phodal",
+      "channelName": "Phodal",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-10-30T07:26:48Z",
+      "activityScore": 0.006846970215679562
+    },
+    {
+      "channelId": "dumplingbao-github",
+      "channelName": "diss带码",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2023-01-11T05:01:08Z",
+      "activityScore": 0.006846970215679562
+    },
+    {
+      "channelId": "feedx",
+      "channelName": "cnBeta",
+      "category": [
+        "news"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2022-10-26T05:16:03Z",
+      "activityScore": 0.006846970215679562
+    },
+    {
+      "channelId": "rss-nodeseek",
+      "channelName": "NodeSeek",
+      "category": [
+        "news"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-23T12:20:57Z",
+      "activityScore": 0.006846970215679562
+    },
+    {
+      "channelId": "ifanr",
+      "channelName": "爱范儿",
+      "category": [
+        "news",
+        "ai"
+      ],
+      "itemCount": 19,
+      "lastUpdatedAt": "2026-11-23T09:53:48Z",
+      "activityScore": 0.006504621704895584
+    },
+    {
+      "channelId": "gcores",
+      "channelName": "机核",
+      "category": [
+        "podcast",
+        "ai",
+        "news",
+        "finance"
+      ],
+      "itemCount": 19,
+      "lastUpdatedAt": "2026-11-23T11:08:42Z",
+      "activityScore": 0.006504621704895584
+    },
+    {
+      "channelId": "blog-codingnow",
+      "channelName": "云风的 BLOG",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 15,
+      "lastUpdatedAt": "2026-11-20T07:55:47Z",
+      "activityScore": 0.005135227661759671
+    },
+    {
+      "channelId": "bitinn",
+      "channelName": "比特客栈的文艺复兴",
+      "category": [
+        "news"
+      ],
+      "itemCount": 15,
+      "lastUpdatedAt": "2026-09-22T16:58:01Z",
+      "activityScore": 0.005135227661759671
+    },
+    {
+      "channelId": "ghost-mout",
+      "channelName": "MouT.me",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 15,
+      "lastUpdatedAt": "2020-07-24T09:43:15Z",
+      "activityScore": 0.005135227661759671
+    },
+    {
+      "channelId": "woshipm",
+      "channelName": "人人都是产品经理",
+      "category": [
+        "other",
+        "ai"
+      ],
+      "itemCount": 12,
+      "lastUpdatedAt": "2026-11-02T09:11:13Z",
+      "activityScore": 0.004108182129407737
+    },
+    {
+      "channelId": "wpdaxue",
+      "channelName": "WordPress大学",
+      "category": [
+        "tech_blog",
+        "dev_community"
+      ],
+      "itemCount": 12,
+      "lastUpdatedAt": "2026-10-22T09:52:44Z",
+      "activityScore": 0.004108182129407737
+    },
+    {
+      "channelId": "yystv",
+      "channelName": "游研社",
+      "category": [
+        "other"
+      ],
+      "itemCount": 12,
+      "lastUpdatedAt": "2026-11-23T08:15:00Z",
+      "activityScore": 0.004108182129407737
+    },
+    {
+      "channelId": "blog-lilydjwg",
+      "channelName": "依云",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 12,
+      "lastUpdatedAt": "2026-10-29T07:23:13Z",
+      "activityScore": 0.004108182129407737
+    },
+    {
+      "channelId": "cnfeat",
+      "channelName": "笨方法学写作",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-07-23T07:41:03Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "sspai",
+      "channelName": "少数派",
+      "category": [
+        "tech_blog",
+        "dev_community"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-23T10:08:29Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "github-blog",
+      "channelName": "GitHub Blog",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-19T16:00:00Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "xclient",
+      "channelName": "精品MAC应用分享",
+      "category": [
+        "other"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-22T21:13:18Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "appinn",
+      "channelName": "小众软件",
+      "category": [
+        "other",
+        "tech_blog",
+        "news"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-23T09:32:59Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "williamlong",
+      "channelName": "月光博客",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-18T15:15:47Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "techug",
+      "channelName": "程序员、编程语言、软件开发、编程技术",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-05-20T13:43:40Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "meituan-tech",
+      "channelName": "美团技术团队",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-18T00:00:00Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "laozuo",
+      "channelName": "老左笔记",
+      "category": [
+        "tech_blog",
+        "news"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-23T01:14:26Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "runningcheese",
+      "channelName": "奔跑中的奶酪",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-03-10T11:30:16Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "imtx",
+      "channelName": "I'M TUALATRIX",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2025-07-23T02:37:04Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "weiwuhui",
+      "channelName": "扯氮集",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-20T12:25:55Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "macshuo",
+      "channelName": "MacTalk-池建强的随想录",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-01T08:47:24Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "dongwm",
+      "channelName": "小明明s à domicile",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2023-05-16T00:00:00Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "luolei",
+      "channelName": "罗磊的独立博客",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-09-29T00:00:00Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "daimajia",
+      "channelName": "代码家",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-10-18T06:26:17Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "greatdk",
+      "channelName": "王登科-DK博客",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-07-02T06:44:27Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "hawstein",
+      "channelName": "Hawstein's Blog",
+      "category": [
+        "tech_blog",
+        "ai",
+        "podcast"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2025-08-13T00:00:00Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "haijiaoshi",
+      "channelName": "海交史",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-11T08:13:12Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "blog-farmostwood",
+      "channelName": "木遥",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2023-07-13T06:43:00Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "tumutanzi",
+      "channelName": "土木坛子",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-19T16:00:00Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "feeds-feedburner-kenengbarss",
+      "channelName": "可能吧",
+      "category": [
+        "other"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-04-28T11:07:31Z",
+      "activityScore": 0.003423485107839781
+    },
+    {
+      "channelId": "shuge",
+      "channelName": "书格",
+      "category": [
+        "other"
+      ],
+      "itemCount": 9,
+      "lastUpdatedAt": "2026-11-19T07:30:14Z",
+      "activityScore": 0.0030811365970558027
+    },
+    {
+      "channelId": "shrekshao-github",
+      "channelName": "ShrekShao",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 9,
+      "lastUpdatedAt": "2021-02-24T00:00:00Z",
+      "activityScore": 0.0030811365970558027
+    },
+    {
+      "channelId": "iui-su",
+      "channelName": "不死鸟 - 分享为王官网",
+      "category": [
+        "other"
+      ],
+      "itemCount": 8,
+      "lastUpdatedAt": "2026-11-23T04:03:00Z",
+      "activityScore": 0.0027387880862718246
+    },
+    {
+      "channelId": "masuit",
+      "channelName": "懒得勤快的博客",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 8,
+      "lastUpdatedAt": "2026-11-23T12:20:58Z",
+      "activityScore": 0.0027387880862718246
+    },
+    {
+      "channelId": "feeds-feedburner",
+      "channelName": "书伴",
+      "category": [
+        "other"
+      ],
+      "itemCount": 7,
+      "lastUpdatedAt": "2026-11-01T13:39:03Z",
+      "activityScore": 0.002396439575487847
+    },
+    {
+      "channelId": "micheer",
+      "channelName": "我的小角落",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 6,
+      "lastUpdatedAt": "2026-11-08T10:01:04Z",
+      "activityScore": 0.0020540910647038686
+    },
+    {
+      "channelId": "free-apprcn",
+      "channelName": "反斗限免",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 3,
+      "lastUpdatedAt": "2026-11-23T08:53:15Z",
+      "activityScore": 0.0010270455323519343
+    },
+    {
+      "channelId": "feedx-photoworld-xml",
+      "channelName": "摄影世界",
+      "category": [
+        "news"
+      ],
+      "itemCount": 3,
+      "lastUpdatedAt": "2026-11-15T12:59:06Z",
+      "activityScore": 0.0010270455323519343
+    }
+  ],
+  "summary": "今日热度榜首《国家统计局新闻发言人就2026年10月份国民经济运行情况答记者问》（来自 国家统计局 · 数据解读，hotScore=1），关键词「项目」热度居前；85 个跨源主题。"
+}
