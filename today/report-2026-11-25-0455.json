@@ -1,0 +1,1610 @@
+{
+  "schemaVersion": "1.0",
+  "date": "2026-11-25",
+  "timezone": "Asia/Shanghai",
+  "generatedAt": "2026-11-25T04:55:22Z",
+  "totalItems": 2588,
+  "activeChannels": 68,
+  "windowStart": "2026-11-24T16:00:00Z",
+  "windowEnd": "2026-11-25T04:55:21Z",
+  "weights": {
+    "sourceOverlap": 0.4,
+    "recency": 0.25,
+    "frequency": 0.2,
+    "channelWeight": 0.1,
+    "keywordHeat": 0.05
+  },
+  "categoryStats": [
+    {
+      "category": "ai",
+      "label": "AI",
+      "itemCount": 1292,
+      "channelCount": 58,
+      "ratio": 0.4992272024729521
+    },
+    {
+      "category": "tech_blog",
+      "label": "科技博客",
+      "itemCount": 852,
+      "channelCount": 48,
+      "ratio": 0.32921174652241114
+    },
+    {
+      "category": "news",
+      "label": "新闻",
+      "itemCount": 663,
+      "channelCount": 41,
+      "ratio": 0.2561823802163833
+    },
+    {
+      "category": "other",
+      "label": "其他",
+      "itemCount": 255,
+      "channelCount": 13,
+      "ratio": 0.09853168469860897
+    },
+    {
+      "category": "dev_community",
+      "label": "开发者社区",
+      "itemCount": 201,
+      "channelCount": 23,
+      "ratio": 0.0776661514683153
+    },
+    {
+      "category": "newsletter",
+      "label": "周报",
+      "itemCount": 126,
+      "channelCount": 12,
+      "ratio": 0.04868624420401855
+    },
+    {
+      "category": "finance",
+      "label": "财经",
+      "itemCount": 38,
+      "channelCount": 13,
+      "ratio": 0.014683153013910355
+    },
+    {
+      "category": "podcast",
+      "label": "播客",
+      "itemCount": 35,
+      "channelCount": 13,
+      "ratio": 0.013523956723338485
+    }
+  ],
+  "hotList": [
+    {
+      "rank": 1,
+      "id": "it_d70e38537d97",
+      "title": "上周蠎快讯 2025/19",
+      "url": "https://weekly.pychina.org/pyrecap/pyrw-2519.html",
+      "channelId": "pychina-weekly",
+      "channelName": "蠎周刊（Python 周刊）",
+      "category": [
+        "newsletter",
+        "ai",
+        "tech_blog",
+        "news"
+      ],
+      "hotScore": 1,
+      "sourceCount": 10,
+      "channelNames": [
+        "蠎周刊（Python 周刊）"
+      ],
+      "publishedAt": "2025-05-12T03:42:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 0.8,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 2,
+      "id": "it_f8580849a839",
+      "title": "上周蠎快讯 2025/09",
+      "url": "https://weekly.pychina.org/pyrecap/pyrw-2509.html",
+      "channelId": "pychina-weekly",
+      "channelName": "蠎周刊（Python 周刊）",
+      "category": [
+        "newsletter",
+        "tech_blog",
+        "news"
+      ],
+      "hotScore": 1,
+      "sourceCount": 7,
+      "channelNames": [
+        "蠎周刊（Python 周刊）"
+      ],
+      "publishedAt": "2025-03-03T03:42:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 0.8,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 3,
+      "id": "it_9d1e40eb8f49",
+      "title": "(untitled)",
+      "url": "https://micheer.net/archives/1128.html",
+      "channelId": "micheer",
+      "channelName": "我的小角落",
+      "category": [
+        "tech_blog"
+      ],
+      "hotScore": 0.9468997831045469,
+      "sourceCount": 6,
+      "channelNames": [
+        "我的小角落",
+        "笨方法学写作"
+      ],
+      "publishedAt": "2026-11-23T13:56:33Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0.011,
+        "zChannel": 0.5,
+        "zKw": 0,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 4,
+      "id": "it_cd21f8c7544d",
+      "title": "www.UIndex.org    -    Blade.Runner.2099.S01E07.1080p.HEVC.x265-MeGusta",
+      "url": "https://www.torlock.com/torrent/68482529/blade-runner-2099-s01e07-1080p-hevc-x265.html",
+      "channelId": "torlock",
+      "channelName": "Torlock",
+      "category": [
+        "other"
+      ],
+      "hotScore": 0.7906374753008409,
+      "sourceCount": 2,
+      "channelNames": [
+        "Torlock"
+      ],
+      "publishedAt": "2026-11-25T04:14:52Z",
+      "components": {
+        "zSource": 0.4,
+        "decay": 0.925,
+        "zChannel": 0.5,
+        "zKw": 0,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 5,
+      "id": "it_e5e9541214fd",
+      "title": ":fire: xbatis 1.10.13 正式发版，mybatis 系列最好用最简单最方便的 ORM !!",
+      "url": "https://www.oschina.net/news/503783",
+      "channelId": "oschina",
+      "channelName": "开源中国",
+      "category": [
+        "dev_community",
+        "ai"
+      ],
+      "hotScore": 0.7602946594749451,
+      "sourceCount": 3,
+      "channelNames": [
+        "开源中国"
+      ],
+      "publishedAt": "2026-11-24T09:38:35Z",
+      "components": {
+        "zSource": 0.6,
+        "decay": 0.108,
+        "zChannel": 0.7,
+        "zKw": 0.8,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 6,
+      "id": "it_7fb2b20c9068",
+      "title": "独家谈判启动，比亚迪拟再买一家欧洲工厂",
+      "url": "https://36kr.com/newsflashes/4084692285598081?f=rss",
+      "channelId": "36kr",
+      "channelName": "36氪",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.7318421062769312,
+      "sourceCount": 1,
+      "channelNames": [
+        "36氪"
+      ],
+      "publishedAt": "2026-11-25T04:43:51Z",
+      "components": {
+        "zSource": 0.2,
+        "decay": 0.978,
+        "zChannel": 0.7,
+        "zKw": 0.8,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 7,
+      "id": "it_61ccf3ce0db9",
+      "title": "《三体》电影版编剧陈宇：已集中写剧本两年多时间，自己和张艺谋压力都非常大",
+      "url": "https://www.ithome.com/1/032/087.htm",
+      "channelId": "ithome",
+      "channelName": "IT之家",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.7198049087494305,
+      "sourceCount": 1,
+      "channelNames": [
+        "IT之家"
+      ],
+      "publishedAt": "2026-11-25T04:23:31Z",
+      "components": {
+        "zSource": 0.2,
+        "decay": 0.941,
+        "zChannel": 0.7,
+        "zKw": 0.8,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 8,
+      "id": "it_4b7960002b55",
+      "title": "高盛：美国数据中心建设热潮有望持续至 2028 年，推高电力与天然气需求",
+      "url": "https://www.ithome.com/1/032/089.htm",
+      "channelId": "ithome",
+      "channelName": "IT之家",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.712789209279694,
+      "sourceCount": 1,
+      "channelNames": [
+        "IT之家"
+      ],
+      "publishedAt": "2026-11-25T04:33:29Z",
+      "components": {
+        "zSource": 0.2,
+        "decay": 0.959,
+        "zChannel": 0.7,
+        "zKw": 0.6,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 9,
+      "id": "it_4ab3cee87472",
+      "title": "神舟二十四号载人飞船与空间站组合体完成自主快速交会对接",
+      "url": "https://36kr.com/newsflashes/4084659139865219?f=rss",
+      "channelId": "36kr",
+      "channelName": "36氪",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.712095087434917,
+      "sourceCount": 1,
+      "channelNames": [
+        "36氪"
+      ],
+      "publishedAt": "2026-11-25T04:10:08Z",
+      "components": {
+        "zSource": 0.2,
+        "decay": 0.917,
+        "zChannel": 0.7,
+        "zKw": 0.8,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 10,
+      "id": "it_27dd474eb5fa",
+      "title": "河南郑州｜中国移动｜家庭宽带｜Ultra Singapore｜白天闲时 & 晚高峰",
+      "url": "https://www.nodeseek.com/post-1079170-1",
+      "channelId": "rss-nodeseek",
+      "channelName": "NodeSeek",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.7109655516918663,
+      "sourceCount": 1,
+      "channelNames": [
+        "NodeSeek"
+      ],
+      "publishedAt": "2026-11-25T04:51:46Z",
+      "components": {
+        "zSource": 0.2,
+        "decay": 0.993,
+        "zChannel": 0.5,
+        "zKw": 0.8,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "word": "项目",
+      "count": 1267,
+      "weight": 1
+    },
+    {
+      "word": "ai",
+      "count": 448,
+      "weight": 0.35359116022099446
+    },
+    {
+      "word": "11",
+      "count": 277,
+      "weight": 0.21862667719021311
+    },
+    {
+      "word": "https",
+      "count": 253,
+      "weight": 0.19968429360694553
+    },
+    {
+      "word": "python",
+      "count": 240,
+      "weight": 0.1894238358326756
+    },
+    {
+      "word": "macos",
+      "count": 238,
+      "weight": 0.1878453038674033
+    },
+    {
+      "word": "使用",
+      "count": 226,
+      "weight": 0.17837411207576953
+    },
+    {
+      "word": "支持",
+      "count": 205,
+      "weight": 0.16179952644041043
+    },
+    {
+      "word": "完成",
+      "count": 201,
+      "weight": 0.15864246250986583
+    },
+    {
+      "word": "2026",
+      "count": 195,
+      "weight": 0.15390686661404893
+    },
+    {
+      "word": "智能",
+      "count": 179,
+      "weight": 0.14127861089187055
+    },
+    {
+      "word": "数据",
+      "count": 178,
+      "weight": 0.1404893449092344
+    },
+    {
+      "word": "系统",
+      "count": 177,
+      "weight": 0.13970007892659828
+    },
+    {
+      "word": "hugging",
+      "count": 173,
+      "weight": 0.13654301499605367
+    },
+    {
+      "word": "时间",
+      "count": 173,
+      "weight": 0.13654301499605367
+    },
+    {
+      "word": "face",
+      "count": 171,
+      "weight": 0.13496448303078137
+    },
+    {
+      "word": "分钟",
+      "count": 171,
+      "weight": 0.13496448303078137
+    },
+    {
+      "word": "安装",
+      "count": 165,
+      "weight": 0.13022888713496447
+    },
+    {
+      "word": "问题",
+      "count": 164,
+      "weight": 0.12943962115232832
+    },
+    {
+      "word": "clover",
+      "count": 158,
+      "weight": 0.12470402525651145
+    }
+  ],
+  "crossSource": [
+    {
+      "topic": "上周蠎快讯 2025/22",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_3c08e22c0872"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "🌙",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_7120d2ee0dc0"
+      ],
+      "channelNames": [
+        "Pixiv(艺术家社区)",
+        "Pixiv(艺术家社区)",
+        "Pixiv(艺术家社区)"
+      ]
+    },
+    {
+      "topic": "少女",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_68e33dbbdfed"
+      ],
+      "channelNames": [
+        "Pixiv(艺术家社区)",
+        "Pixiv(艺术家社区)"
+      ]
+    },
+    {
+      "topic": "무제",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_0fea7d89e97e"
+      ],
+      "channelNames": [
+        "Pixiv(艺术家社区)",
+        "Pixiv(艺术家社区)"
+      ]
+    },
+    {
+      "topic": "スー",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_8abb1f3fff2f"
+      ],
+      "channelNames": [
+        "Pixiv(艺术家社区)",
+        "Pixiv(艺术家社区)"
+      ]
+    },
+    {
+      "topic": "(untitled)",
+      "sourceCount": 6,
+      "itemIds": [
+        "it_9d1e40eb8f49"
+      ],
+      "channelNames": [
+        "我的小角落",
+        "笨方法学写作",
+        "我的小角落",
+        "我的小角落",
+        "我的小角落",
+        "我的小角落"
+      ]
+    },
+    {
+      "topic": "Building a Healthcare Robot from Simulation to Deployment with NVIDIA Isaac",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_4754c48ec89e"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "Training and Finetuning Sparse Embedding Models with Sentence Transformers",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_78a74dd6e22c"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "Open R1: Update #4",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_1172932ec030"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "Accelerating PyTorch Transformers with Intel Sapphire Rapids - part 2",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_ae2e9a534ac7"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "2D Asset Generation: AI for Game Development #4",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_44d1f35b84fd"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "AI for Game Development: Creating a Farming Game in 5 Days. Part 2",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_0114fe4831df"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": "An Introduction to Q-Learning Part 2/2",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_5889a8d85a8c"
+      ],
+      "channelNames": [
+        "Hugging Face Blog",
+        "Hugging Face Blog"
+      ]
+    },
+    {
+      "topic": ":fire: xbatis 1.10.13 正式发版，mybatis 系列最好用最简单最方便的 ORM !!",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_e5e9541214fd"
+      ],
+      "channelNames": [
+        "开源中国",
+        "开源中国",
+        "开源中国"
+      ]
+    },
+    {
+      "topic": "【黑果小兵】【微信首发】macOS Big Sur 11.3.1 20E241 Installer for OpenCore 0.6.8 and CLOVER 5134 and PE三EFI分区原版镜像",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_469fdd72dc76"
+      ],
+      "channelNames": [
+        "黑果小兵的部落阁",
+        "黑果小兵的部落阁"
+      ]
+    },
+    {
+      "topic": "【黑果小兵】【微信首发】macOS Big Sur 11.2.2 20D80 Installer for OpenCore 0.6.7 and CLOVER 5131 and PE三EFI分区原版镜像",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_488c42889f2f"
+      ],
+      "channelNames": [
+        "黑果小兵的部落阁",
+        "黑果小兵的部落阁"
+      ]
+    },
+    {
+      "topic": "【微信首发】macOS Catalina 10.15.7 19H15 正式版 Clover 5126/OC/PE三分区支持Intel及AMD双平台原版镜像",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_fa8efa3ef1ed"
+      ],
+      "channelNames": [
+        "黑果小兵的部落阁",
+        "黑果小兵的部落阁"
+      ]
+    },
+    {
+      "topic": "【黑果小兵】macOS High Sierra 10.13DB9 17A360a with Clover 4189原版镜像",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_b59a3046cd99"
+      ],
+      "channelNames": [
+        "黑果小兵的部落阁",
+        "黑果小兵的部落阁"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2025/21",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_22ee2c3db279"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2025/19",
+      "sourceCount": 10,
+      "itemIds": [
+        "it_d70e38537d97"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2025/09",
+      "sourceCount": 7,
+      "itemIds": [
+        "it_f8580849a839"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2025/08",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_070054f7c831"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2024/52",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_22538d19cf44"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "上周蠎快讯 2024/49",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_1b36352fd7ee"
+      ],
+      "channelNames": [
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）",
+        "蠎周刊（Python 周刊）"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 122 期",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_e16e7e0dba9b"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 119 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_0ac638d474b6"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 118 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_5cfff89545c2"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 117 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_b7e23e073615"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 116 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_ba83f7f1a1da"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 115 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_a54b6d68932a"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 114 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_0437296dd711"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 113 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_3806d3aaabb8"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 111 期",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_b834d4c2dea1"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "HelloGitHub 第 110 期",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_21f46ab5833f"
+      ],
+      "channelNames": [
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊",
+        "HelloGitHub 月刊"
+      ]
+    },
+    {
+      "topic": "www.UIndex.org    -    Blade.Runner.2099.S01E07.1080p.HEVC.x265-MeGusta",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_cd21f8c7544d"
+      ],
+      "channelNames": [
+        "Torlock",
+        "Torlock"
+      ]
+    },
+    {
+      "topic": "Encounter Game Dev Progress Video MS2",
+      "sourceCount": 2,
+      "itemIds": [
+        "it_0c314ee5f131"
+      ],
+      "channelNames": [
+        "ShrekShao",
+        "ShrekShao"
+      ]
+    },
+    {
+      "topic": "WordPress 网站开发“微信小程序”实战(五)",
+      "sourceCount": 3,
+      "itemIds": [
+        "it_c8500fdf0bb6"
+      ],
+      "channelNames": [
+        "DeveWork",
+        "DeveWork",
+        "DeveWork"
+      ]
+    }
+  ],
+  "channelActivity": [
+    {
+      "channelId": "huggingface-blog",
+      "channelName": "Hugging Face Blog",
+      "category": [
+        "ai"
+      ],
+      "itemCount": 907,
+      "lastUpdatedAt": "2026-11-24T16:34:13Z",
+      "activityScore": 0.3504636785162287
+    },
+    {
+      "channelId": "hutusi",
+      "channelName": "胡涂说",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 144,
+      "lastUpdatedAt": "2026-11-18T00:00:00Z",
+      "activityScore": 0.05564142194744977
+    },
+    {
+      "channelId": "daliansky",
+      "channelName": "黑果小兵的部落阁",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 124,
+      "lastUpdatedAt": "2026-07-10T01:51:04Z",
+      "activityScore": 0.04791344667697063
+    },
+    {
+      "channelId": "hellogithub",
+      "channelName": "HelloGitHub 月刊",
+      "category": [
+        "news"
+      ],
+      "itemCount": 115,
+      "lastUpdatedAt": "2026-10-28T00:06:20Z",
+      "activityScore": 0.044435857805255025
+    },
+    {
+      "channelId": "v2ex",
+      "channelName": "V2EX",
+      "category": [
+        "dev_community"
+      ],
+      "itemCount": 89,
+      "lastUpdatedAt": "2026-11-25T04:41:37Z",
+      "activityScore": 0.03438948995363215
+    },
+    {
+      "channelId": "pychina-weekly",
+      "channelName": "蠎周刊（Python 周刊）",
+      "category": [
+        "newsletter",
+        "tech_blog",
+        "news"
+      ],
+      "itemCount": 79,
+      "lastUpdatedAt": "2026-11-21T03:42:00Z",
+      "activityScore": 0.030525502318392583
+    },
+    {
+      "channelId": "rakuen-thec",
+      "channelName": "Pixiv(艺术家社区)",
+      "category": [
+        "news"
+      ],
+      "itemCount": 68,
+      "lastUpdatedAt": "2026-11-24T13:38:55Z",
+      "activityScore": 0.02627511591962906
+    },
+    {
+      "channelId": "ithome",
+      "channelName": "IT之家",
+      "category": [
+        "news",
+        "podcast"
+      ],
+      "itemCount": 60,
+      "lastUpdatedAt": "2026-11-25T04:40:58Z",
+      "activityScore": 0.023183925811437404
+    },
+    {
+      "channelId": "douban",
+      "channelName": "豆瓣",
+      "category": [
+        "other"
+      ],
+      "itemCount": 60,
+      "lastUpdatedAt": "2026-11-25T02:22:25Z",
+      "activityScore": 0.023183925811437404
+    },
+    {
+      "channelId": "laruence",
+      "channelName": "风雪之隅",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 50,
+      "lastUpdatedAt": "2026-10-30T09:43:24Z",
+      "activityScore": 0.019319938176197836
+    },
+    {
+      "channelId": "oschina",
+      "channelName": "开源中国",
+      "category": [
+        "dev_community",
+        "ai"
+      ],
+      "itemCount": 47,
+      "lastUpdatedAt": "2026-11-25T03:41:50Z",
+      "activityScore": 0.018160741885625966
+    },
+    {
+      "channelId": "ptt",
+      "channelName": "PTT(台湾论坛)",
+      "category": [
+        "other",
+        "ai"
+      ],
+      "itemCount": 38,
+      "lastUpdatedAt": "2026-11-25T03:33:52Z",
+      "activityScore": 0.014683153013910355
+    },
+    {
+      "channelId": "36kr",
+      "channelName": "36氪",
+      "category": [
+        "news"
+      ],
+      "itemCount": 30,
+      "lastUpdatedAt": "2026-11-25T04:50:56Z",
+      "activityScore": 0.011591962905718702
+    },
+    {
+      "channelId": "rengwuxian",
+      "channelName": "扔物线",
+      "category": [
+        "other",
+        "tech_blog"
+      ],
+      "itemCount": 30,
+      "lastUpdatedAt": "2024-12-27T10:02:13Z",
+      "activityScore": 0.011591962905718702
+    },
+    {
+      "channelId": "geekpark",
+      "channelName": "极客公园",
+      "category": [
+        "news",
+        "ai",
+        "finance"
+      ],
+      "itemCount": 30,
+      "lastUpdatedAt": "2026-11-25T00:44:18Z",
+      "activityScore": 0.011591962905718702
+    },
+    {
+      "channelId": "hacker-news",
+      "channelName": "Hacker News",
+      "category": [
+        "dev_community",
+        "news"
+      ],
+      "itemCount": 29,
+      "lastUpdatedAt": "2026-11-25T04:35:32Z",
+      "activityScore": 0.011205564142194745
+    },
+    {
+      "channelId": "torlock",
+      "channelName": "Torlock",
+      "category": [
+        "other"
+      ],
+      "itemCount": 29,
+      "lastUpdatedAt": "2026-11-25T04:24:02Z",
+      "activityScore": 0.011205564142194745
+    },
+    {
+      "channelId": "devework",
+      "channelName": "DeveWork",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 27,
+      "lastUpdatedAt": "2025-02-15T00:59:27Z",
+      "activityScore": 0.010432766615146832
+    },
+    {
+      "channelId": "solidot",
+      "channelName": "奇客Solidot",
+      "category": [
+        "news"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-24T15:57:38Z",
+      "activityScore": 0.0077279752704791345
+    },
+    {
+      "channelId": "ifanr",
+      "channelName": "爱范儿",
+      "category": [
+        "news",
+        "ai"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-25T00:08:21Z",
+      "activityScore": 0.0077279752704791345
+    },
+    {
+      "channelId": "gcores",
+      "channelName": "机核",
+      "category": [
+        "podcast"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-25T03:05:00Z",
+      "activityScore": 0.0077279752704791345
+    },
+    {
+      "channelId": "bytedance-tech",
+      "channelName": "字节跳动技术团队官方博客",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2024-04-16T01:01:10Z",
+      "activityScore": 0.0077279752704791345
+    },
+    {
+      "channelId": "ctrip-tech",
+      "channelName": "携程技术",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-05-13T02:08:50Z",
+      "activityScore": 0.0077279752704791345
+    },
+    {
+      "channelId": "apple",
+      "channelName": "Apple新闻",
+      "category": [
+        "news"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-19T15:59:07Z",
+      "activityScore": 0.0077279752704791345
+    },
+    {
+      "channelId": "toodaylab",
+      "channelName": "理想生活实验室",
+      "category": [
+        "other"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-24T11:09:01Z",
+      "activityScore": 0.0077279752704791345
+    },
+    {
+      "channelId": "flingtrainer",
+      "channelName": "FLiNG Trainer",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-11T01:19:45Z",
+      "activityScore": 0.0077279752704791345
+    },
+    {
+      "channelId": "blog-devtang",
+      "channelName": "唐巧的博客",
+      "category": [
+        "tech_blog",
+        "ai",
+        "news"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-14T10:00:45Z",
+      "activityScore": 0.0077279752704791345
+    },
+    {
+      "channelId": "blog-t9t",
+      "channelName": "透明创业实验",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2023-12-01T00:00:00Z",
+      "activityScore": 0.0077279752704791345
+    },
+    {
+      "channelId": "phodal",
+      "channelName": "Phodal",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-10-30T07:26:48Z",
+      "activityScore": 0.0077279752704791345
+    },
+    {
+      "channelId": "dumplingbao-github",
+      "channelName": "diss带码",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2023-01-11T05:01:08Z",
+      "activityScore": 0.0077279752704791345
+    },
+    {
+      "channelId": "feedx",
+      "channelName": "cnBeta",
+      "category": [
+        "news"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2022-10-26T05:16:03Z",
+      "activityScore": 0.0077279752704791345
+    },
+    {
+      "channelId": "rss-nodeseek",
+      "channelName": "NodeSeek",
+      "category": [
+        "news",
+        "ai"
+      ],
+      "itemCount": 20,
+      "lastUpdatedAt": "2026-11-25T04:53:09Z",
+      "activityScore": 0.0077279752704791345
+    },
+    {
+      "channelId": "blog-codingnow",
+      "channelName": "云风的 BLOG",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 15,
+      "lastUpdatedAt": "2026-11-20T07:55:47Z",
+      "activityScore": 0.005795981452859351
+    },
+    {
+      "channelId": "bitinn",
+      "channelName": "比特客栈的文艺复兴",
+      "category": [
+        "news"
+      ],
+      "itemCount": 15,
+      "lastUpdatedAt": "2026-09-22T16:58:01Z",
+      "activityScore": 0.005795981452859351
+    },
+    {
+      "channelId": "ghost-mout",
+      "channelName": "MouT.me",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 15,
+      "lastUpdatedAt": "2020-07-24T09:43:15Z",
+      "activityScore": 0.005795981452859351
+    },
+    {
+      "channelId": "woshipm",
+      "channelName": "人人都是产品经理",
+      "category": [
+        "other",
+        "ai"
+      ],
+      "itemCount": 12,
+      "lastUpdatedAt": "2026-11-02T09:11:13Z",
+      "activityScore": 0.00463678516228748
+    },
+    {
+      "channelId": "wpdaxue",
+      "channelName": "WordPress大学",
+      "category": [
+        "tech_blog",
+        "dev_community"
+      ],
+      "itemCount": 12,
+      "lastUpdatedAt": "2026-10-22T09:52:44Z",
+      "activityScore": 0.00463678516228748
+    },
+    {
+      "channelId": "yystv",
+      "channelName": "游研社",
+      "category": [
+        "other"
+      ],
+      "itemCount": 12,
+      "lastUpdatedAt": "2026-11-24T10:00:00Z",
+      "activityScore": 0.00463678516228748
+    },
+    {
+      "channelId": "blog-lilydjwg",
+      "channelName": "依云",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 12,
+      "lastUpdatedAt": "2026-10-29T07:23:13Z",
+      "activityScore": 0.00463678516228748
+    },
+    {
+      "channelId": "sspai",
+      "channelName": "少数派",
+      "category": [
+        "tech_blog",
+        "dev_community"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-25T03:07:41Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "github-blog",
+      "channelName": "GitHub Blog",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-24T16:00:00Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "xclient",
+      "channelName": "精品MAC应用分享",
+      "category": [
+        "other"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-24T18:16:34Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "appinn",
+      "channelName": "小众软件",
+      "category": [
+        "other"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-24T05:54:12Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "williamlong",
+      "channelName": "月光博客",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-18T15:15:47Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "techug",
+      "channelName": "程序员、编程语言、软件开发、编程技术",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-05-20T13:43:40Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "meituan-tech",
+      "channelName": "美团技术团队",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-18T00:00:00Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "laozuo",
+      "channelName": "老左笔记",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-24T00:53:05Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "runningcheese",
+      "channelName": "奔跑中的奶酪",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-03-10T11:30:16Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "imtx",
+      "channelName": "I'M TUALATRIX",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2025-07-23T02:37:04Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "weiwuhui",
+      "channelName": "扯氮集",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-20T12:25:55Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "macshuo",
+      "channelName": "MacTalk-池建强的随想录",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-01T08:47:24Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "dongwm",
+      "channelName": "小明明s à domicile",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2023-05-16T00:00:00Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "luolei",
+      "channelName": "罗磊的独立博客",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-09-29T00:00:00Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "daimajia",
+      "channelName": "代码家",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-10-18T06:26:17Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "hawstein",
+      "channelName": "Hawstein's Blog",
+      "category": [
+        "tech_blog",
+        "ai",
+        "podcast"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2025-08-13T00:00:00Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "haijiaoshi",
+      "channelName": "海交史",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-11T08:13:12Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "blog-farmostwood",
+      "channelName": "木遥",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2023-07-13T06:43:00Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "tumutanzi",
+      "channelName": "土木坛子",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-11-19T16:00:00Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "feeds-feedburner-kenengbarss",
+      "channelName": "可能吧",
+      "category": [
+        "other"
+      ],
+      "itemCount": 10,
+      "lastUpdatedAt": "2026-04-28T11:07:31Z",
+      "activityScore": 0.0038639876352395673
+    },
+    {
+      "channelId": "shuge",
+      "channelName": "书格",
+      "category": [
+        "other"
+      ],
+      "itemCount": 9,
+      "lastUpdatedAt": "2026-11-19T07:30:14Z",
+      "activityScore": 0.0034775888717156105
+    },
+    {
+      "channelId": "shrekshao-github",
+      "channelName": "ShrekShao",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 9,
+      "lastUpdatedAt": "2021-02-24T00:00:00Z",
+      "activityScore": 0.0034775888717156105
+    },
+    {
+      "channelId": "cnfeat",
+      "channelName": "笨方法学写作",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 9,
+      "lastUpdatedAt": "2026-07-15T20:05:00Z",
+      "activityScore": 0.0034775888717156105
+    },
+    {
+      "channelId": "iui-su",
+      "channelName": "不死鸟 - 分享为王官网",
+      "category": [
+        "other"
+      ],
+      "itemCount": 8,
+      "lastUpdatedAt": "2026-11-24T23:53:00Z",
+      "activityScore": 0.0030911901081916537
+    },
+    {
+      "channelId": "feeds-feedburner",
+      "channelName": "书伴",
+      "category": [
+        "other"
+      ],
+      "itemCount": 7,
+      "lastUpdatedAt": "2026-11-01T13:39:03Z",
+      "activityScore": 0.002704791344667697
+    },
+    {
+      "channelId": "micheer",
+      "channelName": "我的小角落",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 6,
+      "lastUpdatedAt": "2026-11-23T13:56:33Z",
+      "activityScore": 0.00231839258114374
+    },
+    {
+      "channelId": "masuit",
+      "channelName": "懒得勤快的博客",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 5,
+      "lastUpdatedAt": "2026-11-25T04:52:57Z",
+      "activityScore": 0.0019319938176197836
+    },
+    {
+      "channelId": "free-apprcn",
+      "channelName": "反斗限免",
+      "category": [
+        "tech_blog"
+      ],
+      "itemCount": 3,
+      "lastUpdatedAt": "2026-11-25T03:44:04Z",
+      "activityScore": 0.00115919629057187
+    },
+    {
+      "channelId": "feedx-photoworld-xml",
+      "channelName": "摄影世界",
+      "category": [
+        "news"
+      ],
+      "itemCount": 3,
+      "lastUpdatedAt": "2026-11-15T12:59:06Z",
+      "activityScore": 0.00115919629057187
+    }
+  ],
+  "summary": "今日热度榜首《上周蠎快讯 2025/19》（来自 蠎周刊（Python 周刊），hotScore=1），关键词「项目」热度居前；37 个跨源主题。"
+}
