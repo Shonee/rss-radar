@@ -2,11 +2,11 @@
   "schemaVersion": "1.0",
   "date": "2026-11-28",
   "timezone": "Asia/Shanghai",
-  "generatedAt": "2026-11-28T03:53:01Z",
+  "generatedAt": "2026-11-28T12:55:54Z",
   "totalItems": 2929,
   "activeChannels": 71,
   "windowStart": "2026-11-27T16:00:00Z",
-  "windowEnd": "2026-11-28T03:52:59Z",
+  "windowEnd": "2026-11-28T12:55:54Z",
   "weights": {
     "sourceOverlap": 0.4,
     "recency": 0.25,
@@ -18,58 +18,58 @@
     {
       "category": "ai",
       "label": "AI",
-      "itemCount": 1299,
-      "channelCount": 58,
-      "ratio": 0.4434960737453056
+      "itemCount": 1303,
+      "channelCount": 59,
+      "ratio": 0.44486172755206554
     },
     {
       "category": "news",
       "label": "新闻",
-      "itemCount": 992,
-      "channelCount": 43,
-      "ratio": 0.3386821440764766
+      "itemCount": 987,
+      "channelCount": 42,
+      "ratio": 0.33697507681802663
     },
     {
       "category": "tech_blog",
       "label": "科技博客",
-      "itemCount": 872,
-      "channelCount": 49,
-      "ratio": 0.297712529873677
+      "itemCount": 871,
+      "channelCount": 47,
+      "ratio": 0.29737111642198705
     },
     {
       "category": "other",
       "label": "其他",
-      "itemCount": 253,
+      "itemCount": 256,
       "channelCount": 13,
-      "ratio": 0.08637760327756913
+      "ratio": 0.08740184363263913
     },
     {
       "category": "dev_community",
       "label": "开发者社区",
-      "itemCount": 203,
+      "itemCount": 202,
       "channelCount": 23,
-      "ratio": 0.06930693069306931
+      "ratio": 0.06896551724137931
     },
     {
       "category": "newsletter",
       "label": "周报",
-      "itemCount": 124,
-      "channelCount": 12,
-      "ratio": 0.04233526800955958
+      "itemCount": 123,
+      "channelCount": 11,
+      "ratio": 0.04199385455786958
     },
     {
       "category": "finance",
       "label": "财经",
-      "itemCount": 68,
+      "itemCount": 69,
       "channelCount": 17,
-      "ratio": 0.02321611471491977
+      "ratio": 0.023557528166609765
     },
     {
       "category": "podcast",
       "label": "播客",
-      "itemCount": 28,
-      "channelCount": 9,
-      "ratio": 0.009559576647319904
+      "itemCount": 27,
+      "channelCount": 8,
+      "ratio": 0.009218163195629908
     }
   ],
   "hotList": [
@@ -111,7 +111,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.9999999999999988,
+      "hotScore": 0.9999999999999998,
       "sourceCount": 40,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -140,7 +140,7 @@
         "news",
         "finance"
       ],
-      "hotScore": 0.9999999999999988,
+      "hotScore": 0.9999999999999998,
       "sourceCount": 18,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -160,34 +160,6 @@
     },
     {
       "rank": 4,
-      "id": "it_2b10a8ca203f",
-      "title": "国家统计局工业司统计师于卫宁解读工业企业利润数据",
-      "url": "https://www.stats.gov.cn/sj/sjjd/202501/t20250127_1958494.html",
-      "channelId": "stats-gov-cn",
-      "channelName": "国家统计局 · 数据解读",
-      "category": [
-        "news"
-      ],
-      "hotScore": 0.9999999999999988,
-      "sourceCount": 16,
-      "channelNames": [
-        "国家统计局 · 数据解读"
-      ],
-      "publishedAt": "2025-01-27T09:30:00Z",
-      "components": {
-        "zSource": 1,
-        "decay": 0,
-        "zChannel": 0.6,
-        "zKw": 1,
-        "w1": 0.4,
-        "w2": 0.25,
-        "w3": 0.2,
-        "w4": 0.1,
-        "w5": 0.05
-      }
-    },
-    {
-      "rank": 5,
       "id": "it_6db5b98c9116",
       "title": "国家统计局工业司首席统计师于卫宁解读2026年1—9月份工业企业利润数据",
       "url": "https://www.stats.gov.cn/sj/sjjd/202610/t20261027_1965698.html",
@@ -196,7 +168,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.9999999999999988,
+      "hotScore": 0.9999999999999998,
       "sourceCount": 10,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -215,7 +187,7 @@
       }
     },
     {
-      "rank": 6,
+      "rank": 5,
       "id": "it_41c7c0845c80",
       "title": "国家统计局贸经司首席统计师袁彦解读1—8月份消费市场数据",
       "url": "https://www.stats.gov.cn/sj/sjjd/202609/t20260915_1965328.html",
@@ -224,7 +196,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.9999999999999988,
+      "hotScore": 0.9999999999999998,
       "sourceCount": 7,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -243,35 +215,7 @@
       }
     },
     {
-      "rank": 7,
-      "id": "it_c31815cc573a",
-      "title": "国家统计局工业司统计师于卫宁解读2025年7月份工业企业利润数据",
-      "url": "https://www.stats.gov.cn/sj/sjjd/202508/t20250827_1960883.html",
-      "channelId": "stats-gov-cn",
-      "channelName": "国家统计局 · 数据解读",
-      "category": [
-        "news"
-      ],
-      "hotScore": 0.9999999999999988,
-      "sourceCount": 6,
-      "channelNames": [
-        "国家统计局 · 数据解读"
-      ],
-      "publishedAt": "2025-08-27T09:30:01Z",
-      "components": {
-        "zSource": 1,
-        "decay": 0,
-        "zChannel": 0.6,
-        "zKw": 1,
-        "w1": 0.4,
-        "w2": 0.25,
-        "w3": 0.2,
-        "w4": 0.1,
-        "w5": 0.05
-      }
-    },
-    {
-      "rank": 8,
+      "rank": 6,
       "id": "it_a6e955092850",
       "title": "国家统计局社科文司高级统计师张鹏解读2025年一季度全国规模以上文化及相关产业企业数据",
       "url": "https://www.stats.gov.cn/sj/sjjd/202504/t20250429_1959507.html",
@@ -280,7 +224,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.9999999999999988,
+      "hotScore": 0.9999999999999998,
       "sourceCount": 5,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -299,6 +243,62 @@
       }
     },
     {
+      "rank": 7,
+      "id": "it_2b10a8ca203f",
+      "title": "国家统计局工业司统计师于卫宁解读工业企业利润数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202501/t20250127_1958494.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9890676758097258,
+      "sourceCount": 16,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2025-01-27T09:30:00Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 0.8,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
+      "rank": 8,
+      "id": "it_c31815cc573a",
+      "title": "国家统计局工业司统计师于卫宁解读2025年7月份工业企业利润数据",
+      "url": "https://www.stats.gov.cn/sj/sjjd/202508/t20250827_1960883.html",
+      "channelId": "stats-gov-cn",
+      "channelName": "国家统计局 · 数据解读",
+      "category": [
+        "news"
+      ],
+      "hotScore": 0.9890676758097258,
+      "sourceCount": 6,
+      "channelNames": [
+        "国家统计局 · 数据解读"
+      ],
+      "publishedAt": "2025-08-27T09:30:01Z",
+      "components": {
+        "zSource": 1,
+        "decay": 0,
+        "zChannel": 0.6,
+        "zKw": 0.8,
+        "w1": 0.4,
+        "w2": 0.25,
+        "w3": 0.2,
+        "w4": 0.1,
+        "w5": 0.05
+      }
+    },
+    {
       "rank": 9,
       "id": "it_adfa91851691",
       "title": "国家统计局城市司高级统计师杨彩芳解读2026年10月份商品住宅销售价格变动情况统计数据",
@@ -308,7 +308,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.9890676758097263,
+      "hotScore": 0.9780708537585429,
       "sourceCount": 6,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -318,7 +318,7 @@
         "zSource": 1,
         "decay": 0,
         "zChannel": 0.6,
-        "zKw": 0.8,
+        "zKw": 0.6,
         "w1": 0.4,
         "w2": 0.25,
         "w3": 0.2,
@@ -336,7 +336,7 @@
       "category": [
         "news"
       ],
-      "hotScore": 0.9890676758097247,
+      "hotScore": 0.9780708537585424,
       "sourceCount": 28,
       "channelNames": [
         "国家统计局 · 数据解读"
@@ -346,7 +346,7 @@
         "zSource": 1,
         "decay": 0,
         "zChannel": 0.6,
-        "zKw": 0.8,
+        "zKw": 0.6,
         "w1": 0.4,
         "w2": 0.25,
         "w3": 0.2,
@@ -358,103 +358,103 @@
   "keywords": [
     {
       "word": "项目",
-      "count": 1306,
+      "count": 1298,
       "weight": 1
     },
     {
       "word": "ai",
-      "count": 471,
-      "weight": 0.36064318529862177
+      "count": 468,
+      "weight": 0.3605546995377504
     },
     {
       "word": "经济",
-      "count": 382,
-      "weight": 0.29249617151607965
+      "count": 380,
+      "weight": 0.29275808936825887
     },
     {
       "word": "数据",
-      "count": 372,
-      "weight": 0.28483920367534454
+      "count": 375,
+      "weight": 0.2889060092449923
     },
     {
       "word": "发展",
-      "count": 357,
-      "weight": 0.27335375191424194
+      "count": 363,
+      "weight": 0.2796610169491525
     },
     {
       "word": "统计",
-      "count": 345,
-      "weight": 0.26416539050535986
+      "count": 344,
+      "weight": 0.2650231124807396
     },
     {
       "word": "消费",
-      "count": 337,
-      "weight": 0.25803981623277183
+      "count": 333,
+      "weight": 0.25654853620955315
     },
     {
       "word": "2026",
-      "count": 313,
-      "weight": 0.23966309341500766
+      "count": 316,
+      "weight": 0.24345146379044685
     },
     {
       "word": "服务",
-      "count": 307,
-      "weight": 0.23506891271056662
+      "count": 293,
+      "weight": 0.22573189522342066
     },
     {
       "word": "11",
-      "count": 296,
-      "weight": 0.22664624808575803
+      "count": 284,
+      "weight": 0.21879815100154082
     },
     {
       "word": "生产",
-      "count": 273,
-      "weight": 0.20903522205206737
+      "count": 276,
+      "weight": 0.21263482280431434
     },
     {
       "word": "工业",
-      "count": 262,
-      "weight": 0.2006125574272588
+      "count": 266,
+      "weight": 0.2049306625577812
     },
     {
       "word": "https",
-      "count": 249,
-      "weight": 0.19065849923430322
-    },
-    {
-      "word": "macos",
-      "count": 239,
-      "weight": 0.18300153139356815
+      "count": 243,
+      "weight": 0.187211093990755
     },
     {
       "word": "python",
-      "count": 236,
-      "weight": 0.1807044410413476
-    },
-    {
-      "word": "支持",
-      "count": 223,
-      "weight": 0.17075038284839203
-    },
-    {
-      "word": "季度",
-      "count": 222,
-      "weight": 0.16998468606431852
+      "count": 239,
+      "weight": 0.18412942989214176
     },
     {
       "word": "使用",
-      "count": 219,
-      "weight": 0.16768759571209801
+      "count": 235,
+      "weight": 0.1810477657935285
     },
     {
       "word": "市场",
-      "count": 219,
-      "weight": 0.16768759571209801
+      "count": 231,
+      "weight": 0.17796610169491525
     },
     {
-      "word": "国家",
+      "word": "macos",
+      "count": 229,
+      "weight": 0.17642526964560862
+    },
+    {
+      "word": "智能",
+      "count": 219,
+      "weight": 0.1687211093990755
+    },
+    {
+      "word": "季度",
+      "count": 218,
+      "weight": 0.1679506933744222
+    },
+    {
+      "word": "完成",
       "count": 215,
-      "weight": 0.16462480857580397
+      "weight": 0.16563944530046226
     }
   ],
   "crossSource": [
@@ -701,28 +701,6 @@
       "channelNames": [
         "199IT",
         "199IT"
-      ]
-    },
-    {
-      "topic": "無題",
-      "sourceCount": 2,
-      "itemIds": [
-        "it_72d141d74a12"
-      ],
-      "channelNames": [
-        "Pixiv(艺术家社区)",
-        "Pixiv(艺术家社区)"
-      ]
-    },
-    {
-      "topic": "🤔",
-      "sourceCount": 2,
-      "itemIds": [
-        "it_52cc4dde1b9d"
-      ],
-      "channelNames": [
-        "Pixiv(艺术家社区)",
-        "Pixiv(艺术家社区)"
       ]
     },
     {
@@ -1546,39 +1524,6 @@
       ]
     },
     {
-      "topic": "www.UIndex.org    -    Disney.Adventure.Charting.a.New.Course.2026.720p.WEB.H264-SHIIIT",
-      "sourceCount": 2,
-      "itemIds": [
-        "it_b21612b5873e"
-      ],
-      "channelNames": [
-        "Torlock",
-        "Torlock"
-      ]
-    },
-    {
-      "topic": "www.UIndex.org    -    The.Rainmaker.S02E07.1080p.WEB.H264-iNSiDiOUS",
-      "sourceCount": 2,
-      "itemIds": [
-        "it_99715a94ef71"
-      ],
-      "channelNames": [
-        "Torlock",
-        "Torlock"
-      ]
-    },
-    {
-      "topic": "Batman.el.Valiente.S01E18.2008.1080P-Dual-Lat.mkv",
-      "sourceCount": 2,
-      "itemIds": [
-        "it_d7bb29472e52"
-      ],
-      "channelNames": [
-        "Torlock",
-        "Torlock"
-      ]
-    },
-    {
       "topic": "Encounter Game Dev Progress Video MS2",
       "sourceCount": 2,
       "itemIds": [
@@ -1661,7 +1606,7 @@
         "dev_community"
       ],
       "itemCount": 89,
-      "lastUpdatedAt": "2026-11-28T03:34:04Z",
+      "lastUpdatedAt": "2026-11-28T12:45:47Z",
       "activityScore": 0.030385797200409695
     },
     {
@@ -1682,20 +1627,18 @@
       "category": [
         "news"
       ],
-      "itemCount": 72,
-      "lastUpdatedAt": "2026-11-26T12:31:26Z",
-      "activityScore": 0.024581768521679755
+      "itemCount": 68,
+      "lastUpdatedAt": "2026-11-27T13:27:49Z",
+      "activityScore": 0.02321611471491977
     },
     {
       "channelId": "ithome",
       "channelName": "IT之家",
       "category": [
-        "news",
-        "ai",
-        "finance"
+        "news"
       ],
       "itemCount": 60,
-      "lastUpdatedAt": "2026-11-28T03:22:22Z",
+      "lastUpdatedAt": "2026-11-28T12:44:00Z",
       "activityScore": 0.020484807101399796
     },
     {
@@ -1705,7 +1648,7 @@
         "other"
       ],
       "itemCount": 60,
-      "lastUpdatedAt": "2026-11-28T01:37:24Z",
+      "lastUpdatedAt": "2026-11-28T09:49:56Z",
       "activityScore": 0.020484807101399796
     },
     {
@@ -1745,11 +1688,10 @@
       "channelId": "ptt",
       "channelName": "PTT(台湾论坛)",
       "category": [
-        "other",
-        "ai"
+        "other"
       ],
       "itemCount": 37,
-      "lastUpdatedAt": "2026-11-28T03:08:55Z",
+      "lastUpdatedAt": "2026-11-28T12:25:42Z",
       "activityScore": 0.012632297712529874
     },
     {
@@ -1760,7 +1702,7 @@
         "news"
       ],
       "itemCount": 30,
-      "lastUpdatedAt": "2026-11-28T03:19:20Z",
+      "lastUpdatedAt": "2026-11-28T11:57:04Z",
       "activityScore": 0.010242403550699898
     },
     {
@@ -1768,11 +1710,10 @@
       "channelName": "36氪",
       "category": [
         "news",
-        "ai",
-        "finance"
+        "ai"
       ],
       "itemCount": 30,
-      "lastUpdatedAt": "2026-11-28T03:33:50Z",
+      "lastUpdatedAt": "2026-11-28T09:58:01Z",
       "activityScore": 0.010242403550699898
     },
     {
@@ -1787,6 +1728,16 @@
       "activityScore": 0.010242403550699898
     },
     {
+      "channelId": "torlock",
+      "channelName": "Torlock",
+      "category": [
+        "other"
+      ],
+      "itemCount": 30,
+      "lastUpdatedAt": "2026-11-28T12:44:30Z",
+      "activityScore": 0.010242403550699898
+    },
+    {
       "channelId": "geekpark",
       "channelName": "极客公园",
       "category": [
@@ -1796,16 +1747,6 @@
       "itemCount": 29,
       "lastUpdatedAt": "2026-11-28T00:53:50Z",
       "activityScore": 0.009900990099009901
-    },
-    {
-      "channelId": "torlock",
-      "channelName": "Torlock",
-      "category": [
-        "other"
-      ],
-      "itemCount": 27,
-      "lastUpdatedAt": "2026-11-28T03:42:17Z",
-      "activityScore": 0.009218163195629908
     },
     {
       "channelId": "devework",
@@ -1836,7 +1777,7 @@
         "news"
       ],
       "itemCount": 20,
-      "lastUpdatedAt": "2026-11-27T16:41:37Z",
+      "lastUpdatedAt": "2026-11-28T05:01:54Z",
       "activityScore": 0.006828269033799932
     },
     {
@@ -1947,16 +1888,6 @@
       "activityScore": 0.006828269033799932
     },
     {
-      "channelId": "rss-nodeseek",
-      "channelName": "NodeSeek",
-      "category": [
-        "news"
-      ],
-      "itemCount": 20,
-      "lastUpdatedAt": "2026-11-28T03:52:04Z",
-      "activityScore": 0.006828269033799932
-    },
-    {
       "channelId": "gcores",
       "channelName": "机核",
       "category": [
@@ -1965,6 +1896,27 @@
       "itemCount": 19,
       "lastUpdatedAt": "2026-11-28T02:00:00Z",
       "activityScore": 0.0064868555821099355
+    },
+    {
+      "channelId": "rss-nodeseek",
+      "channelName": "NodeSeek",
+      "category": [
+        "news"
+      ],
+      "itemCount": 19,
+      "lastUpdatedAt": "2026-11-28T12:55:05Z",
+      "activityScore": 0.0064868555821099355
+    },
+    {
+      "channelId": "masuit",
+      "channelName": "懒得勤快的博客",
+      "category": [
+        "tech_blog",
+        "ai"
+      ],
+      "itemCount": 15,
+      "lastUpdatedAt": "2026-11-28T12:54:53Z",
+      "activityScore": 0.005121201775349949
     },
     {
       "channelId": "blog-codingnow",
@@ -1998,16 +1950,6 @@
       "activityScore": 0.005121201775349949
     },
     {
-      "channelId": "masuit",
-      "channelName": "懒得勤快的博客",
-      "category": [
-        "tech_blog"
-      ],
-      "itemCount": 13,
-      "lastUpdatedAt": "2026-11-28T03:52:00Z",
-      "activityScore": 0.004438374871969956
-    },
-    {
       "channelId": "woshipm",
       "channelName": "人人都是产品经理",
       "category": [
@@ -2033,11 +1975,10 @@
       "channelId": "yystv",
       "channelName": "游研社",
       "category": [
-        "other",
-        "finance"
+        "other"
       ],
       "itemCount": 12,
-      "lastUpdatedAt": "2026-11-28T03:40:00Z",
+      "lastUpdatedAt": "2026-11-28T05:00:00Z",
       "activityScore": 0.004096961420279959
     },
     {
@@ -2057,7 +1998,7 @@
         "other"
       ],
       "itemCount": 11,
-      "lastUpdatedAt": "2026-11-28T01:09:25Z",
+      "lastUpdatedAt": "2026-11-28T07:28:18Z",
       "activityScore": 0.0037555479685899623
     },
     {
@@ -2068,7 +2009,7 @@
         "dev_community"
       ],
       "itemCount": 10,
-      "lastUpdatedAt": "2026-11-28T00:47:47Z",
+      "lastUpdatedAt": "2026-11-28T03:30:00Z",
       "activityScore": 0.003414134516899966
     },
     {
@@ -2304,7 +2245,7 @@
         "other"
       ],
       "itemCount": 8,
-      "lastUpdatedAt": "2026-11-27T04:00:00Z",
+      "lastUpdatedAt": "2026-11-28T05:11:00Z",
       "activityScore": 0.0027313076135199728
     },
     {
@@ -2348,5 +2289,5 @@
       "activityScore": 0.0006828269033799932
     }
   ],
-  "summary": "今日热度榜首《国家统计局新闻发言人就2026年10月份国民经济运行情况答记者问》（来自 国家统计局 · 数据解读，hotScore=1），关键词「项目」热度居前；85 个跨源主题。"
+  "summary": "今日热度榜首《国家统计局新闻发言人就2026年10月份国民经济运行情况答记者问》（来自 国家统计局 · 数据解读，hotScore=1），关键词「项目」热度居前；80 个跨源主题。"
 }
